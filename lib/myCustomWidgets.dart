@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scale_button/scale_button.dart' as scl;
 
 void showSnackBar(BuildContext context, String message) {
@@ -140,7 +140,8 @@ class MyOutlineButton extends StatelessWidget {
 
 Future<dynamic> showMyBottomDialog(
     BuildContext context, List<Widget> children, Key formKey) {
-  return showMaterialModalBottomSheet(
+  return showModalBottomSheet(
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),

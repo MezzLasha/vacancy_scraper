@@ -41,7 +41,7 @@ dependencies:
   http: ^0.13.5
   iconsax: ^0.0.8
   infinite_scroll_pagination: ^3.2.0
-  modal_bottom_sheet: ^2.1.2
+  # modal_bottom_sheet: ^2.1.2
   scale_button: ^2.1.2
 
 dev_dependencies:

@@ -6,10 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:vacancy_scraper/models/announcement.dart';
 
 class DatabaseRepository {
-
-  Future<List<Announcement>> fetchAnnouncements(int pageKey, int pageSize) async {
-    final response = await http.get(Uri.parse(
-        'https://jobs.ge/?page=$pageKey&q=&cid=0&lid=0&jid=0&in_title=0&has_salary=0&is_ge=0&for_scroll=yes'));
+  Future<List<Announcement>> fetchAnnouncements(
+      int pageKey, int pageSize, dynamic filter) async {
+    final response =
+        await http.get(Uri.parse('https://jobs.ge/?page=$pageKey$filter'));
+    // 'https://jobs.ge/?page=$pageKey&q=&cid=0&lid=0&jid=0&in_title=0&has_salary=0&is_ge=0&for_scroll=yes'));
 
     var document = parse(response.body);
     // List<Element> jobNames = document.getElementsByClassName('vip');
@@ -22,7 +23,6 @@ class DatabaseRepository {
 
     return announcements;
   }
-
 
   Future<List<Announcement>> getHomeAnnouncements() async {
     final response = await http.get(Uri.parse(

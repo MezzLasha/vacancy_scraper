@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/database/bloc/database_bloc.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 
@@ -13,11 +14,10 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarDividerColor: Colors.transparent,
-    systemStatusBarContrastEnforced: true,
+    systemStatusBarContrastEnforced: false,
   ));
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-      overlays: [SystemUiOverlay.top]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
 }
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
@@ -41,8 +41,10 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           scrollBehavior: MyCustomScrollBehavior(),
           title: 'Flutter Demo',
-          theme:
-              ThemeData(primarySwatch: Colors.deepPurple, useMaterial3: true),
+          theme: ThemeData(
+              useMaterial3: true,
+              textTheme: GoogleFonts.notoSansGeorgianTextTheme()),
+          darkTheme: ThemeData.dark(useMaterial3: true),
           home: const HomeScreen(),
         ),
       ),
