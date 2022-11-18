@@ -1,13 +1,12 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
+import 'package:vacancy_scraper/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
-
-import '../database/bloc/database_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
+      print('refreshing');
       final newItems =
           await DatabaseRepository().fetchAnnouncements(pageKey, _pageSize);
       final isLastPage = newItems.length < _pageSize;
@@ -46,42 +46,98 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _refresh() async {
+    _pagingController.itemList = [];
+    await _fetchPage(0);
+  }
+
   @override
-  Widget build(BuildContext context) => PagedListView<int, Announcement>(
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<Announcement>(
-          itemBuilder: (context, item, index) => OpenContainer(
-            transitionType: ContainerTransitionType.fade,
-            closedElevation: 0,
-            closedShape: const Border(),
-            closedBuilder: (context, tap) {
-              return InkWell(
-                onTap: () => tap(),
-                child: Ink(
-                  padding: const EdgeInsets.only(left: 16),
-                  height: 56,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Text(
-                          item.jobName,
-                          style: GoogleFonts.notoSansGeorgian(),
-                        ),
-                      ),
-                      adBlurBanner(item.imageUrl),
-                    ],
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showMyBottomDialog(
+              context,
+              [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'საძიებო სიტყვა',
                   ),
                 ),
-              );
-            },
-            openBuilder: (context, action) {
-              return AdvertScreen(announcement: item);
-            },
+                const SizedBox(
+                  height: 15,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    height: 40,
+                    child: MyOutlineButton(
+                      onPressed: () {},
+                      borderColor: Theme.of(context).primaryColor,
+                      child: const Text('ძებნა'),
+                    ),
+                  ),
+                )
+              ],
+              GlobalKey());
+        },
+        label: Row(
+          children: const [
+            Text('ძებნა'),
+            SizedBox(
+              width: 10,
+            ),
+            Icon(Iconsax.search_normal)
+          ],
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: (() => _refresh()),
+        child: PagedListView<int, Announcement>(
+          pagingController: _pagingController,
+          shrinkWrap: true,
+          builderDelegate: PagedChildBuilderDelegate<Announcement>(
+            noItemsFoundIndicatorBuilder: (context) => Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height / 2,
+              width: double.infinity,
+            ),
+            itemBuilder: (context, item, index) => OpenContainer(
+              transitionType: ContainerTransitionType.fade,
+              closedElevation: 0,
+              closedShape: const Border(),
+              closedBuilder: (context, tap) {
+                return InkWell(
+                  onTap: () => tap(),
+                  child: Ink(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    height: 56,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Text(
+                            item.jobName,
+                            style: GoogleFonts.notoSansGeorgian(),
+                          ),
+                        ),
+                        adBlurBanner(item.imageUrl),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              openBuilder: (context, action) {
+                return AdvertScreen(announcement: item);
+              },
+            ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -94,9 +150,6 @@ Widget adBlurBanner(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {
     return Image.network(
       'https://jobs.ge$imageUrl',
-      fit: BoxFit.cover,
-      height: 56,
-      width: 70,
     );
   } else {
     return const SizedBox.shrink();
