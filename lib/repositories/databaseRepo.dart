@@ -11,7 +11,6 @@ class DatabaseRepository {
     final response =
         await http.get(Uri.parse('https://jobs.ge/?page=$pageKey$filter'));
     // 'https://jobs.ge/?page=$pageKey&q=&cid=0&lid=0&jid=0&in_title=0&has_salary=0&is_ge=0&for_scroll=yes'));
-
     var document = parse(response.body);
     // List<Element> jobNames = document.getElementsByClassName('vip');
     Element tbody = document.getElementsByTagName('tbody').first;
@@ -99,28 +98,6 @@ class DatabaseRepository {
           endDate: endDate,
           imageUrl: imageUrl,
           jobLink: jobLink));
-
-      // Announcement ancmnt = await getDetailedAd(Announcement(
-      //     jobProvider: jobProvider,
-      //     jobName: jobName,
-      //     jobRegion: jobRegion,
-      //     description: description,
-      //     jobId: jobId,
-      //     salary: salary,
-      //     startDate: startDate,
-      //     endDate: endDate,
-      //     imageUrl: imageUrl,
-      //     jobLink: jobLink));
-
-      // db.collection("advertisments").add(ancmnt.toMap()).then(
-      //     (DocumentReference doc) =>
-      //         print('DocumentSnapshot added with ID: ${doc.id}'));
-
-      // var empsRef = db.collection("advertisments");
-      // print(ancmnt.jobLink);
-      // empsRef.doc(ancmnt.jobId).set(ancmnt.toMap()).then((_) {
-      //   print('DocumentSnapshot added with ID: ${ancmnt.jobId}');
-      // });
     }
 
     return announcements;

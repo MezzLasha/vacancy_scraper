@@ -17,14 +17,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const _pageSize = 20;
+  static const _pageSize = 300;
 
   final PagingController<int, Announcement> _pagingController =
       PagingController(firstPageKey: 1);
 
   var isFabVisible = false;
-  String filter =
-      '&q=&cid=0&lid=0&jid=0&in_title=0&has_salary=0&is_ge=0&for_scroll=yes';
+
   @override
   void initState() {
     _pagingController.addPageRequestListener((pageKey) {
@@ -54,14 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
+
+    updateFilterValues();
     super.initState();
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      print('refreshing');
       final newItems = await DatabaseRepository()
           .fetchAnnouncements(pageKey, _pageSize, filter);
+
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -78,6 +79,153 @@ class _HomeScreenState extends State<HomeScreen> {
     _pagingController.itemList = [];
     await _fetchPage(0);
   }
+
+  void setFilter(
+      String filterString, String category, String location, String jobType) {
+    String cid = '';
+    String lid = '';
+    String jid = '';
+
+    switch (category) {
+      case 'ყველა კატეგორია':
+        cid = '';
+        break;
+      case 'ადმინისტრაცია/მენეჯმენტი':
+        cid = '1';
+        break;
+      case 'ფინანსები/სტატისტიკა':
+        cid = '3';
+        break;
+      case 'გაყიდვები':
+        cid = '2';
+        break;
+      case 'PR/მარკეტინგი':
+        cid = '4';
+        break;
+      case 'ზოგადი ტექნიკური პერსონალი':
+        cid = '18';
+        break;
+      case 'ლოგისტიკა/ტრანსპორტი/დისტრიბუცია':
+        cid = '5';
+        break;
+      case 'მშენებლობა/რემონტი':
+        cid = '11';
+        break;
+      case 'დასუფთავება':
+        cid = '16';
+        break;
+      case 'დაცვა/უსაფრთხოება':
+        cid = '17';
+        break;
+      case 'IT/პროგრამირება':
+        cid = '6';
+        break;
+      case 'მედია/გამომცემლობა':
+        cid = '13';
+        break;
+      case 'განათლება':
+        cid = '12';
+        break;
+      case 'სამართალი':
+        cid = '7';
+        break;
+      case 'მედიცინა/ფარმაცია':
+        cid = '8';
+        break;
+      case 'სილამაზე/მოდა':
+        cid = '14';
+        break;
+      case 'კვება':
+        cid = '10';
+        break;
+      case 'სხვა':
+        cid = '9';
+        break;
+
+      default:
+        '';
+    }
+
+    switch (location) {
+      case 'ნებისმიერ ადგილას':
+        lid = '';
+        break;
+      case 'თბილისი':
+        lid = '1';
+        break;
+      case 'აფხაზეთის ა/რ':
+        lid = '15';
+        break;
+      case 'აჭარის ა/რ':
+        lid = '14';
+        break;
+      case 'გურია':
+        lid = '9';
+        break;
+      case 'იმერეთი':
+        lid = '8';
+        break;
+      case 'კახეთი':
+        lid = '3';
+        break;
+      case 'მცხეთა-მთიანეთი':
+        lid = '4';
+        break;
+      case 'რაჭა-ლეჩხუმი, ქვ. სვანეთი':
+        lid = '12';
+        break;
+      case 'სამეგრელო-ზემო სვანეთი':
+        lid = '13';
+        break;
+      case 'სამცხე-ჯავახეთი':
+        lid = '7';
+        break;
+      case 'ქვემო ქართლი':
+        lid = '5';
+        break;
+      case 'შიდა ქართლი':
+        lid = '6';
+        break;
+      case 'უცხოეთი':
+        lid = '16';
+        break;
+      case 'დისტანციური':
+        lid = '17';
+        break;
+
+      default:
+        '';
+    }
+
+    switch (jobType) {
+      case 'ყველა ვაკანსია':
+        jid = '';
+        break;
+      case 'ვაკანსიები':
+        jid = '1';
+        break;
+      case 'სტიპენდიები':
+        jid = '2';
+        break;
+      case 'სხვა':
+        jid = '5';
+        break;
+      case 'ტენდერები':
+        jid = '4';
+        break;
+      case 'ტრენინგები':
+        jid = '3';
+        break;
+
+      default:
+        '';
+    }
+    queryText = filterString;
+    filter = '&q=$queryText&cid=$cid&lid=$lid&jid=$jid&for_scroll=yes';
+  }
+
+  String filter = '&q=&cid=&lid=&jid=&for_scroll=yes';
+  String queryText = '';
 
   String categoryValue = 'ყველა კატეგორია';
   String locationValue = 'ნებისმიერ ადგილას';
@@ -132,12 +280,24 @@ class _HomeScreenState extends State<HomeScreen> {
     'ტრენინგები',
   ];
 
-  Future<void> searchForAds() async {
+  void updateFilterValues() {
+    setState(() {
+      selectedFilter[0] = categoryValue;
+      selectedFilter[1] = locationValue;
+      selectedFilter[2] = jobTypeValue;
+    });
+  }
+
+  Future<void> searchForAds(String filterString) async {
+    updateFilterValues();
+    setFilter(
+        filterString, selectedFilter[0], selectedFilter[1], selectedFilter[2]);
+    Navigator.pop(context);
     _pagingController.itemList = [];
     await _fetchPage(0);
-
-    Navigator.pop(context);
   }
+
+  var textFieldKey = GlobalKey<FormFieldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +330,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   [
                     TextFormField(
+                      key: textFieldKey,
+                      initialValue: queryText,
                       decoration: InputDecoration(
                           labelText: 'საძიებო სიტყვა',
                           labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
@@ -182,14 +344,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     DropdownButtonFormField(
                         isExpanded: true,
-                        style: GoogleFonts.notoSansGeorgian().copyWith(
-                            overflow: TextOverflow.ellipsis, fontSize: 15),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             labelText: 'კატეგორია',
-                            labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
-                                overflow: TextOverflow.ellipsis, fontSize: 15),
                             helperMaxLines: 1,
-                            border: const OutlineInputBorder()),
+                            border: OutlineInputBorder()),
                         value: categoryValue,
                         items: category.map((String items) {
                           return DropdownMenuItem(
@@ -251,19 +409,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       height: 35,
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        height: 45,
-                        child: MyOutlineButton(
-                          onPressed: () {
-                            searchForAds();
-                          },
-                          borderColor: Theme.of(context).dividerColor,
-                          child: const Text('ძებნა'),
-                        ),
-                      ),
-                    )
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 45,
+                            child: MyOutlineButton(
+                              onPressed: () {
+                                searchForAds(textFieldKey.currentState!.value);
+                              },
+                              borderColor: Theme.of(context).dividerColor,
+                              child: const Icon(Icons.undo),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            child: MyOutlineButton(
+                              onPressed: () {
+                                searchForAds(textFieldKey.currentState!.value);
+                              },
+                              borderColor: Theme.of(context).dividerColor,
+                              child: const Text('ძებნა'),
+                            ),
+                          )
+                        ])
                   ],
                   GlobalKey());
             },
@@ -279,10 +448,71 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      appBar: AppBar(title: const Text('Vacancy Scraper')),
+      appBar: buildAppBar(),
       body: RefreshIndicator(onRefresh: _refresh, child: buildPagedListView()),
     );
   }
+
+  var selectedFilter = ['', '', ''];
+
+  AppBar buildAppBar() => AppBar(
+        title: const Text('Vacancy Scraper'),
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(45),
+            child: Container(
+              height: 45,
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                children: [
+                  if (queryText != '')
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12, right: 8.0),
+                      child: FilterChip(
+                        label: Text(queryText),
+                        selected: true,
+                        onSelected: (value) {
+                          return;
+                        },
+                      ),
+                    ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: queryText != '' ? 0 : 12, right: 8.0),
+                    child: FilterChip(
+                      label: Text(selectedFilter[0]),
+                      selected: true,
+                      onSelected: (value) {
+                        return;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: FilterChip(
+                      label: Text(selectedFilter[1]),
+                      selected: true,
+                      onSelected: (value) {
+                        return;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: FilterChip(
+                      label: Text(selectedFilter[2]),
+                      selected: true,
+                      onSelected: (value) {
+                        return;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )),
+      );
 
   final _scrollController = ScrollController();
 
@@ -293,10 +523,23 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollController: _scrollController,
       builderDelegate: PagedChildBuilderDelegate<Announcement>(
         noItemsFoundIndicatorBuilder: (context) => Container(
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           height: MediaQuery.of(context).size.height,
           width: double.infinity,
         ),
+        noMoreItemsIndicatorBuilder: (context) {
+          return Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            height: 200,
+            margin: const EdgeInsets.only(bottom: 70),
+            width: double.infinity,
+            child: Center(
+                child: Text(
+              'სიის დასასრული 📝',
+              style: GoogleFonts.notoSansGeorgian(fontSize: 20),
+            )),
+          );
+        },
         itemBuilder: (context, item, index) => OpenContainer(
           closedColor: Theme.of(context).canvasColor,
           closedElevation: 0,
