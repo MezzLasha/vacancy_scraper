@@ -494,7 +494,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Icon(
                                   Icons.close,
                                   size: 17,
-                                  color: Theme.of(context).indicatorColor,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
                                 ),
                                 const SizedBox(
                                   width: 8,
@@ -526,7 +528,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Icon(
                                   Icons.close,
                                   size: 17,
-                                  color: Theme.of(context).indicatorColor,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
                                 ),
                                 const SizedBox(
                                   width: 8,
@@ -557,7 +561,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Icon(
                                   Icons.close,
                                   size: 17,
-                                  color: Theme.of(context).indicatorColor,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
                                 ),
                                 const SizedBox(
                                   width: 8,
@@ -588,7 +594,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Icon(
                                   Icons.close,
                                   size: 17,
-                                  color: Theme.of(context).indicatorColor,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
                                 ),
                                 const SizedBox(
                                   width: 8,

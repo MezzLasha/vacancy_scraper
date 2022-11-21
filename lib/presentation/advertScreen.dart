@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/myCustomWidgets.dart';
+import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
 
 class AdvertScreen extends StatefulWidget {
@@ -86,30 +87,118 @@ class _AdvertScreenState extends State<AdvertScreen> {
               detailedAd = snapshot.data!;
 
               return SingleChildScrollView(
-                child: Html(
-                  data: detailedAd.description,
-                  onLinkTap: (url, _, attributes, element) {
-                    if (url == null) {
-                      showSnackBar(context, 'მოხდა შეცდომა! ');
-                      return;
-                    }
-                    if (url.startsWith('/en/ads/')) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AdvertScreen(
-                                    announcement: widget.announcement.copyWith(
-                                        jobLink:
-                                            ('https://jobs.ge${detailedAd.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
-                                                .replaceAll('&amp;', '&')),
-                                  )));
-                    }
-                    if (url.startsWith('http')) {
-                      launchWebUrl(context, url);
-                    } else {
-                      openIntent(context, url);
-                    }
-                  },
+                child: Column(
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.only(left: 10),
+                        alignment: Alignment.centerLeft,
+                        child: adBlurBanner(detailedAd.imageUrl)),
+                    Html(
+                      data: detailedAd.description,
+                      onLinkTap: (url, _, attributes, element) {
+                        if (url == null) {
+                          showSnackBar(context, 'მოხდა შეცდომა! ');
+                          return;
+                        }
+                        if (url.startsWith('/en/ads/')) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdvertScreen(
+                                        announcement: widget.announcement.copyWith(
+                                            jobLink:
+                                                ('https://jobs.ge${detailedAd.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
+                                                    .replaceAll('&amp;', '&')),
+                                      )));
+                        }
+                        if (url.startsWith('http')) {
+                          launchWebUrl(context, url);
+                        } else {
+                          openIntent(context, url);
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    if (detailedAd.attachmentUrl != '')
+                      Card(
+                        margin: const EdgeInsets.all(12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'მიმაგრებული ფაილი',
+                                    style: GoogleFonts.notoSansGeorgian(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.attach_file,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: InkWell(
+                                  onTap: () {
+                                    launchWebUrl(
+                                        context, detailedAd.attachmentUrl);
+                                  },
+                                  onLongPress: () {
+                                    final snackbar = SnackBar(
+                                        content: Text(
+                                          detailedAd.attachmentUrl,
+                                          style: GoogleFonts.notoSans(
+                                            color: Theme.of(context)
+                                                .primaryTextTheme
+                                                .labelMedium!
+                                                .color,
+                                          ),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: Theme.of(context)
+                                            .dialogBackgroundColor,
+                                        action: SnackBarAction(
+                                            label: 'გახსნა',
+                                            textColor: Theme.of(context)
+                                                .primaryTextTheme
+                                                .displayMedium!
+                                                .color,
+                                            onPressed: () {
+                                              launchWebUrl(context,
+                                                  detailedAd.attachmentUrl);
+                                            }));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackbar);
+                                  },
+                                  child: Text(
+                                    detailedAd.attachmentUrl
+                                        .split('jobs/')[1]
+                                        .split('/')[1],
+                                    style: GoogleFonts.notoSans(
+                                        color: Colors.blue),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                  ],
                 ),
               );
             } else {

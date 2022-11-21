@@ -206,4 +206,3 @@ Future<void> launchWebUrl(BuildContext context, String url) async {
     debugPrint(e.toString());
   }
 }
-

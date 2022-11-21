@@ -11,6 +11,7 @@ class Announcement {
   String startDate;
   String endDate;
   String imageUrl;
+  String attachmentUrl;
   String jobLink;
   Announcement({
     required this.jobProvider,
@@ -22,6 +23,7 @@ class Announcement {
     required this.startDate,
     required this.endDate,
     required this.imageUrl,
+    required this.attachmentUrl,
     required this.jobLink,
   });
 
@@ -35,6 +37,7 @@ class Announcement {
     String? startDate,
     String? endDate,
     String? imageUrl,
+    String? attachmentUrl,
     String? jobLink,
   }) {
     return Announcement(
@@ -47,6 +50,7 @@ class Announcement {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       imageUrl: imageUrl ?? this.imageUrl,
+      attachmentUrl: attachmentUrl ?? this.attachmentUrl,
       jobLink: jobLink ?? this.jobLink,
     );
   }
@@ -62,6 +66,7 @@ class Announcement {
       'startDate': startDate,
       'endDate': endDate,
       'imageUrl': imageUrl,
+      'attachmentUrl': attachmentUrl,
       'jobLink': jobLink,
     };
   }
@@ -77,6 +82,7 @@ class Announcement {
       startDate: map['startDate'] as String,
       endDate: map['endDate'] as String,
       imageUrl: map['imageUrl'] as String,
+      attachmentUrl: map['attachmentUrl'] as String,
       jobLink: map['jobLink'] as String,
     );
   }
@@ -88,36 +94,39 @@ class Announcement {
 
   @override
   String toString() {
-    return 'Announcement(jobProvider: $jobProvider, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, jobLink: $jobLink)';
+    return 'Announcement(jobProvider: $jobProvider, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
   }
 
   @override
   bool operator ==(covariant Announcement other) {
     if (identical(this, other)) return true;
-
-    return other.jobProvider == jobProvider &&
-        other.jobId == jobId &&
-        other.jobName == jobName &&
-        other.jobRegion == jobRegion &&
-        other.description == description &&
-        other.salary == salary &&
-        other.startDate == startDate &&
-        other.endDate == endDate &&
-        other.imageUrl == imageUrl &&
-        other.jobLink == jobLink;
+  
+    return 
+      other.jobProvider == jobProvider &&
+      other.jobId == jobId &&
+      other.jobName == jobName &&
+      other.jobRegion == jobRegion &&
+      other.description == description &&
+      other.salary == salary &&
+      other.startDate == startDate &&
+      other.endDate == endDate &&
+      other.imageUrl == imageUrl &&
+      other.attachmentUrl == attachmentUrl &&
+      other.jobLink == jobLink;
   }
 
   @override
   int get hashCode {
     return jobProvider.hashCode ^
-        jobId.hashCode ^
-        jobName.hashCode ^
-        jobRegion.hashCode ^
-        description.hashCode ^
-        salary.hashCode ^
-        startDate.hashCode ^
-        endDate.hashCode ^
-        imageUrl.hashCode ^
-        jobLink.hashCode;
+      jobId.hashCode ^
+      jobName.hashCode ^
+      jobRegion.hashCode ^
+      description.hashCode ^
+      salary.hashCode ^
+      startDate.hashCode ^
+      endDate.hashCode ^
+      imageUrl.hashCode ^
+      attachmentUrl.hashCode ^
+      jobLink.hashCode;
   }
 }

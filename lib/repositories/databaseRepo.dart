@@ -95,6 +95,7 @@ class DatabaseRepository {
           description: description,
           salary: salary,
           startDate: startDate,
+          attachmentUrl: '',
           endDate: endDate,
           imageUrl: imageUrl,
           jobLink: jobLink));
@@ -111,7 +112,15 @@ class DatabaseRepository {
     Element dtable = document.getElementsByClassName('dtable').first;
     Element tbody = dtable.getElementsByTagName('tbody').first;
 
-    Element descriptionTr = tbody.getElementsByTagName('tr')[3];
+    Element descriptionTr = tbody.getElementsByTagName('tr').last;
+    String attachedFileUrl = '';
+    if (tbody.text.contains('Attached File:')) {
+      Element attachedTr = tbody.getElementsByTagName('tr')[3];
+      Element attachedA = attachedTr.getElementsByTagName('a').first;
+      attachedFileUrl =
+          'https://jobs.ge${attachedA.attributes.entries.firstWhere((element) => element.key == 'href').value}';
+    }
+
     Element providerTr = tbody.getElementsByTagName('tr')[1];
 
     Element providerB = providerTr.getElementsByTagName('b').first;
@@ -124,6 +133,7 @@ class DatabaseRepository {
     return oldAnnouncement.copyWith(
         jobProvider: jobProv,
         description: descriptionTr.outerHtml,
+        attachmentUrl: attachedFileUrl,
         jobId: oldAnnouncement.jobLink.split('id=')[1]);
   }
 }
