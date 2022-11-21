@@ -297,6 +297,14 @@ class _HomeScreenState extends State<HomeScreen> {
     await _fetchPage(0);
   }
 
+  Future<void> searchForAdsFromMainScreen(String filterString) async {
+    updateFilterValues();
+    setFilter(
+        filterString, selectedFilter[0], selectedFilter[1], selectedFilter[2]);
+    _pagingController.itemList = [];
+    await _fetchPage(0);
+  }
+
   var textFieldKey = GlobalKey<FormFieldState>();
 
   @override
@@ -416,7 +424,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 45,
                             child: MyOutlineButton(
                               onPressed: () {
-                                searchForAds(textFieldKey.currentState!.value);
+                                setState(() {
+                                  jobTypeValue = 'ყველა ვაკანსია';
+                                  locationValue = 'ნებისმიერ ადგილას';
+                                  categoryValue = 'ყველა კატეგორია';
+                                  queryText = '';
+                                });
+                                searchForAds('');
                               },
                               borderColor: Theme.of(context).dividerColor,
                               child: const Icon(Icons.undo),
@@ -457,61 +471,152 @@ class _HomeScreenState extends State<HomeScreen> {
 
   AppBar buildAppBar() => AppBar(
         title: const Text('Vacancy Scraper'),
-        bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(45),
-            child: Container(
-              height: 45,
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: [
-                  if (queryText != '')
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12, right: 8.0),
-                      child: FilterChip(
-                        label: Text(queryText),
-                        selected: true,
-                        onSelected: (value) {
-                          return;
-                        },
-                      ),
-                    ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: queryText != '' ? 0 : 12, right: 8.0),
-                    child: FilterChip(
-                      label: Text(selectedFilter[0]),
-                      selected: true,
-                      onSelected: (value) {
-                        return;
-                      },
-                    ),
+        bottom: (queryText != '' ||
+                selectedFilter[0] != 'ყველა კატეგორია' ||
+                selectedFilter[1] != 'ნებისმიერ ადგილას' ||
+                selectedFilter[2] != 'ყველა ვაკანსია')
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(45),
+                child: Container(
+                  height: 45,
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    children: [
+                      if (queryText != '')
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 8.0),
+                          child: FilterChip(
+                            label: Row(
+                              children: [
+                                Icon(
+                                  Icons.close,
+                                  size: 17,
+                                  color: Theme.of(context).indicatorColor,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  queryText,
+                                  style: GoogleFonts.notoSansGeorgian(
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 0),
+                            selected: true,
+                            showCheckmark: false,
+                            onSelected: (value) {
+                              queryText = '';
+                              searchForAdsFromMainScreen(queryText);
+                            },
+                          ),
+                        ),
+                      if (selectedFilter[0] != 'ყველა კატეგორია')
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: queryText != '' ? 0 : 12, right: 8.0),
+                          child: FilterChip(
+                            label: Row(
+                              children: [
+                                Icon(
+                                  Icons.close,
+                                  size: 17,
+                                  color: Theme.of(context).indicatorColor,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  selectedFilter[0],
+                                  style: GoogleFonts.notoSansGeorgian(
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 0),
+                            selected: true,
+                            showCheckmark: false,
+                            onSelected: (value) {
+                              categoryValue = 'ყველა კატეგორია';
+                              searchForAdsFromMainScreen(queryText);
+                            },
+                          ),
+                        ),
+                      if (selectedFilter[1] != 'ნებისმიერ ადგილას')
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: FilterChip(
+                            label: Row(
+                              children: [
+                                Icon(
+                                  Icons.close,
+                                  size: 17,
+                                  color: Theme.of(context).indicatorColor,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  selectedFilter[1],
+                                  style: GoogleFonts.notoSansGeorgian(
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 0),
+                            selected: true,
+                            showCheckmark: false,
+                            onSelected: (value) {
+                              locationValue = 'ნებისმიერ ადგილას';
+                              searchForAdsFromMainScreen(queryText);
+                            },
+                          ),
+                        ),
+                      if (selectedFilter[2] != 'ყველა ვაკანსია')
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: FilterChip(
+                            label: Row(
+                              children: [
+                                Icon(
+                                  Icons.close,
+                                  size: 17,
+                                  color: Theme.of(context).indicatorColor,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  selectedFilter[2],
+                                  style: GoogleFonts.notoSansGeorgian(
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 0),
+                            selected: true,
+                            showCheckmark: false,
+                            onSelected: (value) {
+                              jobTypeValue = 'ყველა ვაკანსია';
+                              searchForAdsFromMainScreen(queryText);
+                            },
+                          ),
+                        ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: FilterChip(
-                      label: Text(selectedFilter[1]),
-                      selected: true,
-                      onSelected: (value) {
-                        return;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: FilterChip(
-                      label: Text(selectedFilter[2]),
-                      selected: true,
-                      onSelected: (value) {
-                        return;
-                      },
-                    ),
-                  ),
-                ],
+                ))
+            : const PreferredSize(
+                preferredSize: Size.fromHeight(0),
+                child: SizedBox.shrink(),
               ),
-            )),
       );
 
   final _scrollController = ScrollController();
@@ -551,7 +656,14 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => tap(),
               child: Ink(
                 padding: const EdgeInsets.only(left: 16, right: 16),
-                height: 56,
+                height: 70,
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).dividerColor.withOpacity(0.2),
+                    width: 1.0,
+                  ),
+                )),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

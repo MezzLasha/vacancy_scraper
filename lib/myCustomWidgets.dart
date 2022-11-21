@@ -1,12 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scale_button/scale_button.dart' as scl;
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 void showSnackBar(BuildContext context, String message) {
   final snackbar = SnackBar(
     content: Text(message),
-    behavior: SnackBarBehavior.floating,
+    behavior: SnackBarBehavior.fixed,
   );
   ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }
@@ -66,8 +68,6 @@ class ScalingButton extends StatelessWidget {
     );
   }
 }
-
-mixin ScaleButton {}
 
 class DragHandlePill extends StatelessWidget {
   final Color? color;
@@ -167,3 +167,43 @@ Future<dynamic> showMyBottomDialog(
             ));
       });
 }
+
+Future<void> openIntent(BuildContext context, String _url) async {
+  if (!await url_launcher.launchUrl(Uri.parse(_url))) {
+    showSnackBar(context, 'შეცდომა!');
+    throw 'Could not launch $_url';
+  }
+}
+
+Future<void> launchWebUrl(BuildContext context, String url) async {
+  final theme = Theme.of(context);
+  try {
+    await launch(
+      url,
+      customTabsOption: CustomTabsOption(
+        enableInstantApps: true,
+        toolbarColor: theme.primaryColor,
+        enableDefaultShare: true,
+        enableUrlBarHiding: true,
+        showPageTitle: true,
+        extraCustomTabs: const <String>[
+          // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
+          'org.mozilla.firefox',
+          // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
+          'com.microsoft.emmx',
+        ],
+      ),
+      safariVCOption: SafariViewControllerOption(
+        preferredBarTintColor: theme.primaryColor,
+        preferredControlTintColor: Colors.white,
+        barCollapsingEnabled: true,
+        entersReaderIfAvailable: false,
+        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+      ),
+    );
+  } catch (e) {
+    // An exception is thrown if browser app is not installed on Android device.
+    debugPrint(e.toString());
+  }
+}
+

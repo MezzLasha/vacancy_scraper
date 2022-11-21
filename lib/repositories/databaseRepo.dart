@@ -107,6 +107,7 @@ class DatabaseRepository {
     final response = await http.get(Uri.parse(oldAnnouncement.jobLink));
 
     var document = parse(response.body);
+
     Element dtable = document.getElementsByClassName('dtable').first;
     Element tbody = dtable.getElementsByTagName('tbody').first;
 
@@ -116,7 +117,6 @@ class DatabaseRepository {
     Element providerB = providerTr.getElementsByTagName('b').first;
 
     String jobProv = providerB.text.replaceAll('\n', '');
-    print(jobProv);
     while (jobProv.startsWith('\t')) {
       jobProv = jobProv.substring(1);
     }
