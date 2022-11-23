@@ -39,8 +39,9 @@ class MyApp extends StatelessWidget {
         create: (context) =>
             DatabaseBloc(RepositoryProvider.of<DatabaseRepository>(context)),
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
-          title: 'Flutter Demo',
+          title: 'ვაკანსიები',
           theme: ThemeData(
               useMaterial3: true,
               textTheme: GoogleFonts.notoSansGeorgianTextTheme()),
