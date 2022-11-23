@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -470,7 +472,55 @@ class _HomeScreenState extends State<HomeScreen> {
   var selectedFilter = ['', '', ''];
 
   AppBar buildAppBar() => AppBar(
-        title: const Text('Vacancy Scraper'),
+        title: Text(
+          'ვაკანსიები',
+          style: GoogleFonts.notoSansGeorgian(),
+        ),
+        actions: [
+          PopupMenuButton(itemBuilder: (context) {
+            return [
+              const PopupMenuItem<int>(
+                value: 1,
+                child: Text("წყარო"),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text("Source Code"),
+                    FaIcon(FontAwesomeIcons.github)
+                  ],
+                ),
+              ),
+            ];
+          }, onSelected: (value) {
+            if (value == 1) {
+              showAboutDialog(
+                  context: context,
+                  applicationName: 'ვაკანსიები',
+                  applicationIcon: Image.asset('assets\\icon\\ic_launcher.png'),
+                  children: [
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: 'განცხადებების წყარო: ',
+                            style: GoogleFonts.notoSansGeorgian()),
+                        TextSpan(
+                            text: 'jobs.ge',
+                            style: GoogleFonts.notoSans(color: Colors.blue),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () =>
+                                  launchWebUrl(context, 'https://jobs.ge/')),
+                      ]),
+                    ),
+                  ]);
+            } else if (value == 2) {
+              launchWebUrl(
+                  context, 'https://github.com/MezzLasha/vacancy_scraper');
+            }
+          }),
+        ],
         bottom: (queryText != '' ||
                 selectedFilter[0] != 'ყველა კატეგორია' ||
                 selectedFilter[1] != 'ნებისმიერ ადგილას' ||
