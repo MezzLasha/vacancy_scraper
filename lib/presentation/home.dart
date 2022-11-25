@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/myCustomWidgets.dart';
@@ -499,7 +498,9 @@ class _HomeScreenState extends State<HomeScreen> {
               showAboutDialog(
                   context: context,
                   applicationName: 'ვაკანსიები',
-                  applicationIcon: Image.asset('assets\\icon\\ic_launcher.png'),
+                  applicationIcon: SizedBox(
+                      height: 52,
+                      child: Image.asset('assets/icon/ic_launcher.png')),
                   children: [
                     RichText(
                       text: TextSpan(children: [
@@ -508,10 +509,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: GoogleFonts.notoSansGeorgian()),
                         TextSpan(
                             text: 'jobs.ge',
-                            style: GoogleFonts.notoSans(color: Colors.blue),
+                            style: GoogleFonts.notoSans(
+                                color: Theme.of(context).colorScheme.tertiary),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () =>
                                   launchWebUrl(context, 'https://jobs.ge/')),
+                        TextSpan(
+                            text: '\n\nLasha Mezvrishvili',
+                            style: GoogleFonts.notoSans(
+                                color: Theme.of(context).colorScheme.tertiary),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => launchWebUrl(context,
+                                  'https://www.linkedin.com/in/lashamezz/')),
                       ]),
                     ),
                   ]);
