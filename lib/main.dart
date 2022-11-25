@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
           title: 'ვაკანსიები',
           theme: ThemeData(
               useMaterial3: true,
+              splashFactory: InkSparkle.splashFactory,
               textTheme: GoogleFonts.notoSansGeorgianTextTheme()),
           darkTheme: ThemeData.dark(useMaterial3: true),
           home: const HomeScreen(),

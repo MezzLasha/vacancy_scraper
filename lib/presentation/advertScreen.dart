@@ -55,6 +55,33 @@ class _AdvertScreenState extends State<AdvertScreen> {
         scm = ScaffoldMessenger.of(context).showMaterialBanner(banner);
         await Future.delayed(const Duration(seconds: 10));
         scm!.close.call();
+      } else if (value.description.contains('რუსულ ენაზე')) {
+        var banner = MaterialBanner(
+            content: Text(
+              'Русская версия',
+              style: GoogleFonts.notoSans(),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    if (scm != null) {
+                      scm!.close.call();
+                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AdvertScreen(
+                                  announcement: widget.announcement.copyWith(
+                                      jobLink:
+                                          ('https://jobs.ge${value.description.split('">რუსულ ენაზე')[0].split('href="')[1]}')
+                                              .replaceAll('&amp;', '&')),
+                                )));
+                  },
+                  child: const Text('войти'))
+            ]);
+        scm = ScaffoldMessenger.of(context).showMaterialBanner(banner);
+        await Future.delayed(const Duration(seconds: 10));
+        scm!.close.call();
       }
     });
     super.initState();

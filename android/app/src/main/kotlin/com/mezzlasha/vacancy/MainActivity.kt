@@ -1,4 +1,4 @@
-package com.example.vacancy_scraper
+package com.mezzlasha.vacancy
 
 import io.flutter.embedding.android.FlutterActivity
 

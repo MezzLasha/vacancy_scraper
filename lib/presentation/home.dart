@@ -712,6 +712,7 @@ class _HomeScreenState extends State<HomeScreen> {
           closedBuilder: (context, tap) {
             return InkWell(
               onTap: () => tap(),
+              splashFactory: InkSparkle.splashFactory,
               child: Ink(
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 height: 70,
@@ -755,8 +756,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
 Widget adBlurBanner(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {
-    return Image.network(
-      'https://jobs.ge$imageUrl',
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(5)),
+      child: Container(
+        constraints:
+            const BoxConstraints(maxHeight: 50, minWidth: 60, maxWidth: 60),
+        child: Image.network(
+          'https://jobs.ge$imageUrl',
+          fit: BoxFit.fitWidth,
+        ),
+      ),
     );
   } else {
     return const SizedBox.shrink();
