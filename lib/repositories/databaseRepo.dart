@@ -64,7 +64,7 @@ class DatabaseRepository {
       try {
         Element jobRegionElement =
             element.getElementsByTagName('td')[1].getElementsByTagName('i')[0];
-        jobRegion = jobRegionElement.text;
+        jobRegion = jobRegionElement.text.substring(3);
       } catch (e) {}
 
       try {
@@ -73,6 +73,18 @@ class DatabaseRepository {
             .getElementsByTagName('img')[0];
 
         imageUrl = imageUrlElement.attributes.entries.first.value;
+      } catch (e) {}
+
+      /*
+      					
+      */
+
+      try {
+        Element jobProviderElement =
+            element.getElementsByTagName('td')[3].getElementsByTagName('a')[0];
+
+        jobProvider = jobProviderElement.text
+            .substring(8, jobProviderElement.text.length - 6);
       } catch (e) {}
 
       try {

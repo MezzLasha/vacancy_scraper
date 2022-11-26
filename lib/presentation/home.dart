@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:vacancy_scraper/main.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
@@ -775,8 +777,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               splashFactory: InkSparkle.splashFactory,
               child: Ink(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                height: 70,
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, top: 12, bottom: 12),
                 decoration: BoxDecoration(
                     border: Border(
                   bottom: BorderSide(
@@ -789,9 +791,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Flexible(
                       fit: FlexFit.loose,
-                      child: Text(
-                        item.jobName,
-                        style: GoogleFonts.notoSansGeorgian(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            item.jobName,
+                            maxLines: 2,
+                            style: GoogleFonts.notoSansGeorgian(),
+                          ),
+                          ...buildListTileSecondary(item),
+                        ],
                       ),
                     ),
                     advertImage(item.imageUrl),
@@ -813,15 +823,59 @@ class _HomeScreenState extends State<HomeScreen> {
     _pagingController.dispose();
     super.dispose();
   }
+
+  List<Widget> buildListTileSecondary(Announcement item) {
+    if (item.jobRegion != '' && item.jobProvider != '') {
+      return [
+        const SizedBox(
+          height: 12,
+        ),
+        AutoSizeText(
+          '${item.jobProvider} · ${item.jobRegion}',
+          maxLines: 2,
+          style: GoogleFonts.notoSansGeorgian(
+              color: Color.lerp(Theme.of(context).disabledColor,
+                  Theme.of(context).colorScheme.primary, 0.7)),
+        ),
+      ];
+    } else if (item.jobRegion == '' && item.jobProvider != '') {
+      return [
+        const SizedBox(
+          height: 12,
+        ),
+        AutoSizeText(
+          item.jobProvider,
+          maxLines: 2,
+          style: GoogleFonts.notoSansGeorgian(
+              color: Color.lerp(Theme.of(context).disabledColor,
+                  Theme.of(context).colorScheme.primary, 0.7)),
+        ),
+      ];
+    } else if (item.jobRegion != '' && item.jobProvider == '') {
+      return [
+        const SizedBox(
+          height: 12,
+        ),
+        AutoSizeText(
+          item.jobProvider,
+          maxLines: 2,
+          style: GoogleFonts.notoSansGeorgian(
+              color: Color.lerp(Theme.of(context).disabledColor,
+                  Theme.of(context).colorScheme.primary, 0.7)),
+        ),
+      ];
+    } else {
+      return [const SizedBox()];
+    }
+  }
 }
 
 Widget advertImage(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(5)),
-      child: Container(
-        constraints:
-            const BoxConstraints(maxHeight: 50, minWidth: 60, maxWidth: 60),
+      child: SizedBox(
+        width: 60,
         child: Image.network(
           'https://jobs.ge$imageUrl',
           fit: BoxFit.fitWidth,
