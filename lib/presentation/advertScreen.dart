@@ -4,9 +4,11 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:vacancy_scraper/models/announcement.dart';
-import 'package:vacancy_scraper/myCustomWidgets.dart';
+import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
+
+import '../custom/customTextSelection.dart';
 
 class AdvertScreen extends StatefulWidget {
   final Announcement announcement;
@@ -120,30 +122,41 @@ class _AdvertScreenState extends State<AdvertScreen> {
                         margin: const EdgeInsets.only(left: 10),
                         alignment: Alignment.centerLeft,
                         child: advertImage(detailedAd.imageUrl)),
-                    Html(
-                      data: detailedAd.description,
-                      onLinkTap: (url, _, attributes, element) {
-                        if (url == null) {
-                          showSnackBar(context, 'მოხდა შეცდომა! ');
-                          return;
-                        }
-                        if (url.startsWith('/en/ads/')) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AdvertScreen(
-                                        announcement: widget.announcement.copyWith(
-                                            jobLink:
-                                                ('https://jobs.ge${detailedAd.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
-                                                    .replaceAll('&amp;', '&')),
-                                      )));
-                        }
-                        if (url.startsWith('http')) {
-                          launchWebUrl(context, url);
-                        } else {
-                          openIntent(context, url);
-                        }
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        controller: ScrollController(),
+                        child: SelectableHtml(
+                          selectionControls: MaterialYouTextSelectionControls(),
+                          data: detailedAd.description,
+                          shrinkWrap: true,
+                          onLinkTap: (url, _, attributes, element) {
+                            if (url == null) {
+                              showSnackBar(context, 'მოხდა შეცდომა! ');
+                              return;
+                            }
+                            if (url.startsWith('/en/ads/')) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AdvertScreen(
+                                            announcement: widget.announcement
+                                                .copyWith(
+                                                    jobLink:
+                                                        ('https://jobs.ge${detailedAd.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
+                                                            .replaceAll(
+                                                                '&amp;', '&')),
+                                          )));
+                            }
+                            if (url.startsWith('http')) {
+                              launchWebUrl(context, url);
+                            } else {
+                              openIntent(context, url);
+                            }
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 30,

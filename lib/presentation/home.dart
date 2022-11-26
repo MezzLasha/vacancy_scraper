@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vacancy_scraper/main.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
-import 'package:vacancy_scraper/myCustomWidgets.dart';
+import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
 
@@ -586,6 +586,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
+                            selectedColor:
+                                Theme.of(context).colorScheme.background,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 0),
                             selected: true,
@@ -620,6 +622,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
+                            selectedColor:
+                                Theme.of(context).colorScheme.background,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 0),
                             selected: true,
@@ -653,6 +657,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
+                            selectedColor:
+                                Theme.of(context).colorScheme.background,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 0),
                             selected: true,
@@ -686,6 +692,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
+                            selectedColor:
+                                Theme.of(context).colorScheme.background,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 0),
                             selected: true,

@@ -75,10 +75,6 @@ class DatabaseRepository {
         imageUrl = imageUrlElement.attributes.entries.first.value;
       } catch (e) {}
 
-      /*
-      					
-      */
-
       try {
         Element jobProviderElement =
             element.getElementsByTagName('td')[3].getElementsByTagName('a')[0];
