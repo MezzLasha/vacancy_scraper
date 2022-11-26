@@ -474,9 +474,25 @@ class _HomeScreenState extends State<HomeScreen> {
   var selectedFilter = ['', '', ''];
 
   AppBar buildAppBar() => AppBar(
-        title: Text(
-          'ვაკანსიები',
-          style: GoogleFonts.notoSansGeorgian(),
+        // title: Text(
+        //   'ვაკანსიები',
+        //   style: GoogleFonts.notoSansGeorgian(),
+        // ),
+        titleSpacing: 8,
+        title: Row(
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.recent_actors_outlined,
+              ),
+              iconSize: 30,
+              onPressed: () => _refresh(),
+            ),
+            Text(' ვაკანსიები',
+                style: GoogleFonts.notoSansGeorgian(
+                  fontSize: 16,
+                )),
+          ],
         ),
         actions: [
           PopupMenuButton(itemBuilder: (context) {
