@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -685,9 +686,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox.shrink(),
               ),
       );
-
   final _scrollController = ScrollController();
-
+  var _tapDownPosition;
   Widget buildPagedListView() {
     return PagedListView<int, Announcement>(
       pagingController: _pagingController,
@@ -713,14 +713,66 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
         itemBuilder: (context, item, index) => OpenContainer(
-          closedColor: Theme.of(context).canvasColor,
+          closedColor: Theme.of(context).colorScheme.background,
           closedElevation: 0,
-          middleColor: Theme.of(context).canvasColor,
-          openColor: Theme.of(context).canvasColor,
+          middleColor: Theme.of(context).colorScheme.background,
+          openColor: Theme.of(context).colorScheme.background,
           closedShape: const Border(),
           closedBuilder: (context, tap) {
             return InkWell(
+              onTapDown: (TapDownDetails details) {
+                _tapDownPosition = details.globalPosition;
+              },
               onTap: () => tap(),
+              onLongPress: () async {
+                final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject() as RenderBox;
+
+                showMenu(
+                  context: context,
+                  items: [
+                    PopupMenuItem<int>(
+                      value: 1,
+                      onTap: () async {
+                        await Clipboard.setData(
+                            ClipboardData(text: item.jobLink));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("ბმული"),
+                          Icon(
+                            Icons.link,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // PopupMenuItem<int>(
+                    //   value: 2,
+                    //   onTap: () {
+                    //     tap();
+                    //   },
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       const Text(""),
+                    //       Icon(
+                    //         Icons.open_in_browser,
+                    //         color: Theme.of(context).colorScheme.primary,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                  ],
+                  position: RelativeRect.fromLTRB(
+                    _tapDownPosition.dx,
+                    _tapDownPosition.dy,
+                    overlay.size.width - _tapDownPosition.dx,
+                    overlay.size.height - _tapDownPosition.dy,
+                  ),
+                );
+              },
               splashFactory: InkSparkle.splashFactory,
               child: Ink(
                 padding: const EdgeInsets.only(left: 16, right: 16),
@@ -742,7 +794,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.notoSansGeorgian(),
                       ),
                     ),
-                    adBlurBanner(item.imageUrl),
+                    advertImage(item.imageUrl),
                   ],
                 ),
               ),
@@ -763,7 +815,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Widget adBlurBanner(String imageUrl) {
+Widget advertImage(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(5)),

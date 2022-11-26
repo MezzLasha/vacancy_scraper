@@ -119,7 +119,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
                     Container(
                         margin: const EdgeInsets.only(left: 10),
                         alignment: Alignment.centerLeft,
-                        child: adBlurBanner(detailedAd.imageUrl)),
+                        child: advertImage(detailedAd.imageUrl)),
                     Html(
                       data: detailedAd.description,
                       onLinkTap: (url, _, attributes, element) {

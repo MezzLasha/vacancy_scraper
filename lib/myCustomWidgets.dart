@@ -141,7 +141,8 @@ class MyOutlineButton extends StatelessWidget {
 Future<dynamic> showMyBottomDialog(
     BuildContext context, List<Widget> children, Key formKey) {
   return showModalBottomSheet(
-      constraints: BoxConstraints(maxWidth: 700),
+      constraints: BoxConstraints(
+          maxWidth: 700, maxHeight: MediaQuery.of(context).size.height * 0.8),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
