@@ -30,7 +30,9 @@ class _AdvertScreenState extends State<AdvertScreen> {
   void initState() {
     future = DatabaseRepository().getDetailedAd(widget.announcement);
     future.then((value) async {
-      if (value.description.contains('ინგლისურ ენაზე')) {
+      if (value.description.contains('ინგლისურ ენაზე') &&
+          value.description.contains('იხილეთ ამ განცხადების სრული ტექსტი')) {
+        print(value.description);
         var banner = MaterialBanner(
             content: Text(
               'English Version Found!',
@@ -57,7 +59,8 @@ class _AdvertScreenState extends State<AdvertScreen> {
         scm = ScaffoldMessenger.of(context).showMaterialBanner(banner);
         await Future.delayed(const Duration(seconds: 10));
         scm!.close.call();
-      } else if (value.description.contains('რუსულ ენაზე')) {
+      } else if (value.description.contains('რუსულ ენაზე') &&
+          value.description.contains('იხილეთ ამ განცხადების სრული ტექსტი')) {
         var banner = MaterialBanner(
             content: Text(
               'Русская версия',

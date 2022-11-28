@@ -1,10 +1,14 @@
 import 'dart:ui';
 
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
+
+import 'firebase_options.dart';
 
 // Fictitious brand color.
 final _defaultLightColorScheme =
@@ -12,7 +16,18 @@ final _defaultLightColorScheme =
 
 final _defaultDarkColorScheme = ColorScheme.fromSwatch(
     primarySwatch: Colors.blue, brightness: Brightness.dark);
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (defaultTargetPlatform != TargetPlatform.windows) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  }
+
+  FirebaseCrashlytics.instance.crash();
   runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,

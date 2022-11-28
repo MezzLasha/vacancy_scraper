@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
@@ -81,6 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _refresh() async {
     _pagingController.itemList = [];
+    _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
     await _fetchPage(0);
   }
 
@@ -479,6 +483,7 @@ class _HomeScreenState extends State<HomeScreen> {
         //   style: GoogleFonts.notoSansGeorgian(),
         // ),
         titleSpacing: 8,
+        elevation: 3,
         title: Row(
           children: [
             IconButton(
@@ -505,9 +510,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text("Source Code"),
-                    FaIcon(FontAwesomeIcons.github)
+                  children: [
+                    const Text("Source Code"),
+                    Icon(
+                      FontAwesomeIcons.github,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
                   ],
                 ),
               ),
@@ -725,6 +733,9 @@ class _HomeScreenState extends State<HomeScreen> {
           height: MediaQuery.of(context).size.height,
           width: double.infinity,
         ),
+        firstPageErrorIndicatorBuilder: (context) {
+          return const Text('error');
+        },
         noMoreItemsIndicatorBuilder: (context) {
           return Container(
             color: Theme.of(context).scaffoldBackgroundColor,
