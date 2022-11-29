@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -83,8 +86,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _refresh() async {
     _pagingController.itemList = [];
-    _scrollController.animateTo(0,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+    try {
+      _scrollController.animateTo(0,
+          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+    } catch (e) {
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+    }
     await _fetchPage(0);
   }
 
@@ -430,18 +437,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           SizedBox(
                             height: 45,
-                            child: MyOutlineButton(
-                              onPressed: () {
-                                setState(() {
-                                  jobTypeValue = 'ყველა ვაკანსია';
-                                  locationValue = 'ნებისმიერ ადგილას';
-                                  categoryValue = 'ყველა კატეგორია';
-                                  queryText = '';
-                                });
-                                searchForAds('');
-                              },
-                              borderColor: Theme.of(context).dividerColor,
-                              child: const Icon(Icons.undo),
+                            child: Tooltip(
+                              message: 'ფილტრის გასუფთავება',
+                              child: MyOutlineButton(
+                                onPressed: () {
+                                  setState(() {
+                                    jobTypeValue = 'ყველა ვაკანსია';
+                                    locationValue = 'ნებისმიერ ადგილას';
+                                    categoryValue = 'ყველა კატეგორია';
+                                    queryText = '';
+                                  });
+                                  searchForAds('');
+                                },
+                                borderColor: Theme.of(context).dividerColor,
+                                child: const Icon(Icons.delete_outlined),
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -475,13 +485,68 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget buildErrorPage(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      height: MediaQuery.of(context).size.height - kToolbarHeight,
+      width: MediaQuery.of(context).size.width,
+      child: Align(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.wifi_off_outlined,
+              size: 36,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Text('განცხადებები ვერ მოიძებნა!',
+                style: GoogleFonts.notoSansGeorgian()),
+            const SizedBox(
+              height: 15,
+            ),
+            InkWell(
+              onTap: () async {
+                AndroidIntent intent = const AndroidIntent(
+                  action: 'android.settings.WIFI_SETTINGS',
+                );
+                await intent.launch();
+              },
+              splashFactory: InkSparkle.splashFactory,
+              splashColor:
+                  Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(50),
+              child: Ink(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  'შეამოწმეთ კავშირი ინტერნეტთან',
+                  style: GoogleFonts.notoSansGeorgian(
+                      fontSize: 15,
+                      color: Theme.of(context).colorScheme.tertiary),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 75,
+            ),
+            SizedBox(
+              height: 45,
+              child: OutlinedButton.icon(
+                  onPressed: _refresh,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('ან სცადეთ ახლიდან')),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   var selectedFilter = ['', '', ''];
 
   AppBar buildAppBar() => AppBar(
-        // title: Text(
-        //   'ვაკანსიები',
-        //   style: GoogleFonts.notoSansGeorgian(),
-        // ),
         titleSpacing: 8,
         elevation: 3,
         title: Row(
@@ -529,27 +594,56 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 52,
                       child: Image.asset('assets/icon/ic_launcher.png')),
                   children: [
-                    RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                            text: 'განცხადებების წყარო: ',
-                            style: GoogleFonts.notoSansGeorgian()),
-                        TextSpan(
-                            text: 'jobs.ge',
-                            style: GoogleFonts.notoSans(
-                                color: Theme.of(context).colorScheme.tertiary),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () =>
-                                  launchWebUrl(context, 'https://jobs.ge/')),
-                        TextSpan(
-                            text: '\n\nLasha Mezvrishvili',
-                            style: GoogleFonts.notoSans(
-                                color: Theme.of(context).colorScheme.tertiary),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => launchWebUrl(context,
-                                  'https://www.linkedin.com/in/lashamezz/')),
-                      ]),
-                    ),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              'განცხადებების წყარო: ',
+                            ),
+                            InkWell(
+                              onTap: () =>
+                                  launchWebUrl(context, 'https://jobs.ge/'),
+                              splashFactory: InkSparkle.splashFactory,
+                              splashColor: Theme.of(context)
+                                  .colorScheme
+                                  .tertiary
+                                  .withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(50),
+                              child: Ink(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  'Jobs.ge',
+                                  style: GoogleFonts.notoSans(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () => launchWebUrl(
+                              context, 'https://github.com/MezzLasha/'),
+                          splashFactory: InkSparkle.splashFactory,
+                          splashColor: Theme.of(context)
+                              .colorScheme
+                              .tertiary
+                              .withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(50),
+                          child: Ink(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              'Lasha Mezvrishvili',
+                              style: GoogleFonts.notoSans(
+                                  color:
+                                      Theme.of(context).colorScheme.tertiary),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   ]);
             } else if (value == 2) {
               launchWebUrl(
@@ -734,7 +828,10 @@ class _HomeScreenState extends State<HomeScreen> {
           width: double.infinity,
         ),
         firstPageErrorIndicatorBuilder: (context) {
-          return const Text('error');
+          return buildErrorPage(context);
+        },
+        newPageErrorIndicatorBuilder: (context) {
+          return buildErrorPage(context);
         },
         noMoreItemsIndicatorBuilder: (context) {
           return Container(

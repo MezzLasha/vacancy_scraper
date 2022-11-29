@@ -6,6 +6,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 
 import 'firebase_options.dart';
@@ -50,6 +51,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       return MaterialApp(
@@ -58,10 +61,12 @@ class MyApp extends StatelessWidget {
         title: 'ვაკანსიები',
         theme: ThemeData(
           colorScheme: lightDynamic ?? _defaultLightColorScheme,
+          fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
           useMaterial3: true,
         ),
         darkTheme: ThemeData(
           colorScheme: darkDynamic ?? _defaultDarkColorScheme,
+          fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
           useMaterial3: true,
         ),
         home: const HomeScreen(),
