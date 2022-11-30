@@ -89,9 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       _scrollController.animateTo(0,
           duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
-    } catch (e) {
-      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
-    }
+    } catch (_) {}
     await _fetchPage(0);
   }
 
