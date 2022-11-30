@@ -7,7 +7,9 @@ class Announcement {
   String jobName;
   String jobRegion;
   String description;
-  String salary;
+  bool salary;
+  bool newAdvert;
+  bool aboutToExpire;
   String startDate;
   String endDate;
   String imageUrl;
@@ -20,6 +22,8 @@ class Announcement {
     required this.jobRegion,
     required this.description,
     required this.salary,
+    required this.newAdvert,
+    required this.aboutToExpire,
     required this.startDate,
     required this.endDate,
     required this.imageUrl,
@@ -33,7 +37,9 @@ class Announcement {
     String? jobName,
     String? jobRegion,
     String? description,
-    String? salary,
+    bool? salary,
+    bool? newAdvert,
+    bool? almostExpriedAdvert,
     String? startDate,
     String? endDate,
     String? imageUrl,
@@ -47,6 +53,8 @@ class Announcement {
       jobRegion: jobRegion ?? this.jobRegion,
       description: description ?? this.description,
       salary: salary ?? this.salary,
+      newAdvert: newAdvert ?? this.newAdvert,
+      aboutToExpire: almostExpriedAdvert ?? this.aboutToExpire,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -63,6 +71,8 @@ class Announcement {
       'jobRegion': jobRegion,
       'description': description,
       'salary': salary,
+      'newAdvert': newAdvert,
+      'almostExpriedAdvert': aboutToExpire,
       'startDate': startDate,
       'endDate': endDate,
       'imageUrl': imageUrl,
@@ -78,7 +88,9 @@ class Announcement {
       jobName: map['jobName'] as String,
       jobRegion: map['jobRegion'] as String,
       description: map['description'] as String,
-      salary: map['salary'] as String,
+      salary: map['salary'] as bool,
+      newAdvert: map['newAdvert'] as bool,
+      aboutToExpire: map['almostExpriedAdvert'] as bool,
       startDate: map['startDate'] as String,
       endDate: map['endDate'] as String,
       imageUrl: map['imageUrl'] as String,
@@ -94,39 +106,42 @@ class Announcement {
 
   @override
   String toString() {
-    return 'Announcement(jobProvider: $jobProvider, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
+    return 'Announcement(jobProvider: $jobProvider, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, newAdvert: $newAdvert, almostExpriedAdvert: $aboutToExpire, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
   }
 
   @override
   bool operator ==(covariant Announcement other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.jobProvider == jobProvider &&
-      other.jobId == jobId &&
-      other.jobName == jobName &&
-      other.jobRegion == jobRegion &&
-      other.description == description &&
-      other.salary == salary &&
-      other.startDate == startDate &&
-      other.endDate == endDate &&
-      other.imageUrl == imageUrl &&
-      other.attachmentUrl == attachmentUrl &&
-      other.jobLink == jobLink;
+
+    return other.jobProvider == jobProvider &&
+        other.jobId == jobId &&
+        other.jobName == jobName &&
+        other.jobRegion == jobRegion &&
+        other.description == description &&
+        other.salary == salary &&
+        other.newAdvert == newAdvert &&
+        other.aboutToExpire == aboutToExpire &&
+        other.startDate == startDate &&
+        other.endDate == endDate &&
+        other.imageUrl == imageUrl &&
+        other.attachmentUrl == attachmentUrl &&
+        other.jobLink == jobLink;
   }
 
   @override
   int get hashCode {
     return jobProvider.hashCode ^
-      jobId.hashCode ^
-      jobName.hashCode ^
-      jobRegion.hashCode ^
-      description.hashCode ^
-      salary.hashCode ^
-      startDate.hashCode ^
-      endDate.hashCode ^
-      imageUrl.hashCode ^
-      attachmentUrl.hashCode ^
-      jobLink.hashCode;
+        jobId.hashCode ^
+        jobName.hashCode ^
+        jobRegion.hashCode ^
+        description.hashCode ^
+        salary.hashCode ^
+        newAdvert.hashCode ^
+        aboutToExpire.hashCode ^
+        startDate.hashCode ^
+        endDate.hashCode ^
+        imageUrl.hashCode ^
+        attachmentUrl.hashCode ^
+        jobLink.hashCode;
   }
 }
