@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -25,6 +27,16 @@ class _AdvertScreenState extends State<AdvertScreen> {
   late Future<Announcement> future;
   late Announcement detailedAd;
   ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>? scm;
+  void hideBanner() async {
+    if (scm != null) {
+      try {
+        await Future.delayed(const Duration(seconds: 1));
+        scm!.close.call();
+      } catch (e) {
+        print('couldn\'t dispose');
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -32,7 +44,6 @@ class _AdvertScreenState extends State<AdvertScreen> {
     future.then((value) async {
       if (value.description.contains('ინგლისურ ენაზე') &&
           value.description.contains('იხილეთ ამ განცხადების სრული ტექსტი')) {
-        print(value.description);
         var banner = MaterialBanner(
             content: Text(
               'English Version Found!',
@@ -41,9 +52,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    if (scm != null) {
-                      scm!.close.call();
-                    }
+                    hideBanner();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -58,7 +67,8 @@ class _AdvertScreenState extends State<AdvertScreen> {
             ]);
         scm = ScaffoldMessenger.of(context).showMaterialBanner(banner);
         await Future.delayed(const Duration(seconds: 10));
-        scm!.close.call();
+
+        hideBanner();
       } else if (value.description.contains('რუსულ ენაზე') &&
           value.description.contains('იხილეთ ამ განცხადების სრული ტექსტი')) {
         var banner = MaterialBanner(
@@ -69,9 +79,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
             actions: [
               TextButton(
                   onPressed: () {
-                    if (scm != null) {
-                      scm!.close.call();
-                    }
+                    hideBanner();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -86,7 +94,8 @@ class _AdvertScreenState extends State<AdvertScreen> {
             ]);
         scm = ScaffoldMessenger.of(context).showMaterialBanner(banner);
         await Future.delayed(const Duration(seconds: 10));
-        scm!.close.call();
+
+        hideBanner();
       }
     });
     super.initState();
@@ -94,24 +103,51 @@ class _AdvertScreenState extends State<AdvertScreen> {
 
   @override
   void dispose() {
-    if (scm != null) {
-      try {
-        scm!.close.call();
-      } catch (e) {
-        print('couldn\'t dispose');
-      }
-    }
+    hideBanner();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.announcement.jobName,
-              style: GoogleFonts.notoSansGeorgian(fontSize: 17)),
+        // appBar: AppBar(
+        //   title: Text(widget.announcement.jobName,
+        //       style: GoogleFonts.notoSansGeorgian(fontSize: 17)),
+        // ),
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar.large(
+          title: AutoSizeText(
+            widget.announcement.jobName,
+          ),
+          actions: [
+            PopupMenuButton(
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem<int>(
+                    value: 1,
+                    onTap: () async {
+                      await Clipboard.setData(
+                          ClipboardData(text: widget.announcement.jobLink));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("ბმული"),
+                        Icon(
+                          Icons.link,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+            )
+          ],
         ),
-        body: FutureBuilder(
+        SliverToBoxAdapter(
+            child: FutureBuilder(
           future: future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done &&
@@ -122,9 +158,44 @@ class _AdvertScreenState extends State<AdvertScreen> {
                 child: Column(
                   children: [
                     Container(
-                        margin: const EdgeInsets.only(left: 10),
+                        margin: const EdgeInsets.only(left: 12, right: 12),
                         alignment: Alignment.centerLeft,
-                        child: advertImage(detailedAd.imageUrl)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            advertImage(detailedAd.imageUrl),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'გამოქვეყნდა: ${widget.announcement.startDate}',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  'ბოლო ვადა: ${widget.announcement.endDate.substring(0, widget.announcement.endDate.length - 8)}',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                          ],
+                        )),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: SingleChildScrollView(
@@ -248,6 +319,8 @@ class _AdvertScreenState extends State<AdvertScreen> {
               return const LinearProgressIndicator();
             }
           },
-        ));
+        )),
+      ],
+    ));
   }
 }
