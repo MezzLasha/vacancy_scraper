@@ -19,6 +19,8 @@ import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
 
+import '../models/constants.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -245,55 +247,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String locationValue = 'ნებისმიერ ადგილას';
   String jobTypeValue = 'ყველა ვაკანსია';
 
-  // List of items in our dropdown menu
-  var category = [
-    'ყველა კატეგორია',
-    'ადმინისტრაცია/მენეჯმენტი',
-    'ფინანსები/სტატისტიკა',
-    'გაყიდვები',
-    'PR/მარკეტინგი',
-    'ზოგადი ტექნიკური პერსონალი',
-    'ლოგისტიკა/ტრანსპორტი/დისტრიბუცია',
-    'მშენებლობა/რემონტი',
-    'დასუფთავება',
-    'დაცვა/უსაფრთხოება',
-    'IT/პროგრამირება',
-    'მედია/გამომცემლობა',
-    'განათლება',
-    'სამართალი',
-    'მედიცინა/ფარმაცია',
-    'სილამაზე/მოდა',
-    'კვება',
-    'სხვა',
-  ];
-
-  var location = [
-    'ნებისმიერ ადგილას',
-    'თბილისი',
-    'აფხაზეთის ა/რ',
-    'აჭარის ა/რ',
-    'გურია',
-    'იმერეთი',
-    'კახეთი',
-    'მცხეთა-მთიანეთი',
-    'რაჭა-ლეჩხუმი, ქვ. სვანეთი',
-    'სამეგრელო-ზემო სვანეთი',
-    'სამცხე-ჯავახეთი',
-    'ქვემო ქართლი',
-    'შიდა ქართლი',
-    'უცხოეთი',
-    'დისტანციური',
-  ];
-
-  var jobType = [
-    'ყველა ვაკანსია',
-    'ვაკანსიები',
-    'სტიპენდიები',
-    'სხვა',
-    'ტენდერები',
-    'ტრენინგები',
-  ];
-
   void updateFilterValues() {
     setState(() {
       selectedFilter[0] = categoryValue;
@@ -328,168 +281,174 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          AnimatedOpacity(
-            opacity: isFabVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 200),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 32.0),
-              child: FloatingActionButton(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                onPressed: () {
-                  _scrollController.animateTo(0,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeOut);
-                  setState(() {
-                    isFabVisible = false;
-                  });
-                },
-                child: Icon(
-                  Icons.keyboard_arrow_up,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                ),
-              ),
-            ),
-          ),
-          FloatingActionButton.extended(
-            onPressed: () {
-              showMyBottomDialog(
-                  context,
-                  [
-                    TextFormField(
-                      key: textFieldKey,
-                      initialValue: queryText,
-                      decoration: InputDecoration(
-                          labelText: 'საძიებო სიტყვა',
-                          labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
-                              overflow: TextOverflow.ellipsis, fontSize: 15),
-                          helperMaxLines: 1,
-                          border: const OutlineInputBorder()),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    DropdownButtonFormField(
-                        isExpanded: true,
-                        decoration: const InputDecoration(
-                            labelText: 'კატეგორია',
-                            helperMaxLines: 1,
-                            border: OutlineInputBorder()),
-                        value: categoryValue,
-                        items: category.map((String items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Text(
-                              items,
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: ((value) {
-                          setState(() {
-                            categoryValue = value!;
-                          });
-                        })),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            labelText: 'ლოკაცია',
-                            labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
-                                overflow: TextOverflow.ellipsis, fontSize: 15),
-                            helperMaxLines: 1,
-                            border: const OutlineInputBorder()),
-                        value: locationValue,
-                        items: location.map((String items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Text(items),
-                          );
-                        }).toList(),
-                        onChanged: ((value) {
-                          setState(() {
-                            locationValue = value!;
-                          });
-                        })),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            labelText: 'ვაკანსიის ტიპი',
-                            labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
-                                overflow: TextOverflow.ellipsis, fontSize: 15),
-                            helperMaxLines: 1,
-                            border: const OutlineInputBorder()),
-                        value: jobTypeValue,
-                        items: jobType.map((String items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Text(items),
-                          );
-                        }).toList(),
-                        onChanged: ((value) {
-                          setState(() {
-                            jobTypeValue = value!;
-                          });
-                        })),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: 45,
-                            child: Tooltip(
-                              message: 'ფილტრის გასუფთავება',
-                              child: MyOutlineButton(
-                                onPressed: () {
-                                  setState(() {
-                                    jobTypeValue = 'ყველა ვაკანსია';
-                                    locationValue = 'ნებისმიერ ადგილას';
-                                    categoryValue = 'ყველა კატეგორია';
-                                    queryText = '';
-                                  });
-                                  searchForAds('');
-                                },
-                                borderColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                child: Icon(
-                                  Icons.delete_outlined,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 45,
-                            child: MyOutlineButton(
-                              onPressed: () {
-                                searchForAds(textFieldKey.currentState!.value);
-                              },
-                              borderColor: Theme.of(context).dividerColor,
-                              child: const Text('ძებნა'),
-                            ),
-                          )
-                        ])
-                  ],
-                  GlobalKey());
-            },
-            label: Row(
-              children: const [
-                Text('ძებნა'),
-                SizedBox(
-                  width: 10,
-                ),
-                Icon(Icons.search)
-              ],
-            ),
-          ),
+          buildJumptoTopFab(context),
+          buildSearchFab(context),
         ],
       ),
       appBar: buildAppBar(),
       body: RefreshIndicator(onRefresh: _refresh, child: buildPagedListView()),
+    );
+  }
+
+  FloatingActionButton buildSearchFab(BuildContext context) {
+    return FloatingActionButton.extended(
+      tooltip: 'საძიებო ფილტრები',
+      onPressed: () {
+        showMyBottomDialog(
+            context,
+            [
+              TextFormField(
+                key: textFieldKey,
+                initialValue: queryText,
+                decoration: InputDecoration(
+                    labelText: 'საძიებო სიტყვა',
+                    labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
+                        overflow: TextOverflow.ellipsis, fontSize: 15),
+                    helperMaxLines: 1,
+                    border: const OutlineInputBorder()),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              DropdownButtonFormField(
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                      labelText: 'კატეგორია',
+                      helperMaxLines: 1,
+                      border: OutlineInputBorder()),
+                  value: categoryValue,
+                  items: category.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(
+                        items,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: ((value) {
+                    setState(() {
+                      categoryValue = value!;
+                    });
+                  })),
+              const SizedBox(
+                height: 15,
+              ),
+              DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      labelText: 'ლოკაცია',
+                      labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
+                          overflow: TextOverflow.ellipsis, fontSize: 15),
+                      helperMaxLines: 1,
+                      border: const OutlineInputBorder()),
+                  value: locationValue,
+                  items: location.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: ((value) {
+                    setState(() {
+                      locationValue = value!;
+                    });
+                  })),
+              const SizedBox(
+                height: 15,
+              ),
+              DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      labelText: 'ვაკანსიის ტიპი',
+                      labelStyle: GoogleFonts.notoSansGeorgian().copyWith(
+                          overflow: TextOverflow.ellipsis, fontSize: 15),
+                      helperMaxLines: 1,
+                      border: const OutlineInputBorder()),
+                  value: jobTypeValue,
+                  items: jobType.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: ((value) {
+                    setState(() {
+                      jobTypeValue = value!;
+                    });
+                  })),
+              const SizedBox(
+                height: 35,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                SizedBox(
+                  height: 45,
+                  child: Tooltip(
+                    message: 'ფილტრის გასუფთავება',
+                    child: MyOutlineButton(
+                      onPressed: () {
+                        setState(() {
+                          jobTypeValue = 'ყველა ვაკანსია';
+                          locationValue = 'ნებისმიერ ადგილას';
+                          categoryValue = 'ყველა კატეგორია';
+                          queryText = '';
+                        });
+                        searchForAds('');
+                      },
+                      borderColor: Theme.of(context).colorScheme.secondary,
+                      child: Icon(
+                        Icons.delete_outlined,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 45,
+                  child: MyOutlineButton(
+                    onPressed: () {
+                      searchForAds(textFieldKey.currentState!.value);
+                    },
+                    borderColor: Theme.of(context).dividerColor,
+                    child: const Text('ძებნა'),
+                  ),
+                )
+              ])
+            ],
+            GlobalKey());
+      },
+      label: Row(
+        children: const [
+          Text('ძებნა'),
+          SizedBox(
+            width: 10,
+          ),
+          Icon(Icons.search)
+        ],
+      ),
+    );
+  }
+
+  AnimatedOpacity buildJumptoTopFab(BuildContext context) {
+    return AnimatedOpacity(
+      opacity: isFabVisible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 200),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 32.0),
+        child: FloatingActionButton(
+          tooltip: 'მაღლა დაბრუნება',
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          onPressed: () {
+            _scrollController.animateTo(0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOut);
+            setState(() {
+              isFabVisible = false;
+            });
+          },
+          child: Icon(
+            Icons.keyboard_arrow_up,
+            color: Theme.of(context).colorScheme.onSecondary,
+          ),
+        ),
+      ),
     );
   }
 
@@ -579,19 +538,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 1,
                 child: Text("წყარო"),
               ),
-              PopupMenuItem<int>(
-                value: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Source Code"),
-                    Icon(
-                      FontAwesomeIcons.github,
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  ],
-                ),
-              ),
             ];
           }, onSelected: (value) {
             if (value == 1) {
@@ -653,10 +599,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     )
                   ]);
-            } else if (value == 2) {
-              launchWebUrl(
-                  context, 'https://github.com/MezzLasha/vacancy_scraper');
             }
+            // else if (value == 2) {
+            //   launchWebUrl(
+            //       context, 'https://github.com/MezzLasha/vacancy_scraper');
+            // }
           }),
         ],
         bottom: (queryText != '' ||
@@ -1055,75 +1002,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
 Widget advertImage(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(5)),
-      child: SizedBox(
-        width: 60,
-        child: Image.network(
-          'https://jobs.ge$imageUrl',
-          fit: BoxFit.fitWidth,
-        ),
-      ),
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.amberAccent,
+          image: DecorationImage(
+            fit: BoxFit.fitWidth,
+            image: NetworkImage(
+              'https://jobs.ge$imageUrl',
+            ),
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(5))),
     );
   } else {
     return const SizedBox.shrink();
   }
 }
 
-// @override
-// Widget build(BuildContext context) {
-//   return Scaffold(
-//     body: BlocConsumer<DatabaseBloc, DatabaseState>(
-//       listener: (context, state) {},
-//       builder: (context, state) {
-//         if (state.listOfAds.isEmpty && state.status == DbStatus.empty) {
-//           context.read<DatabaseBloc>().add(DatabaseLoadHome());
-//         }
-
-//         if (state.status == DbStatus.loading) {
-//           return const LinearProgressIndicator();
-//         }
-//         return RefreshIndicator(
-//           onRefresh: (() {
-//             context.read<DatabaseBloc>().add(DatabaseRefresh());
-//             return Future.value(null);
-//           }),
-//           child: ListView.builder(
-//             itemCount: state.listOfAds.length,
-//             itemBuilder: (context, index) {
-//               return OpenContainer(
-//                 transitionType: ContainerTransitionType.fade,
-//                 closedElevation: 0,
-//                 closedBuilder: (context, tap) {
-//                   return InkWell(
-//                     onTap: () => tap(),
-//                     child: Ink(
-//                       padding: const EdgeInsets.only(left: 16),
-//                       height: 56,
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Flexible(
-//                             fit: FlexFit.loose,
-//                             child: Text(
-//                               state.listOfAds[index].jobName,
-//                               style: GoogleFonts.notoSansGeorgian(),
-//                             ),
-//                           ),
-//                           adBlurBanner(state.listOfAds[index].imageUrl),
-//                         ],
-//                       ),
-//                     ),
-//                   );
-//                 },
-//                 openBuilder: (context, action) {
-//                   return AdvertScreen(announcement: state.listOfAds[index]);
-//                 },
-//               );
-//             },
-//           ),
-//         );
-//       },
-//     ),
-//   );
+// Widget advertImage(String imageUrl) {
+//   if (imageUrl != '/i/pix.gif') {
+//     return ClipRRect(
+//       borderRadius: const BorderRadius.all(Radius.circular(5)),
+//       child: SizedBox(
+//         width: 60,
+//         child: Image.network(
+//           'https://jobs.ge$imageUrl',
+//           fit: BoxFit.fitWidth,
+//         ),
+//       ),
+//     );
+//   } else {
+//     return const SizedBox.shrink();
+//   }
 // }

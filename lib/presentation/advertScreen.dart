@@ -2,7 +2,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:vacancy_scraper/models/announcement.dart';
@@ -112,10 +114,6 @@ class _AdvertScreenState extends State<AdvertScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text(widget.announcement.jobName,
-        //       style: GoogleFonts.notoSansGeorgian(fontSize: 17)),
-        // ),
         body: CustomScrollView(
       slivers: [
         SliverAppBar.large(
@@ -124,11 +122,13 @@ class _AdvertScreenState extends State<AdvertScreen> {
               top = constraints.biggest.height;
               if (top > 60) {
                 return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+                  padding: const EdgeInsets.only(right: 16.0, left: 4),
                   child: AutoSizeText(
                     widget.announcement.jobName,
                     maxLines: 1,
                     softWrap: false,
+                    maxFontSize: 19,
+                    minFontSize: 10,
                     overflow: TextOverflow.fade,
                   ),
                 );
@@ -142,6 +142,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
           ),
           actions: [
             PopupMenuButton(
+              tooltip: 'სხვა',
               itemBuilder: (context) {
                 return [
                   PopupMenuItem<int>(
@@ -156,7 +157,23 @@ class _AdvertScreenState extends State<AdvertScreen> {
                         const Text("ბმული"),
                         Icon(
                           Icons.link,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<int>(
+                    value: 2,
+                    onTap: () {
+                      launchWebUrl(context, widget.announcement.jobLink);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('ბრაუზერში გახსნა'),
+                        Icon(
+                          Icons.open_in_browser_outlined,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ],
                     ),
