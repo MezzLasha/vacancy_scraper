@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -77,131 +79,142 @@ class _ProviderScreenState extends State<ProviderScreen> {
                           },
                         ),
                       ),
-                      ListView.builder(
-                        controller: ScrollController(),
-                        shrinkWrap: true,
-                        itemCount: _jobProvider.announcements.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == 0 &&
-                              _jobProvider.announcements.length > 1) {
-                            return Container(
-                              alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.only(left: 12, bottom: 12),
-                              child: FilterChip(
-                                selected: true,
-                                label: const Text('განცხადება'),
-                                avatar: Text(
-                                  _jobProvider.announcements.length.toString(),
-                                  style: GoogleFonts.notoSans(),
-                                ),
-                                onSelected: (bool value) {},
-                                showCheckmark: false,
-                              ),
-                            );
-                          }
-
-                          final item = _jobProvider.announcements[index - 1];
-                          return OpenContainer(
-                            closedColor:
-                                Theme.of(context).colorScheme.background,
-                            closedElevation: 0,
-                            middleColor:
-                                Theme.of(context).colorScheme.background,
-                            openColor: Theme.of(context).colorScheme.background,
-                            closedShape: const Border(),
-                            closedBuilder: (context, tap) {
-                              return InkWell(
-                                onTapDown: (TapDownDetails details) {
-                                  _tapDownPosition = details.globalPosition;
-                                },
-                                onTap: () => tap(),
-                                onLongPress: () async {
-                                  final RenderBox overlay = Overlay.of(context)
-                                      .context
-                                      .findRenderObject() as RenderBox;
-
-                                  showMenu(
-                                    context: context,
-                                    items: [
-                                      PopupMenuItem<int>(
-                                        value: 1,
-                                        onTap: () async {
-                                          await Clipboard.setData(ClipboardData(
-                                              text: item.jobLink));
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text("ბმული"),
-                                            Icon(
-                                              Icons.link,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                    position: RelativeRect.fromLTRB(
-                                      _tapDownPosition.dx,
-                                      _tapDownPosition.dy,
-                                      overlay.size.width - _tapDownPosition.dx,
-                                      overlay.size.height - _tapDownPosition.dy,
-                                    ),
-                                  );
-                                },
-                                splashFactory: InkSparkle.splashFactory,
-                                child: Ink(
-                                  padding: const EdgeInsets.only(
-                                      left: 16, right: 16, top: 12, bottom: 12),
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                    bottom: BorderSide(
-                                      color: Theme.of(context)
-                                          .dividerColor
-                                          .withOpacity(0.2),
-                                      width: 1.0,
-                                    ),
-                                  )),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            AutoSizeText(
-                                              item.jobName,
-                                              maxLines: 2,
-                                              style: GoogleFonts
-                                                  .notoSansGeorgian(),
-                                            ),
-                                            ...buildListTileSecondary(
-                                                item, context),
-                                            buildAttributeWidgets(item, context)
-                                          ],
-                                        ),
-                                      ),
-                                      // advertImage(item.imageUrl),
-                                    ],
+                      if (_jobProvider.announcements.isNotEmpty)
+                        ListView.builder(
+                          controller: ScrollController(),
+                          shrinkWrap: true,
+                          itemCount: _jobProvider.announcements.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == 0 &&
+                                _jobProvider.announcements.isNotEmpty) {
+                              return Container(
+                                alignment: Alignment.centerLeft,
+                                padding:
+                                    const EdgeInsets.only(left: 12, bottom: 12),
+                                child: FilterChip(
+                                  selected: true,
+                                  label: const Text('განცხადება'),
+                                  avatar: Text(
+                                    _jobProvider.announcements.length
+                                        .toString(),
+                                    style: GoogleFonts.notoSans(),
                                   ),
+                                  onSelected: (bool value) {},
+                                  showCheckmark: false,
                                 ),
                               );
-                            },
-                            openBuilder: (context, action) {
-                              return AdvertScreen(announcement: item);
-                            },
-                          );
-                        },
-                      )
+                            }
+
+                            final item = _jobProvider.announcements[index - 1];
+                            return OpenContainer(
+                              closedColor:
+                                  Theme.of(context).colorScheme.background,
+                              closedElevation: 0,
+                              middleColor:
+                                  Theme.of(context).colorScheme.background,
+                              openColor:
+                                  Theme.of(context).colorScheme.background,
+                              closedShape: const Border(),
+                              closedBuilder: (context, tap) {
+                                return InkWell(
+                                  onTapDown: (TapDownDetails details) {
+                                    _tapDownPosition = details.globalPosition;
+                                  },
+                                  onTap: () => tap(),
+                                  onLongPress: () async {
+                                    final RenderBox overlay =
+                                        Overlay.of(context)
+                                            .context
+                                            .findRenderObject() as RenderBox;
+
+                                    showMenu(
+                                      context: context,
+                                      items: [
+                                        PopupMenuItem<int>(
+                                          value: 1,
+                                          onTap: () async {
+                                            await Clipboard.setData(
+                                                ClipboardData(
+                                                    text: item.jobLink));
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text("ბმული"),
+                                              Icon(
+                                                Icons.link,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                      position: RelativeRect.fromLTRB(
+                                        _tapDownPosition.dx,
+                                        _tapDownPosition.dy,
+                                        overlay.size.width -
+                                            _tapDownPosition.dx,
+                                        overlay.size.height -
+                                            _tapDownPosition.dy,
+                                      ),
+                                    );
+                                  },
+                                  splashFactory: InkSparkle.splashFactory,
+                                  child: Ink(
+                                    padding: const EdgeInsets.only(
+                                        left: 16,
+                                        right: 16,
+                                        top: 12,
+                                        bottom: 12),
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                      bottom: BorderSide(
+                                        color: Theme.of(context)
+                                            .dividerColor
+                                            .withOpacity(0.2),
+                                        width: 1.0,
+                                      ),
+                                    )),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          fit: FlexFit.tight,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              AutoSizeText(
+                                                item.jobName,
+                                                maxLines: 2,
+                                                style: GoogleFonts
+                                                    .notoSansGeorgian(),
+                                              ),
+                                              ...buildListTileSecondary(
+                                                  item, context),
+                                              buildAttributeWidgets(
+                                                  item, context)
+                                            ],
+                                          ),
+                                        ),
+                                        // advertImage(item.imageUrl),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              openBuilder: (context, action) {
+                                return AdvertScreen(announcement: item);
+                              },
+                            );
+                          },
+                        )
                     ],
                   );
                 } else {
