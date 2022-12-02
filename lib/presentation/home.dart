@@ -1002,35 +1002,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
 Widget advertImage(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.amberAccent,
-          image: DecorationImage(
-            fit: BoxFit.fitWidth,
-            image: NetworkImage(
-              'https://jobs.ge$imageUrl',
-            ),
-          ),
-          borderRadius: const BorderRadius.all(Radius.circular(5))),
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(5)),
+      child: Image.network(
+        'https://jobs.ge$imageUrl',
+        fit: BoxFit.fitWidth,
+        width: 60,
+      ),
     );
   } else {
     return const SizedBox.shrink();
   }
 }
-
-// Widget advertImage(String imageUrl) {
-//   if (imageUrl != '/i/pix.gif') {
-//     return ClipRRect(
-//       borderRadius: const BorderRadius.all(Radius.circular(5)),
-//       child: SizedBox(
-//         width: 60,
-//         child: Image.network(
-//           'https://jobs.ge$imageUrl',
-//           fit: BoxFit.fitWidth,
-//         ),
-//       ),
-//     );
-//   } else {
-//     return const SizedBox.shrink();
-//   }
-// }
