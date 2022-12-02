@@ -107,6 +107,8 @@ class _AdvertScreenState extends State<AdvertScreen> {
     super.dispose();
   }
 
+  var top = 0.0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,8 +119,26 @@ class _AdvertScreenState extends State<AdvertScreen> {
         body: CustomScrollView(
       slivers: [
         SliverAppBar.large(
-          title: AutoSizeText(
-            widget.announcement.jobName,
+          title: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              top = constraints.biggest.height;
+              if (top > 60) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: AutoSizeText(
+                    widget.announcement.jobName,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                  ),
+                );
+              } else {
+                return AutoSizeText(
+                  widget.announcement.jobName,
+                  maxLines: 3,
+                );
+              }
+            },
           ),
           actions: [
             PopupMenuButton(

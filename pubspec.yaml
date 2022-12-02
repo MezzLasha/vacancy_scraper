@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^2.3.0
   firebase_crashlytics: ^3.0.6
   firebase_performance: ^0.9.0+6
+  fluid_dialog: ^1.1.0
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1

@@ -48,7 +48,9 @@ class DatabaseRepository {
       String jobId = '';
       String jobRegion = '';
       String description = '';
-      String salary = '';
+      bool salary = false;
+      bool newAdvert = false;
+      bool aboutToExpire = false;
       String startDate = '';
       String endDate = '';
       String imageUrl = '';
@@ -59,6 +61,24 @@ class DatabaseRepository {
 
         jobLink = 'https://jobs.ge${jobNameElement.attributes.values.first}';
         jobName = jobNameElement.text;
+      } catch (e) {}
+
+      try {
+        var jobAttributesElement =
+            element.getElementsByTagName('td')[1].getElementsByTagName('img');
+
+        if (jobAttributesElement.any(
+            (element) => element.attributes.containsValue('/i/salary.gif'))) {
+          salary = true;
+        }
+        if (jobAttributesElement
+            .any((element) => element.attributes.containsValue('/i/new.gif'))) {
+          newAdvert = true;
+        }
+        if (jobAttributesElement
+            .any((element) => element.attributes.containsValue('/i/exp.gif'))) {
+          aboutToExpire = true;
+        }
       } catch (e) {}
 
       try {
@@ -102,6 +122,8 @@ class DatabaseRepository {
           jobRegion: jobRegion,
           description: description,
           salary: salary,
+          aboutToExpire: aboutToExpire,
+          newAdvert: newAdvert,
           startDate: startDate,
           attachmentUrl: '',
           endDate: endDate,

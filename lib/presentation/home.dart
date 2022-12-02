@@ -5,6 +5,7 @@ import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:fluid_dialog/fluid_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -89,9 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       _scrollController.animateTo(0,
           duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
-    } catch (e) {
-      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
-    }
+    } catch (_) {}
     await _fetchPage(0);
   }
 
@@ -335,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 32.0),
               child: FloatingActionButton(
-                child: const Icon(Icons.keyboard_arrow_up),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
                   _scrollController.animateTo(0,
                       duration: const Duration(milliseconds: 500),
@@ -344,6 +343,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     isFabVisible = false;
                   });
                 },
+                child: Icon(
+                  Icons.keyboard_arrow_up,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
               ),
             ),
           ),
@@ -449,8 +452,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                   searchForAds('');
                                 },
-                                borderColor: Theme.of(context).dividerColor,
-                                child: const Icon(Icons.delete_outlined),
+                                borderColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                child: Icon(
+                                  Icons.delete_outlined,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
                               ),
                             ),
                           ),
@@ -922,7 +930,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      fit: FlexFit.loose,
+                      fit: FlexFit.tight,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -933,6 +941,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: GoogleFonts.notoSansGeorgian(),
                           ),
                           ...buildListTileSecondary(item),
+                          buildAttributeWidgets(item)
                         ],
                       ),
                     ),
@@ -954,6 +963,48 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _pagingController.dispose();
     super.dispose();
+  }
+
+  Widget buildAttributeWidgets(Announcement item) {
+    return Row(
+      children: [
+        if (item.newAdvert)
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8),
+            child: Tooltip(
+              message: 'ახალი დადებული',
+              child: Icon(
+                Icons.fiber_new_outlined,
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        if (item.aboutToExpire)
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8),
+            child: Tooltip(
+              message: 'ვადა გასდის მალე',
+              child: Icon(
+                Icons.timer_off_outlined,
+                color: Theme.of(context).colorScheme.error,
+                size: 20,
+              ),
+            ),
+          ),
+        if (item.salary)
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8),
+            child: Tooltip(
+              message: 'ხელფასიანი',
+              child: Text(
+                '₾',
+                style: GoogleFonts.notoSansGeorgian(
+                    color: Theme.of(context).colorScheme.tertiary),
+              ),
+            ),
+          )
+      ],
+    );
   }
 
   List<Widget> buildListTileSecondary(Announcement item) {
