@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
+import 'package:vacancy_scraper/presentation/provider_screen.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
 
 import '../custom/customTextSelection.dart';
@@ -201,7 +202,37 @@ class _AdvertScreenState extends State<AdvertScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            advertImage(detailedAd.imageUrl),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                advertImage(detailedAd.imageUrl),
+                                Flexible(
+                                  child: OutlinedButton(
+                                      onPressed: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProviderScreen(
+                                                    providerName: widget
+                                                        .announcement
+                                                        .jobProvider,
+                                                    providerLink: widget
+                                                        .announcement
+                                                        .jobProviderLink,
+                                                  ))),
+                                      style: TextButton.styleFrom(
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .tertiary),
+                                      child: Text(
+                                        widget.announcement.jobProvider,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                      )),
+                                ),
+                              ],
+                            ),
                             const SizedBox(
                               height: 12,
                             ),

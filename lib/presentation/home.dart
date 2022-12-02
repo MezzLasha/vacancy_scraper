@@ -837,22 +837,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    // PopupMenuItem<int>(
-                    //   value: 2,
-                    //   onTap: () {
-                    //     tap();
-                    //   },
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       const Text(""),
-                    //       Icon(
-                    //         Icons.open_in_browser,
-                    //         color: Theme.of(context).colorScheme.primary,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                   position: RelativeRect.fromLTRB(
                     _tapDownPosition.dx,
@@ -887,8 +871,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             maxLines: 2,
                             style: GoogleFonts.notoSansGeorgian(),
                           ),
-                          ...buildListTileSecondary(item),
-                          buildAttributeWidgets(item)
+                          ...buildListTileSecondary(item, context),
+                          buildAttributeWidgets(item, context)
                         ],
                       ),
                     ),
@@ -911,92 +895,92 @@ class _HomeScreenState extends State<HomeScreen> {
     _pagingController.dispose();
     super.dispose();
   }
+}
 
-  Widget buildAttributeWidgets(Announcement item) {
-    return Row(
-      children: [
-        if (item.newAdvert)
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, top: 8),
-            child: Tooltip(
-              message: 'ახალი დადებული',
-              child: Icon(
-                Icons.fiber_new_outlined,
-                color: Theme.of(context).colorScheme.error,
-              ),
+Widget buildAttributeWidgets(Announcement item, BuildContext context) {
+  return Row(
+    children: [
+      if (item.newAdvert)
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, top: 8),
+          child: Tooltip(
+            message: 'ახალი დადებული',
+            child: Icon(
+              Icons.fiber_new_outlined,
+              color: Theme.of(context).colorScheme.error,
             ),
           ),
-        if (item.aboutToExpire)
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, top: 8),
-            child: Tooltip(
-              message: 'ვადა გასდის მალე',
-              child: Icon(
-                Icons.timer_off_outlined,
-                color: Theme.of(context).colorScheme.error,
-                size: 20,
-              ),
+        ),
+      if (item.aboutToExpire)
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, top: 8),
+          child: Tooltip(
+            message: 'ვადა გასდის მალე',
+            child: Icon(
+              Icons.timer_off_outlined,
+              color: Theme.of(context).colorScheme.error,
+              size: 20,
             ),
           ),
-        if (item.salary)
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, top: 8),
-            child: Tooltip(
-              message: 'ხელფასიანი',
-              child: Text(
-                '₾',
-                style: GoogleFonts.notoSansGeorgian(
-                    color: Theme.of(context).colorScheme.tertiary),
-              ),
+        ),
+      if (item.salary)
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, top: 8),
+          child: Tooltip(
+            message: 'ხელფასიანი',
+            child: Text(
+              '₾',
+              style: GoogleFonts.notoSansGeorgian(
+                  color: Theme.of(context).colorScheme.tertiary),
             ),
-          )
-      ],
-    );
-  }
+          ),
+        )
+    ],
+  );
+}
 
-  List<Widget> buildListTileSecondary(Announcement item) {
-    if (item.jobRegion != '' && item.jobProvider != '') {
-      return [
-        const SizedBox(
-          height: 12,
-        ),
-        AutoSizeText(
-          '${item.jobProvider} · ${item.jobRegion}',
-          maxLines: 2,
-          style: GoogleFonts.notoSansGeorgian(
-              color: Color.lerp(Theme.of(context).disabledColor,
-                  Theme.of(context).colorScheme.primary, 0.7)),
-        ),
-      ];
-    } else if (item.jobRegion == '' && item.jobProvider != '') {
-      return [
-        const SizedBox(
-          height: 12,
-        ),
-        AutoSizeText(
-          item.jobProvider,
-          maxLines: 2,
-          style: GoogleFonts.notoSansGeorgian(
-              color: Color.lerp(Theme.of(context).disabledColor,
-                  Theme.of(context).colorScheme.primary, 0.7)),
-        ),
-      ];
-    } else if (item.jobRegion != '' && item.jobProvider == '') {
-      return [
-        const SizedBox(
-          height: 12,
-        ),
-        AutoSizeText(
-          item.jobProvider,
-          maxLines: 2,
-          style: GoogleFonts.notoSansGeorgian(
-              color: Color.lerp(Theme.of(context).disabledColor,
-                  Theme.of(context).colorScheme.primary, 0.7)),
-        ),
-      ];
-    } else {
-      return [const SizedBox()];
-    }
+List<Widget> buildListTileSecondary(Announcement item, BuildContext context) {
+  if (item.jobRegion != '' && item.jobProvider != '') {
+    return [
+      const SizedBox(
+        height: 12,
+      ),
+      AutoSizeText(
+        '${item.jobProvider} · ${item.jobRegion}',
+        maxLines: 2,
+        style: GoogleFonts.notoSansGeorgian(
+            color: Color.lerp(Theme.of(context).disabledColor,
+                Theme.of(context).colorScheme.primary, 0.7)),
+      ),
+    ];
+  } else if (item.jobRegion == '' && item.jobProvider != '') {
+    return [
+      const SizedBox(
+        height: 12,
+      ),
+      AutoSizeText(
+        item.jobProvider,
+        maxLines: 2,
+        style: GoogleFonts.notoSansGeorgian(
+            color: Color.lerp(Theme.of(context).disabledColor,
+                Theme.of(context).colorScheme.primary, 0.7)),
+      ),
+    ];
+  } else if (item.jobRegion != '' && item.jobProvider == '') {
+    return [
+      const SizedBox(
+        height: 12,
+      ),
+      AutoSizeText(
+        item.jobProvider,
+        maxLines: 2,
+        style: GoogleFonts.notoSansGeorgian(
+            color: Color.lerp(Theme.of(context).disabledColor,
+                Theme.of(context).colorScheme.primary, 0.7)),
+      ),
+    ];
+  } else {
+    return [const SizedBox()];
   }
 }
 

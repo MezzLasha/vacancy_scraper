@@ -4,6 +4,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:vacancy_scraper/models/announcement.dart';
+import 'package:vacancy_scraper/models/provider_model.dart';
 
 class DatabaseRepository {
   Future<List<Announcement>> fetchAnnouncements(
@@ -44,6 +45,7 @@ class DatabaseRepository {
     List<Announcement> announcements = [];
     for (Element element in rows) {
       String jobProvider = '';
+      String jobProviderLink = '';
       String jobName = '';
       String jobId = '';
       String jobRegion = '';
@@ -94,6 +96,11 @@ class DatabaseRepository {
 
         imageUrl = imageUrlElement.attributes.entries.first.value;
       } catch (e) {}
+      try {
+        Element jobProviderLinkElement =
+            element.getElementsByTagName('td')[3].getElementsByTagName('a')[0];
+        jobProviderLink = jobProviderLinkElement.attributes.entries.first.value;
+      } catch (e) {}
 
       try {
         Element jobProviderElement =
@@ -117,6 +124,7 @@ class DatabaseRepository {
 
       announcements.add(Announcement(
           jobProvider: jobProvider,
+          jobProviderLink: 'https://www.jobs.ge${jobProviderLink}',
           jobName: jobName,
           jobId: jobLink.split('id=')[1],
           jobRegion: jobRegion,
@@ -165,5 +173,47 @@ class DatabaseRepository {
         description: descriptionTr.outerHtml,
         attachmentUrl: attachedFileUrl,
         jobId: oldAnnouncement.jobLink.split('id=')[1]);
+  }
+
+  Future<JobProvider> getProviderDetails(String providerLink) async {
+    final response = await http.get(Uri.parse(providerLink));
+
+    var document = parse(response.body);
+
+    Element mainDiv = document.getElementsByClassName('content').first;
+    String name = mainDiv.getElementsByTagName('h1').first.text;
+
+    Element providerDetailsTR = mainDiv.getElementsByTagName('tr').first;
+
+    String imageUrl = mainDiv
+        .getElementsByTagName('img')
+        .first
+        .attributes
+        .entries
+        .firstWhere((element) => element.key == 'src')
+        .value;
+    //#wrapper > div.content > table > tbody > tr > td:nth-child(2) > p
+    String description = '';
+    try {
+      description = providerDetailsTR.getElementsByTagName('p').first.outerHtml;
+    } catch (e) {
+      print(e);
+    }
+
+    Element announcementsDiv =
+        document.getElementsByClassName('regularEntries').first;
+    Element tbody = announcementsDiv.getElementsByTagName('tbody').first;
+    List<Element> rows = tbody.getElementsByTagName('tr');
+    rows.removeAt(0);
+    List<Announcement> announcements =
+        await compute(_computeGetAnnouncements, rows);
+
+    final jobprovider = JobProvider(
+        name: name,
+        imageUrl: imageUrl,
+        description: description,
+        announcements: announcements);
+
+    return jobprovider;
   }
 }

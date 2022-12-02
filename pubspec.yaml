@@ -41,6 +41,7 @@ dependencies:
   fluid_dialog: ^1.1.0
   flutter:
     sdk: flutter
+  flutter_adaptive_scaffold: ^0.0.8
   flutter_bloc: ^8.1.1
   flutter_custom_tabs: ^1.0.4
   flutter_html: ^2.2.1

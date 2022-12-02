@@ -3,6 +3,7 @@ import 'dart:convert';
 
 class Announcement {
   String jobProvider;
+  String jobProviderLink;
   String jobId;
   String jobName;
   String jobRegion;
@@ -17,6 +18,7 @@ class Announcement {
   String jobLink;
   Announcement({
     required this.jobProvider,
+    required this.jobProviderLink,
     required this.jobId,
     required this.jobName,
     required this.jobRegion,
@@ -33,13 +35,14 @@ class Announcement {
 
   Announcement copyWith({
     String? jobProvider,
+    String? jobProviderLink,
     String? jobId,
     String? jobName,
     String? jobRegion,
     String? description,
     bool? salary,
     bool? newAdvert,
-    bool? almostExpriedAdvert,
+    bool? aboutToExpire,
     String? startDate,
     String? endDate,
     String? imageUrl,
@@ -48,13 +51,14 @@ class Announcement {
   }) {
     return Announcement(
       jobProvider: jobProvider ?? this.jobProvider,
+      jobProviderLink: jobProviderLink ?? this.jobProviderLink,
       jobId: jobId ?? this.jobId,
       jobName: jobName ?? this.jobName,
       jobRegion: jobRegion ?? this.jobRegion,
       description: description ?? this.description,
       salary: salary ?? this.salary,
       newAdvert: newAdvert ?? this.newAdvert,
-      aboutToExpire: almostExpriedAdvert ?? this.aboutToExpire,
+      aboutToExpire: aboutToExpire ?? this.aboutToExpire,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -66,13 +70,14 @@ class Announcement {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'jobProvider': jobProvider,
+      'jobProviderLink': jobProviderLink,
       'jobId': jobId,
       'jobName': jobName,
       'jobRegion': jobRegion,
       'description': description,
       'salary': salary,
       'newAdvert': newAdvert,
-      'almostExpriedAdvert': aboutToExpire,
+      'aboutToExpire': aboutToExpire,
       'startDate': startDate,
       'endDate': endDate,
       'imageUrl': imageUrl,
@@ -84,13 +89,14 @@ class Announcement {
   factory Announcement.fromMap(Map<String, dynamic> map) {
     return Announcement(
       jobProvider: map['jobProvider'] as String,
+      jobProviderLink: map['jobProviderLink'] as String,
       jobId: map['jobId'] as String,
       jobName: map['jobName'] as String,
       jobRegion: map['jobRegion'] as String,
       description: map['description'] as String,
       salary: map['salary'] as bool,
       newAdvert: map['newAdvert'] as bool,
-      aboutToExpire: map['almostExpriedAdvert'] as bool,
+      aboutToExpire: map['aboutToExpire'] as bool,
       startDate: map['startDate'] as String,
       endDate: map['endDate'] as String,
       imageUrl: map['imageUrl'] as String,
@@ -106,7 +112,7 @@ class Announcement {
 
   @override
   String toString() {
-    return 'Announcement(jobProvider: $jobProvider, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, newAdvert: $newAdvert, almostExpriedAdvert: $aboutToExpire, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
+    return 'Announcement(jobProvider: $jobProvider, jobProviderLink: $jobProviderLink, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, newAdvert: $newAdvert, aboutToExpire: $aboutToExpire, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
   }
 
   @override
@@ -114,6 +120,7 @@ class Announcement {
     if (identical(this, other)) return true;
 
     return other.jobProvider == jobProvider &&
+        other.jobProviderLink == jobProviderLink &&
         other.jobId == jobId &&
         other.jobName == jobName &&
         other.jobRegion == jobRegion &&
@@ -131,6 +138,7 @@ class Announcement {
   @override
   int get hashCode {
     return jobProvider.hashCode ^
+        jobProviderLink.hashCode ^
         jobId.hashCode ^
         jobName.hashCode ^
         jobRegion.hashCode ^
