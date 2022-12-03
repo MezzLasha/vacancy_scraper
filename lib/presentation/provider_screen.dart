@@ -207,7 +207,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
       pinned: true,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
-      toolbarHeight: 45,
+      toolbarHeight: 50,
       title: SizedBox(
         height: 50,
         child: ListView(
@@ -256,12 +256,15 @@ class _ProviderScreenState extends State<ProviderScreen> {
 
   SliverAppBar buildAppBar() {
     return SliverAppBar.large(
+      collapsedHeight: 55,
+      toolbarHeight: 55,
       title: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           top = constraints.biggest.height;
-          if (top > 60) {
+          if (top <= 55) {
+            //expanded
             return Padding(
-              padding: const EdgeInsets.only(right: 16.0, left: 4),
+              padding: const EdgeInsets.only(right: 16.0, left: 8),
               child: AutoSizeText(
                 widget.providerName,
                 maxLines: 1,
@@ -272,6 +275,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
               ),
             );
           } else {
+            //collapsed
             return AutoSizeText(
               widget.providerName,
               maxLines: 3,
