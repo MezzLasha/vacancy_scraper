@@ -206,33 +206,34 @@ class _AdvertScreenState extends State<AdvertScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 advertImage(detailedAd.imageUrl),
-                                Flexible(
-                                  child: OutlinedButton(
-                                      onPressed: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProviderScreen(
-                                                    providerName: widget
-                                                        .announcement
-                                                        .jobProvider,
-                                                    providerLink: widget
-                                                        .announcement
-                                                        .jobProviderLink,
-                                                    websiteLink: widget
-                                                        .announcement.website,
-                                                  ))),
-                                      style: TextButton.styleFrom(
-                                          foregroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .tertiary),
-                                      child: Text(
-                                        widget.announcement.jobProvider,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                                ),
+                                if (widget.announcement.jobProvider != '')
+                                  Flexible(
+                                    child: OutlinedButton(
+                                        onPressed: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProviderScreen(
+                                                      providerName: widget
+                                                          .announcement
+                                                          .jobProvider,
+                                                      providerLink: widget
+                                                          .announcement
+                                                          .jobProviderLink,
+                                                      websiteLink: widget
+                                                          .announcement.website,
+                                                    ))),
+                                        style: TextButton.styleFrom(
+                                            foregroundColor: Theme.of(context)
+                                                .colorScheme
+                                                .tertiary),
+                                        child: Text(
+                                          widget.announcement.jobProvider,
+                                          maxLines: 1,
+                                          softWrap: false,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                  ),
                               ],
                             ),
                             const SizedBox(

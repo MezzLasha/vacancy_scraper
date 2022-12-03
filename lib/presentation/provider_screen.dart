@@ -46,222 +46,210 @@ class _ProviderScreenState extends State<ProviderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          buildAppBar(),
-          SliverToBoxAdapter(
-            child: FutureBuilder(
-              future: future,
-              builder: (context, AsyncSnapshot<JobProvider> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.data != null &&
-                    snapshot.hasData) {
-                  _jobProvider = snapshot.data!;
+      body: FutureBuilder(
+        future: future,
+        builder: (context, AsyncSnapshot<JobProvider> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.data != null &&
+              snapshot.hasData) {
+            _jobProvider = snapshot.data!;
+            return CustomScrollView(
+              controller: ScrollController(),
+              slivers: [
+                buildAppBar(),
+                buildHtmlDescription(),
+                buildHorizontalBar(context),
+                buildAdsList(),
+              ],
+            );
+          } else {
+            return CustomScrollView(
+              controller: ScrollController(),
+              slivers: [
+                buildAppBar(),
+                const SliverToBoxAdapter(
+                  child: LinearProgressIndicator(),
+                )
+              ],
+            );
+            ;
+          }
+        },
+      ),
+    );
+  }
 
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Html(
-                          data: _jobProvider.description,
-                          style: {
-                            "p": Style(
-                                color: Theme.of(context).colorScheme.secondary),
-                          },
-                          onLinkTap: (url, _, attributes, element) {
-                            if (url == null) {
-                              showSnackBar(context, 'მოხდა შეცდომა! ');
-                              return;
-                            }
-
-                            if (url.startsWith('http')) {
-                              launchWebUrl(context, url);
-                            } else {
-                              openIntent(context, url);
-                            }
-                          },
-                        ),
-                      ),
-                      if (_jobProvider.announcements.isNotEmpty)
-                        ListView.builder(
-                          controller: ScrollController(),
-                          shrinkWrap: true,
-                          itemCount: _jobProvider.announcements.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Row(
-                                children: [
-                                  // FutureBuilder(
-                                  //     future: future,
-                                  //     builder: ((context, snapshot) {
-                                  //       if (snapshot.hasData) {
-                                  //         return advertImage(
-                                  //             _jobProvider.imageUrl);
-                                  //       } else {
-                                  //         return const SizedBox(
-                                  //           height: 60,
-                                  //           width: 60,
-                                  //         );
-                                  //       }
-                                  //     })),
-                                  if (_jobProvider.announcements.isNotEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 12, bottom: 12),
-                                      child: FilterChip(
-                                        selected: true,
-                                        labelPadding: const EdgeInsets.fromLTRB(
-                                            4, 0, 4, 0),
-                                        label: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              _jobProvider.announcements.length
-                                                  .toString(),
-                                              style: GoogleFonts.notoSans(),
-                                            ),
-                                            const Text('  განცხადება'),
-                                          ],
-                                        ),
-                                        onSelected: (bool value) {},
-                                        showCheckmark: false,
-                                      ),
-                                    ),
-                                  if (widget.websiteLink != '')
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 12, bottom: 12),
-                                      child: OutlinedButton(
-                                          onPressed: () {
-                                            launchWebUrl(
-                                                context, widget.websiteLink);
-                                          },
-                                          child: Text(widget.websiteLink
-                                              .split('www.')[1])),
-                                    )
-                                ],
-                              );
-                            }
-
-                            final item = _jobProvider.announcements[index - 1];
-                            return OpenContainer(
-                              closedColor:
-                                  Theme.of(context).colorScheme.background,
-                              closedElevation: 0,
-                              middleColor:
-                                  Theme.of(context).colorScheme.background,
-                              openColor:
-                                  Theme.of(context).colorScheme.background,
-                              closedShape: const Border(),
-                              closedBuilder: (context, tap) {
-                                return InkWell(
-                                  onTapDown: (TapDownDetails details) {
-                                    _tapDownPosition = details.globalPosition;
-                                  },
-                                  onTap: () => tap(),
-                                  onLongPress: () async {
-                                    final RenderBox overlay =
-                                        Overlay.of(context)
-                                            .context
-                                            .findRenderObject() as RenderBox;
-
-                                    showMenu(
-                                      context: context,
-                                      items: [
-                                        PopupMenuItem<int>(
-                                          value: 1,
-                                          onTap: () async {
-                                            await Clipboard.setData(
-                                                ClipboardData(
-                                                    text: item.jobLink));
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text("ბმული"),
-                                              Icon(
-                                                Icons.link,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                      position: RelativeRect.fromLTRB(
-                                        _tapDownPosition.dx,
-                                        _tapDownPosition.dy,
-                                        overlay.size.width -
-                                            _tapDownPosition.dx,
-                                        overlay.size.height -
-                                            _tapDownPosition.dy,
-                                      ),
-                                    );
-                                  },
-                                  splashFactory: InkSparkle.splashFactory,
-                                  child: Ink(
-                                    padding: const EdgeInsets.only(
-                                        left: 16,
-                                        right: 16,
-                                        top: 12,
-                                        bottom: 12),
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                      bottom: BorderSide(
-                                        color: Theme.of(context)
-                                            .dividerColor
-                                            .withOpacity(0.2),
-                                        width: 1.0,
-                                      ),
-                                    )),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          fit: FlexFit.tight,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              AutoSizeText(
-                                                item.jobName,
-                                                maxLines: 2,
-                                                style: GoogleFonts
-                                                    .notoSansGeorgian(),
-                                              ),
-                                              ...buildListTileSecondary(
-                                                  item, context),
-                                              buildAttributeWidgets(
-                                                  item, context)
-                                            ],
-                                          ),
-                                        ),
-                                        // advertImage(item.imageUrl),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                              openBuilder: (context, action) {
-                                return AdvertScreen(announcement: item);
-                              },
-                            );
-                          },
-                        )
-                    ],
-                  );
-                } else {
-                  return const LinearProgressIndicator();
-                }
+  SliverToBoxAdapter buildAdsList() {
+    return SliverToBoxAdapter(
+        child: ListView.builder(
+      controller: ScrollController(),
+      shrinkWrap: true,
+      itemCount: _jobProvider.announcements.length,
+      itemBuilder: (context, index) {
+        final item = _jobProvider.announcements[index];
+        return OpenContainer(
+          closedColor: Theme.of(context).colorScheme.background,
+          closedElevation: 0,
+          middleColor: Theme.of(context).colorScheme.background,
+          openColor: Theme.of(context).colorScheme.background,
+          closedShape: const Border(),
+          closedBuilder: (context, tap) {
+            return InkWell(
+              onTapDown: (TapDownDetails details) {
+                _tapDownPosition = details.globalPosition;
               },
-            ),
-          )
-        ],
+              onTap: () => tap(),
+              onLongPress: () async {
+                final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject() as RenderBox;
+
+                showMenu(
+                  context: context,
+                  items: [
+                    PopupMenuItem<int>(
+                      value: 1,
+                      onTap: () async {
+                        await Clipboard.setData(
+                            ClipboardData(text: item.jobLink));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("ბმული"),
+                          Icon(
+                            Icons.link,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  position: RelativeRect.fromLTRB(
+                    _tapDownPosition.dx,
+                    _tapDownPosition.dy,
+                    overlay.size.width - _tapDownPosition.dx,
+                    overlay.size.height - _tapDownPosition.dy,
+                  ),
+                );
+              },
+              splashFactory: InkSparkle.splashFactory,
+              child: Ink(
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, top: 12, bottom: 12),
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).dividerColor.withOpacity(0.2),
+                    width: 1.0,
+                  ),
+                )),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            item.jobName,
+                            maxLines: 2,
+                            style: GoogleFonts.notoSansGeorgian(),
+                          ),
+                          ...buildListTileSecondary(item, context),
+                          buildAttributeWidgets(item, context)
+                        ],
+                      ),
+                    ),
+                    // advertImage(item.imageUrl),
+                  ],
+                ),
+              ),
+            );
+          },
+          openBuilder: (context, action) {
+            return AdvertScreen(announcement: item);
+          },
+        );
+      },
+    ));
+  }
+
+  SliverToBoxAdapter buildHtmlDescription() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Html(
+          data: _jobProvider.description,
+          style: {
+            "p": Style(color: Theme.of(context).colorScheme.secondary),
+          },
+          onLinkTap: (url, _, attributes, element) {
+            if (url == null) {
+              showSnackBar(context, 'მოხდა შეცდომა! ');
+              return;
+            }
+
+            if (url.startsWith('http')) {
+              launchWebUrl(context, url);
+            } else {
+              openIntent(context, url);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  SliverAppBar buildHorizontalBar(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      automaticallyImplyLeading: false,
+      titleSpacing: 0,
+      toolbarHeight: 45,
+      title: SizedBox(
+        height: 50,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            if (_jobProvider.announcements.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: 12, bottom: 12),
+                child: FilterChip(
+                  selected: true,
+                  labelPadding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _jobProvider.announcements.length.toString(),
+                        style: GoogleFonts.notoSans(),
+                      ),
+                      const Text('  განცხადება'),
+                    ],
+                  ),
+                  onSelected: (bool value) {},
+                  showCheckmark: false,
+                ),
+              ),
+            if (widget.websiteLink != '')
+              Padding(
+                  padding:
+                      const EdgeInsets.only(left: 12, bottom: 12, right: 12),
+                  child: ChoiceChip(
+                    tooltip: 'ბრაუზერში გახსნა',
+                    onSelected: (_) {
+                      launchWebUrl(context, widget.websiteLink);
+                    },
+                    label: Text(
+                      Uri.parse(widget.websiteLink).host,
+                    ),
+                    selected: false,
+                  ))
+          ],
+        ),
       ),
     );
   }
