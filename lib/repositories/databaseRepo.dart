@@ -48,6 +48,7 @@ class DatabaseRepository {
       String jobProviderLink = '';
       String jobName = '';
       String jobId = '';
+      String websiteLink = '';
       String jobRegion = '';
       String description = '';
       bool salary = false;
@@ -96,6 +97,17 @@ class DatabaseRepository {
 
         imageUrl = imageUrlElement.attributes.entries.first.value;
       } catch (e) {}
+
+      try {
+        Element websiteUrlElement =
+            element.getElementsByTagName('td')[2].getElementsByTagName('a')[0];
+
+        websiteLink = websiteUrlElement.attributes.entries.first.value;
+
+        if (!websiteLink.startsWith('http')) {
+          websiteLink = '';
+        }
+      } catch (e) {}
       try {
         Element jobProviderLinkElement =
             element.getElementsByTagName('td')[3].getElementsByTagName('a')[0];
@@ -130,6 +142,7 @@ class DatabaseRepository {
           jobRegion: jobRegion,
           description: description,
           salary: salary,
+          website: websiteLink,
           aboutToExpire: aboutToExpire,
           newAdvert: newAdvert,
           startDate: startDate,
@@ -208,9 +221,19 @@ class DatabaseRepository {
     List<Announcement> announcements =
         await compute(_computeGetAnnouncements, rows);
 
+    String websiteLink = '';
+
+    try {
+      websiteLink =
+          announcements.firstWhere((element) => element.website != '').website;
+    } catch (e) {
+      print(e);
+    }
+
     final jobprovider = JobProvider(
         name: name,
         imageUrl: imageUrl,
+        websiteLink: websiteLink,
         description: description,
         announcements: announcements);
 

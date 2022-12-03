@@ -219,6 +219,8 @@ class _AdvertScreenState extends State<AdvertScreen> {
                                                     providerLink: widget
                                                         .announcement
                                                         .jobProviderLink,
+                                                    websiteLink: widget
+                                                        .announcement.website,
                                                   ))),
                                       style: TextButton.styleFrom(
                                           foregroundColor: Theme.of(context)

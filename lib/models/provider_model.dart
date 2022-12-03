@@ -10,11 +10,13 @@ class JobProvider {
   String imageUrl;
   String description;
   List<Announcement> announcements;
+  String websiteLink;
   JobProvider({
     required this.name,
     required this.imageUrl,
     required this.description,
     required this.announcements,
+    required this.websiteLink,
   });
 
   JobProvider copyWith({
@@ -22,12 +24,14 @@ class JobProvider {
     String? imageUrl,
     String? description,
     List<Announcement>? announcements,
+    String? websiteLink,
   }) {
     return JobProvider(
       name: name ?? this.name,
       imageUrl: imageUrl ?? this.imageUrl,
       description: description ?? this.description,
       announcements: announcements ?? this.announcements,
+      websiteLink: websiteLink ?? this.websiteLink,
     );
   }
 
@@ -37,6 +41,7 @@ class JobProvider {
       'imageUrl': imageUrl,
       'description': description,
       'announcements': announcements.map((x) => x.toMap()).toList(),
+      'websiteLink': websiteLink,
     };
   }
 
@@ -50,6 +55,7 @@ class JobProvider {
           (x) => Announcement.fromMap(x as Map<String, dynamic>),
         ),
       ),
+      websiteLink: map['websiteLink'] as String,
     );
   }
 
@@ -60,7 +66,7 @@ class JobProvider {
 
   @override
   String toString() {
-    return 'JobProvider(name: $name, imageUrl: $imageUrl, description: $description, announcements: $announcements)';
+    return 'JobProvider(name: $name, imageUrl: $imageUrl, description: $description, announcements: $announcements, websiteLink: $websiteLink)';
   }
 
   @override
@@ -70,7 +76,8 @@ class JobProvider {
     return other.name == name &&
         other.imageUrl == imageUrl &&
         other.description == description &&
-        listEquals(other.announcements, announcements);
+        listEquals(other.announcements, announcements) &&
+        other.websiteLink == websiteLink;
   }
 
   @override
@@ -78,6 +85,7 @@ class JobProvider {
     return name.hashCode ^
         imageUrl.hashCode ^
         description.hashCode ^
-        announcements.hashCode;
+        announcements.hashCode ^
+        websiteLink.hashCode;
   }
 }

@@ -5,6 +5,7 @@ class Announcement {
   String jobProvider;
   String jobProviderLink;
   String jobId;
+  String website;
   String jobName;
   String jobRegion;
   String description;
@@ -20,6 +21,7 @@ class Announcement {
     required this.jobProvider,
     required this.jobProviderLink,
     required this.jobId,
+    required this.website,
     required this.jobName,
     required this.jobRegion,
     required this.description,
@@ -37,6 +39,7 @@ class Announcement {
     String? jobProvider,
     String? jobProviderLink,
     String? jobId,
+    String? website,
     String? jobName,
     String? jobRegion,
     String? description,
@@ -53,6 +56,7 @@ class Announcement {
       jobProvider: jobProvider ?? this.jobProvider,
       jobProviderLink: jobProviderLink ?? this.jobProviderLink,
       jobId: jobId ?? this.jobId,
+      website: website ?? this.website,
       jobName: jobName ?? this.jobName,
       jobRegion: jobRegion ?? this.jobRegion,
       description: description ?? this.description,
@@ -72,6 +76,7 @@ class Announcement {
       'jobProvider': jobProvider,
       'jobProviderLink': jobProviderLink,
       'jobId': jobId,
+      'website': website,
       'jobName': jobName,
       'jobRegion': jobRegion,
       'description': description,
@@ -91,6 +96,7 @@ class Announcement {
       jobProvider: map['jobProvider'] as String,
       jobProviderLink: map['jobProviderLink'] as String,
       jobId: map['jobId'] as String,
+      website: map['website'] as String,
       jobName: map['jobName'] as String,
       jobRegion: map['jobRegion'] as String,
       description: map['description'] as String,
@@ -112,7 +118,7 @@ class Announcement {
 
   @override
   String toString() {
-    return 'Announcement(jobProvider: $jobProvider, jobProviderLink: $jobProviderLink, jobId: $jobId, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, newAdvert: $newAdvert, aboutToExpire: $aboutToExpire, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
+    return 'Announcement(jobProvider: $jobProvider, jobProviderLink: $jobProviderLink, jobId: $jobId, website: $website, jobName: $jobName, jobRegion: $jobRegion, description: $description, salary: $salary, newAdvert: $newAdvert, aboutToExpire: $aboutToExpire, startDate: $startDate, endDate: $endDate, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, jobLink: $jobLink)';
   }
 
   @override
@@ -122,6 +128,7 @@ class Announcement {
     return other.jobProvider == jobProvider &&
         other.jobProviderLink == jobProviderLink &&
         other.jobId == jobId &&
+        other.website == website &&
         other.jobName == jobName &&
         other.jobRegion == jobRegion &&
         other.description == description &&
@@ -140,6 +147,7 @@ class Announcement {
     return jobProvider.hashCode ^
         jobProviderLink.hashCode ^
         jobId.hashCode ^
+        website.hashCode ^
         jobName.hashCode ^
         jobRegion.hashCode ^
         description.hashCode ^

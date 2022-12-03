@@ -17,11 +17,13 @@ import '../repositories/databaseRepo.dart';
 class ProviderScreen extends StatefulWidget {
   final String providerName;
   final String providerLink;
+  final String websiteLink;
 
   const ProviderScreen({
     Key? key,
     required this.providerName,
     required this.providerLink,
+    required this.websiteLink,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
 
   @override
   void initState() {
+    print(widget.websiteLink);
     future = DatabaseRepository().getProviderDetails(widget.providerLink);
     super.initState();
   }
@@ -85,23 +88,58 @@ class _ProviderScreenState extends State<ProviderScreen> {
                           shrinkWrap: true,
                           itemCount: _jobProvider.announcements.length + 1,
                           itemBuilder: (context, index) {
-                            if (index == 0 &&
-                                _jobProvider.announcements.isNotEmpty) {
-                              return Container(
-                                alignment: Alignment.centerLeft,
-                                padding:
-                                    const EdgeInsets.only(left: 12, bottom: 12),
-                                child: FilterChip(
-                                  selected: true,
-                                  label: const Text('განცხადება'),
-                                  avatar: Text(
-                                    _jobProvider.announcements.length
-                                        .toString(),
-                                    style: GoogleFonts.notoSans(),
-                                  ),
-                                  onSelected: (bool value) {},
-                                  showCheckmark: false,
-                                ),
+                            if (index == 0) {
+                              return Row(
+                                children: [
+                                  // FutureBuilder(
+                                  //     future: future,
+                                  //     builder: ((context, snapshot) {
+                                  //       if (snapshot.hasData) {
+                                  //         return advertImage(
+                                  //             _jobProvider.imageUrl);
+                                  //       } else {
+                                  //         return const SizedBox(
+                                  //           height: 60,
+                                  //           width: 60,
+                                  //         );
+                                  //       }
+                                  //     })),
+                                  if (_jobProvider.announcements.isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 12, bottom: 12),
+                                      child: FilterChip(
+                                        selected: true,
+                                        labelPadding: const EdgeInsets.fromLTRB(
+                                            4, 0, 4, 0),
+                                        label: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              _jobProvider.announcements.length
+                                                  .toString(),
+                                              style: GoogleFonts.notoSans(),
+                                            ),
+                                            const Text('  განცხადება'),
+                                          ],
+                                        ),
+                                        onSelected: (bool value) {},
+                                        showCheckmark: false,
+                                      ),
+                                    ),
+                                  if (widget.websiteLink != '')
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 12, bottom: 12),
+                                      child: OutlinedButton(
+                                          onPressed: () {
+                                            launchWebUrl(
+                                                context, widget.websiteLink);
+                                          },
+                                          child: Text(widget.websiteLink
+                                              .split('www.')[1])),
+                                    )
+                                ],
                               );
                             }
 
@@ -246,24 +284,9 @@ class _ProviderScreenState extends State<ProviderScreen> {
               ),
             );
           } else {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AutoSizeText(
-                  widget.providerName,
-                  maxLines: 3,
-                ),
-                FutureBuilder(
-                    future: future,
-                    builder: ((context, snapshot) {
-                      if (snapshot.hasData) {
-                        return advertImage(_jobProvider.imageUrl);
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    }))
-              ],
+            return AutoSizeText(
+              widget.providerName,
+              maxLines: 3,
             );
           }
         },
