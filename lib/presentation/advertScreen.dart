@@ -50,7 +50,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
           value.description.contains('იხილეთ ამ განცხადების სრული ტექსტი')) {
         var banner = MaterialBanner(
             content: Text(
-              'English Version Found!',
+              'English Version',
               style: GoogleFonts.notoSans(),
             ),
             actions: [
@@ -216,23 +216,26 @@ class _AdvertScreenState extends State<AdvertScreen> {
                                       Theme.of(context).colorScheme.background,
                                   openColor:
                                       Theme.of(context).colorScheme.background,
-                                  closedShape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
+                                  closedShape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
                                   transitionType:
                                       ContainerTransitionType.fadeThrough,
                                   closedBuilder: (context, action) {
-                                    return OutlinedButton(
-                                        onPressed: () => action(),
-                                        style: TextButton.styleFrom(
-                                            foregroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .tertiary),
-                                        child: Text(
-                                          widget.announcement.jobProvider,
-                                          maxLines: 1,
-                                          softWrap: false,
-                                          overflow: TextOverflow.ellipsis,
-                                        ));
+                                    return SizedBox(
+                                      height: 40,
+                                      child: OutlinedButton(
+                                          onPressed: () => action(),
+                                          style: TextButton.styleFrom(
+                                              foregroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .tertiary),
+                                          child: Text(
+                                            widget.announcement.jobProvider,
+                                            maxLines: 1,
+                                            softWrap: false,
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                    );
                                   },
                                   openBuilder: (context, action) {
                                     return ProviderScreen(
