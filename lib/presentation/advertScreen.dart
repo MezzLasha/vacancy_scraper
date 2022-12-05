@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -192,37 +193,36 @@ class _AdvertScreenState extends State<AdvertScreen> {
                 snapshot.hasData) {
               detailedAd = snapshot.data!;
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.only(left: 12, right: 12),
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                advertImage(detailedAd.imageUrl),
-                                if (widget.announcement.jobProvider != '')
-                                  Flexible(
-                                    child: OutlinedButton(
-                                        onPressed: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProviderScreen(
-                                                      providerName: widget
-                                                          .announcement
-                                                          .jobProvider,
-                                                      providerLink: widget
-                                                          .announcement
-                                                          .jobProviderLink,
-                                                      websiteLink: widget
-                                                          .announcement.website,
-                                                    ))),
+              return Column(
+                children: [
+                  Container(
+                      margin: const EdgeInsets.only(left: 12, right: 12),
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              advertImage(detailedAd.imageUrl),
+                              if (widget.announcement.jobProvider != '')
+                                Flexible(
+                                    child: OpenContainer(
+                                  closedColor:
+                                      Theme.of(context).colorScheme.background,
+                                  closedElevation: 0,
+                                  middleColor:
+                                      Theme.of(context).colorScheme.background,
+                                  openColor:
+                                      Theme.of(context).colorScheme.background,
+                                  closedShape: BeveledRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  transitionType:
+                                      ContainerTransitionType.fadeThrough,
+                                  closedBuilder: (context, action) {
+                                    return OutlinedButton(
+                                        onPressed: () => action(),
                                         style: TextButton.styleFrom(
                                             foregroundColor: Theme.of(context)
                                                 .colorScheme
@@ -232,159 +232,167 @@ class _AdvertScreenState extends State<AdvertScreen> {
                                           maxLines: 1,
                                           softWrap: false,
                                           overflow: TextOverflow.ellipsis,
-                                        )),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'გამოქვეყნდა: ${widget.announcement.startDate}',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  'ბოლო ვადა: ${widget.announcement.endDate.substring(0, widget.announcement.endDate.length - 8)}',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                          ],
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        controller: ScrollController(),
-                        child: SelectableHtml(
-                          selectionControls: MaterialYouTextSelectionControls(),
-                          data: detailedAd.description,
-                          shrinkWrap: true,
-                          onLinkTap: (url, _, attributes, element) {
-                            if (url == null) {
-                              showSnackBar(context, 'მოხდა შეცდომა! ');
-                              return;
-                            }
-                            if (url.startsWith('/en/ads/')) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AdvertScreen(
-                                            announcement: widget.announcement
-                                                .copyWith(
-                                                    jobLink:
-                                                        ('https://jobs.ge${detailedAd.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
-                                                            .replaceAll(
-                                                                '&amp;', '&')),
-                                          )));
-                            }
-                            if (url.startsWith('http')) {
-                              launchWebUrl(context, url);
-                            } else {
-                              openIntent(context, url);
-                            }
-                          },
-                        ),
+                                        ));
+                                  },
+                                  openBuilder: (context, action) {
+                                    return ProviderScreen(
+                                      providerName:
+                                          widget.announcement.jobProvider,
+                                      providerLink:
+                                          widget.announcement.jobProviderLink,
+                                      websiteLink: widget.announcement.website,
+                                    );
+                                  },
+                                )),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'გამოქვეყნდა: ${widget.announcement.startDate}',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                'ბოლო ვადა: ${widget.announcement.endDate.substring(0, widget.announcement.endDate.length - 8)}',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                        ],
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      controller: ScrollController(),
+                      child: SelectableHtml(
+                        selectionControls: MaterialYouTextSelectionControls(),
+                        data: detailedAd.description,
+                        shrinkWrap: true,
+                        onLinkTap: (url, _, attributes, element) {
+                          if (url == null) {
+                            showSnackBar(context, 'მოხდა შეცდომა! ');
+                            return;
+                          }
+                          if (url.startsWith('/en/ads/')) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AdvertScreen(
+                                          announcement: widget.announcement
+                                              .copyWith(
+                                                  jobLink:
+                                                      ('https://jobs.ge${detailedAd.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
+                                                          .replaceAll(
+                                                              '&amp;', '&')),
+                                        )));
+                          }
+                          if (url.startsWith('http')) {
+                            launchWebUrl(context, url);
+                          } else {
+                            openIntent(context, url);
+                          }
+                        },
                       ),
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    if (detailedAd.attachmentUrl != '')
-                      Card(
-                        margin: const EdgeInsets.all(12),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'მიმაგრებული ფაილი',
-                                    style: GoogleFonts.notoSansGeorgian(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.attach_file,
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  if (detailedAd.attachmentUrl != '')
+                    Card(
+                      margin: const EdgeInsets.all(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'მიმაგრებული ფაილი',
+                                  style: GoogleFonts.notoSansGeorgian(
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onBackground,
                                   ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: InkWell(
-                                  onTap: () {
-                                    launchWebUrl(
-                                        context, detailedAd.attachmentUrl);
-                                  },
-                                  onLongPress: () {
-                                    final snackbar = SnackBar(
-                                        content: Text(
-                                          detailedAd.attachmentUrl,
-                                          style: GoogleFonts.notoSans(
-                                            color: Theme.of(context)
-                                                .primaryTextTheme
-                                                .labelMedium!
-                                                .color,
-                                          ),
+                                ),
+                                Icon(
+                                  Icons.attach_file,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: InkWell(
+                                onTap: () {
+                                  launchWebUrl(
+                                      context, detailedAd.attachmentUrl);
+                                },
+                                onLongPress: () {
+                                  final snackbar = SnackBar(
+                                      content: Text(
+                                        detailedAd.attachmentUrl,
+                                        style: GoogleFonts.notoSans(
+                                          color: Theme.of(context)
+                                              .primaryTextTheme
+                                              .labelMedium!
+                                              .color,
                                         ),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: Theme.of(context)
-                                            .dialogBackgroundColor,
-                                        action: SnackBarAction(
-                                            label: 'გახსნა',
-                                            textColor: Theme.of(context)
-                                                .primaryTextTheme
-                                                .displayMedium!
-                                                .color,
-                                            onPressed: () {
-                                              launchWebUrl(context,
-                                                  detailedAd.attachmentUrl);
-                                            }));
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackbar);
-                                  },
-                                  child: Text(
-                                    detailedAd.attachmentUrl
-                                        .split('jobs/')[1]
-                                        .split('/')[1],
-                                    style: GoogleFonts.notoSans(
-                                        color: Colors.blue),
-                                  ),
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Theme.of(context)
+                                          .dialogBackgroundColor,
+                                      action: SnackBarAction(
+                                          label: 'გახსნა',
+                                          textColor: Theme.of(context)
+                                              .primaryTextTheme
+                                              .displayMedium!
+                                              .color,
+                                          onPressed: () {
+                                            launchWebUrl(context,
+                                                detailedAd.attachmentUrl);
+                                          }));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackbar);
+                                },
+                                child: Text(
+                                  detailedAd.attachmentUrl
+                                      .split('jobs/')[1]
+                                      .split('/')[1],
+                                  style:
+                                      GoogleFonts.notoSans(color: Colors.blue),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      )
-                  ],
-                ),
+                      ),
+                    )
+                ],
               );
             } else {
               return const LinearProgressIndicator();
