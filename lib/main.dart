@@ -55,20 +55,40 @@ class MyApp extends StatelessWidget {
 
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      var lightTheme = ThemeData(
+        // colorScheme: lightDynamic,
+        fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
+        useMaterial3: true,
+      );
+
+      var darkTheme = ThemeData.dark(
+        // colorScheme: darkDynamic,
+        // fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
+        useMaterial3: true,
+      );
+
+      if (lightDynamic != null) {
+        lightTheme = ThemeData(
+          colorScheme: lightDynamic,
+          fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
+          useMaterial3: true,
+        );
+      }
+
+      if (darkDynamic != null) {
+        darkTheme = ThemeData(
+          colorScheme: darkDynamic,
+          fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
+          useMaterial3: true,
+        );
+      }
+
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         scrollBehavior: MyCustomScrollBehavior(),
         title: 'ვაკანსიები',
-        theme: ThemeData(
-          colorScheme: lightDynamic ?? _defaultLightColorScheme,
-          fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
-          useMaterial3: true,
-        ),
-        darkTheme: ThemeData(
-          colorScheme: darkDynamic ?? _defaultDarkColorScheme,
-          fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
-          useMaterial3: true,
-        ),
+        theme: lightTheme,
+        darkTheme: darkTheme,
         home: const HomeScreen(),
       );
     });
