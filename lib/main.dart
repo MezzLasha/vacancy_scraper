@@ -11,12 +11,7 @@ import 'package:vacancy_scraper/presentation/home.dart';
 
 import 'firebase_options.dart';
 
-// Fictitious brand color.
-final _defaultLightColorScheme =
-    ColorScheme.fromSwatch(primarySwatch: Colors.blue);
 
-final _defaultDarkColorScheme = ColorScheme.fromSwatch(
-    primarySwatch: Colors.blue, brightness: Brightness.dark);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -51,7 +46,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
 
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
@@ -84,6 +78,8 @@ class MyApp extends StatelessWidget {
       }
 
       return MaterialApp(
+        themeAnimationCurve: Curves.easeInOutCubicEmphasized,
+        themeAnimationDuration: const Duration(milliseconds: 500),
         debugShowCheckedModeBanner: false,
         scrollBehavior: MyCustomScrollBehavior(),
         title: 'ვაკანსიები',

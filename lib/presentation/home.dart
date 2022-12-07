@@ -1,19 +1,11 @@
-import 'dart:math';
-
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:fluid_dialog/fluid_dialog.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:vacancy_scraper/main.dart';
+import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
@@ -771,6 +763,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
   final _scrollController = ScrollController();
   var _tapDownPosition;
+
   Widget buildPagedListView() {
     return PagedListView<int, Announcement>(
       pagingController: _pagingController,
@@ -801,10 +794,11 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
           );
         },
-        itemBuilder: (context, item, index) => OpenContainer(
+        itemBuilder: (context, item, index) => MyOpenContainer(
           closedColor: Theme.of(context).colorScheme.background,
           closedElevation: 0,
           middleColor: Theme.of(context).colorScheme.background,
+          transitionType: MyOpenContainerTransitionType.fadeThrough,
           openColor: Theme.of(context).colorScheme.background,
           closedShape: const Border(),
           closedBuilder: (context, tap) {
@@ -871,8 +865,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             maxLines: 2,
                             style: GoogleFonts.notoSansGeorgian(),
                           ),
-                          ...buildListTileSecondary(item, context),
-                          buildAttributeWidgets(item, context)
+                          ListTileSecondary(
+                            item: item,
+                          ),
+
+                          // buildAttributeWidgets(item, context)
+                          AttributeWidget(
+                            item: item,
+                          )
                         ],
                       ),
                     ),
@@ -897,92 +897,153 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Widget buildAttributeWidgets(Announcement item, BuildContext context) {
-  return Row(
-    children: [
-      if (item.newAdvert)
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0, top: 8),
-          child: Tooltip(
-            message: 'ახალი დადებული',
-            child: Icon(
-              Icons.fiber_new_outlined,
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ),
-        ),
-      if (item.aboutToExpire)
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0, top: 8),
-          child: Tooltip(
-            message: 'ვადა გასდის მალე',
-            child: Icon(
-              Icons.timer_off_outlined,
-              color: Theme.of(context).colorScheme.error,
-              size: 20,
-            ),
-          ),
-        ),
-      if (item.salary)
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0, top: 8),
-          child: Tooltip(
-            message: 'ხელფასიანი',
-            child: Text(
-              '₾',
-              style: GoogleFonts.notoSansGeorgian(
-                  color: Theme.of(context).colorScheme.tertiary),
-            ),
-          ),
-        )
-    ],
-  );
-}
+class AttributeWidget extends StatelessWidget {
+  final Announcement item;
 
-List<Widget> buildListTileSecondary(Announcement item, BuildContext context) {
-  if (item.jobRegion != '' && item.jobProvider != '') {
-    return [
-      const SizedBox(
-        height: 12,
-      ),
-      AutoSizeText(
-        '${item.jobProvider} · ${item.jobRegion}',
-        maxLines: 2,
-        style: GoogleFonts.notoSansGeorgian(
-            color: Color.lerp(Theme.of(context).disabledColor,
-                Theme.of(context).colorScheme.primary, 0.7)),
-      ),
-    ];
-  } else if (item.jobRegion == '' && item.jobProvider != '') {
-    return [
-      const SizedBox(
-        height: 12,
-      ),
-      AutoSizeText(
-        item.jobProvider,
-        maxLines: 2,
-        style: GoogleFonts.notoSansGeorgian(
-            color: Color.lerp(Theme.of(context).disabledColor,
-                Theme.of(context).colorScheme.primary, 0.7)),
-      ),
-    ];
-  } else if (item.jobRegion != '' && item.jobProvider == '') {
-    return [
-      const SizedBox(
-        height: 12,
-      ),
-      AutoSizeText(
-        item.jobProvider,
-        maxLines: 2,
-        style: GoogleFonts.notoSansGeorgian(
-            color: Color.lerp(Theme.of(context).disabledColor,
-                Theme.of(context).colorScheme.primary, 0.7)),
-      ),
-    ];
-  } else {
-    return [const SizedBox()];
+  const AttributeWidget({Key? key, required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (item.newAdvert)
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8),
+            child: Tooltip(
+              message: 'ახალი დადებული',
+              child: Icon(
+                Icons.fiber_new_outlined,
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        if (item.aboutToExpire)
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8),
+            child: Tooltip(
+              message: 'ვადა გასდის მალე',
+              child: Icon(
+                Icons.timer_off_outlined,
+                color: Theme.of(context).colorScheme.error,
+                size: 20,
+              ),
+            ),
+          ),
+        if (item.salary)
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8),
+            child: Tooltip(
+              message: 'ხელფასიანი',
+              child: Text(
+                '₾',
+                style: GoogleFonts.notoSansGeorgian(
+                    color: Theme.of(context).colorScheme.tertiary),
+              ),
+            ),
+          )
+      ],
+    );
   }
 }
+
+class ListTileSecondary extends StatelessWidget {
+  final Announcement item;
+
+  const ListTileSecondary({Key? key, required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (item.jobRegion != '' && item.jobProvider != '') {
+      return Column(children: [
+        const SizedBox(
+          height: 12,
+        ),
+        AutoSizeText(
+          '${item.jobProvider} · ${item.jobRegion}',
+          maxLines: 2,
+          style: GoogleFonts.notoSansGeorgian(
+              color: Color.lerp(Theme.of(context).disabledColor,
+                  Theme.of(context).colorScheme.primary, 0.7)),
+        ),
+      ]);
+    } else if (item.jobRegion == '' && item.jobProvider != '') {
+      return Column(children: [
+        const SizedBox(
+          height: 12,
+        ),
+        AutoSizeText(
+          item.jobProvider,
+          maxLines: 2,
+          style: GoogleFonts.notoSansGeorgian(
+              color: Color.lerp(Theme.of(context).disabledColor,
+                  Theme.of(context).colorScheme.primary, 0.7)),
+        ),
+      ]);
+    } else if (item.jobRegion != '' && item.jobProvider == '') {
+      return Column(
+        children: [
+          const SizedBox(
+            height: 12,
+          ),
+          AutoSizeText(
+            item.jobProvider,
+            maxLines: 2,
+            style: GoogleFonts.notoSansGeorgian(
+                color: Color.lerp(Theme.of(context).disabledColor,
+                    Theme.of(context).colorScheme.primary, 0.7)),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+}
+
+// List<Widget> buildListTileSecondary(Announcement item, BuildContext context) {
+//   if (item.jobRegion != '' && item.jobProvider != '') {
+//     return [
+//       const SizedBox(
+//         height: 12,
+//       ),
+//       AutoSizeText(
+//         '${item.jobProvider} · ${item.jobRegion}',
+//         maxLines: 2,
+//         style: GoogleFonts.notoSansGeorgian(
+//             color: Color.lerp(Theme.of(context).disabledColor,
+//                 Theme.of(context).colorScheme.primary, 0.7)),
+//       ),
+//     ];
+//   } else if (item.jobRegion == '' && item.jobProvider != '') {
+//     return [
+//       const SizedBox(
+//         height: 12,
+//       ),
+//       AutoSizeText(
+//         item.jobProvider,
+//         maxLines: 2,
+//         style: GoogleFonts.notoSansGeorgian(
+//             color: Color.lerp(Theme.of(context).disabledColor,
+//                 Theme.of(context).colorScheme.primary, 0.7)),
+//       ),
+//     ];
+//   } else if (item.jobRegion != '' && item.jobProvider == '') {
+//     return [
+//       const SizedBox(
+//         height: 12,
+//       ),
+//       AutoSizeText(
+//         item.jobProvider,
+//         maxLines: 2,
+//         style: GoogleFonts.notoSansGeorgian(
+//             color: Color.lerp(Theme.of(context).disabledColor,
+//                 Theme.of(context).colorScheme.primary, 0.7)),
+//       ),
+//     ];
+//   } else {
+//     return [const SizedBox()];
+//   }
+// }
 
 Widget advertImage(String imageUrl) {
   if (imageUrl != '/i/pix.gif') {

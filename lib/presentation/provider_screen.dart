@@ -1,13 +1,11 @@
-import 'dart:math';
 
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
-import 'package:vacancy_scraper/models/announcement.dart';
+import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/provider_model.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
@@ -72,7 +70,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                 )
               ],
             );
-            ;
+
           }
         },
       ),
@@ -88,12 +86,13 @@ class _ProviderScreenState extends State<ProviderScreen> {
         itemCount: _jobProvider.announcements.length,
         itemBuilder: (context, index) {
           final item = _jobProvider.announcements[index];
-          return OpenContainer(
+          return MyOpenContainer(
             closedColor: Theme.of(context).colorScheme.background,
             closedElevation: 0,
             middleColor: Theme.of(context).colorScheme.background,
             openColor: Theme.of(context).colorScheme.background,
             closedShape: const Border(),
+            transitionType: MyOpenContainerTransitionType.fadeThrough,
             closedBuilder: (context, tap) {
               return InkWell(
                 onTapDown: (TapDownDetails details) {
@@ -159,8 +158,8 @@ class _ProviderScreenState extends State<ProviderScreen> {
                               maxLines: 2,
                               style: GoogleFonts.notoSansGeorgian(),
                             ),
-                            ...buildListTileSecondary(item, context),
-                            buildAttributeWidgets(item, context)
+                            ListTileSecondary(item: item,),
+                            AttributeWidget(item: item,)
                           ],
                         ),
                       ),

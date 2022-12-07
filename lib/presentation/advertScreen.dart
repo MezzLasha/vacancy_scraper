@@ -1,12 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
@@ -208,7 +205,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
                               advertImage(detailedAd.imageUrl),
                               if (widget.announcement.jobProvider != '')
                                 Flexible(
-                                    child: OpenContainer(
+                                    child: MyOpenContainer(
                                   closedColor:
                                       Theme.of(context).colorScheme.background,
                                   closedElevation: 0,
@@ -219,7 +216,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
                                   closedShape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)),
                                   transitionType:
-                                      ContainerTransitionType.fadeThrough,
+                                      MyOpenContainerTransitionType.fadeThrough,
                                   closedBuilder: (context, action) {
                                     return SizedBox(
                                       height: 40,

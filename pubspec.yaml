@@ -32,24 +32,19 @@ dependencies:
   android_intent_plus: ^3.1.5
   animations: ^2.0.7
   auto_size_text: ^3.0.0
-  bloc: ^8.1.0
   cupertino_icons: ^1.0.2
   dynamic_color: ^1.5.4
   firebase_core: ^2.3.0
   firebase_crashlytics: ^3.0.6
   firebase_performance: ^0.9.0+6
-  fluid_dialog: ^1.1.0
   flutter:
     sdk: flutter
-  flutter_adaptive_scaffold: ^0.0.8
-  flutter_bloc: ^8.1.1
   flutter_custom_tabs: ^1.0.4
   flutter_html: ^2.2.1
   font_awesome_flutter: ^10.2.1
   google_fonts: ^3.0.1
   html: ^0.15.1
   http: ^0.13.5
-  iconsax: ^0.0.8
   infinite_scroll_pagination: ^3.2.0
   scale_button: ^2.1.2
   url_launcher: ^6.1.6
