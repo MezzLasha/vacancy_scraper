@@ -218,8 +218,9 @@ class _AdvertScreenState extends State<AdvertScreen> {
                                   transitionType:
                                       MyOpenContainerTransitionType.fadeThrough,
                                   closedBuilder: (context, action) {
-                                    return SizedBox(
+                                    return Container(
                                       height: 40,
+                                      padding: const EdgeInsets.all(1),
                                       child: OutlinedButton(
                                           onPressed: () => action(),
                                           style: TextButton.styleFrom(
