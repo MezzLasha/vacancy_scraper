@@ -11,7 +11,6 @@ import 'package:vacancy_scraper/presentation/home.dart';
 
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -19,7 +18,6 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    // Pass all uncaught errors from the framework to Crashlytics.
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   }
 
@@ -46,18 +44,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       var lightTheme = ThemeData(
-        // colorScheme: lightDynamic,
         fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
         useMaterial3: true,
       );
 
       var darkTheme = ThemeData.dark(
-        // colorScheme: darkDynamic,
-        // fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
         useMaterial3: true,
       );
 

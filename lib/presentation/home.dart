@@ -28,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var isFabVisible = false;
 
+  final refreshGlobalKey = GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     _pagingController.addPageRequestListener((pageKey) {
@@ -80,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refresh() async {
+    refreshGlobalKey.currentState!.show();
     _pagingController.itemList = [];
     try {
       _scrollController.animateTo(0,
@@ -253,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filterString, selectedFilter[0], selectedFilter[1], selectedFilter[2]);
     Navigator.pop(context);
     _pagingController.itemList = [];
-    await _fetchPage(0);
+    await _refresh();
   }
 
   Future<void> searchForAdsFromMainScreen(String filterString) async {
@@ -261,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setFilter(
         filterString, selectedFilter[0], selectedFilter[1], selectedFilter[2]);
     _pagingController.itemList = [];
-    await _fetchPage(0);
+    await _refresh();
   }
 
   var textFieldKey = GlobalKey<FormFieldState>();
@@ -278,7 +281,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       appBar: buildAppBar(),
-      body: RefreshIndicator(onRefresh: _refresh, child: buildPagedListView()),
+      body: RefreshIndicator(
+          key: refreshGlobalKey,
+          onRefresh: _refresh,
+          child: buildPagedListView()),
     );
   }
 
@@ -425,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Padding(
         padding: const EdgeInsets.only(left: 32.0),
         child: FloatingActionButton(
-          tooltip: 'მაღლა დაბრუნება',
+          tooltip: isFabVisible ? 'მაღლა დაბრუნება' : '',
           backgroundColor: Theme.of(context).colorScheme.secondary,
           onPressed: () {
             _scrollController.animateTo(0,
@@ -592,10 +598,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   ]);
             }
-            // else if (value == 2) {
-            //   launchWebUrl(
-            //       context, 'https://github.com/MezzLasha/vacancy_scraper');
-            // }
           }),
         ],
         bottom: (queryText != '' ||
@@ -613,146 +615,42 @@ class _HomeScreenState extends State<HomeScreen> {
                     shrinkWrap: true,
                     children: [
                       if (queryText != '')
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12, right: 8.0),
-                          child: FilterChip(
-                            label: Row(
-                              children: [
-                                Icon(
-                                  Icons.close,
-                                  size: 17,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  queryText,
-                                  style: GoogleFonts.notoSansGeorgian(
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                            selectedColor:
-                                Theme.of(context).colorScheme.background,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 0),
-                            selected: true,
-                            showCheckmark: false,
-                            onSelected: (value) {
-                              queryText = '';
-                              searchForAdsFromMainScreen(queryText);
-                            },
-                          ),
+                        QueryFilterChip(
+                          filterable: queryText,
+                          title: queryText,
+                          onSelected: () {
+                            queryText = '';
+                            searchForAdsFromMainScreen(queryText);
+                          },
                         ),
                       if (selectedFilter[0] != 'ყველა კატეგორია')
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: queryText != '' ? 0 : 12, right: 8.0),
-                          child: FilterChip(
-                            label: Row(
-                              children: [
-                                Icon(
-                                  Icons.close,
-                                  size: 17,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  selectedFilter[0],
-                                  style: GoogleFonts.notoSansGeorgian(
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                            selectedColor:
-                                Theme.of(context).colorScheme.background,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 0),
-                            selected: true,
-                            showCheckmark: false,
-                            onSelected: (value) {
+                        QueryFilterChip(
+                            title: selectedFilter[0],
+                            filterable: selectedFilter[0],
+                            onSelected: () {
                               categoryValue = 'ყველა კატეგორია';
                               searchForAdsFromMainScreen(queryText);
-                            },
-                          ),
-                        ),
+                            }),
                       if (selectedFilter[1] != 'ნებისმიერ ადგილას')
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: FilterChip(
-                            label: Row(
-                              children: [
-                                Icon(
-                                  Icons.close,
-                                  size: 17,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  selectedFilter[1],
-                                  style: GoogleFonts.notoSansGeorgian(
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                            selectedColor:
-                                Theme.of(context).colorScheme.background,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 0),
-                            selected: true,
-                            showCheckmark: false,
-                            onSelected: (value) {
+                        QueryFilterChip(
+                            title: selectedFilter[1],
+                            filterable: selectedFilter[1],
+                            onSelected: () {
                               locationValue = 'ნებისმიერ ადგილას';
                               searchForAdsFromMainScreen(queryText);
-                            },
-                          ),
-                        ),
+                            }),
                       if (selectedFilter[2] != 'ყველა ვაკანსია')
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: FilterChip(
-                            label: Row(
-                              children: [
-                                Icon(
-                                  Icons.close,
-                                  size: 17,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  selectedFilter[2],
-                                  style: GoogleFonts.notoSansGeorgian(
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                            selectedColor:
-                                Theme.of(context).colorScheme.background,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 0),
-                            selected: true,
-                            showCheckmark: false,
-                            onSelected: (value) {
-                              jobTypeValue = 'ყველა ვაკანსია';
-                              searchForAdsFromMainScreen(queryText);
-                            },
-                          ),
+                        QueryFilterChip(
+                          title: jobTypeValue,
+                          filterable: jobTypeValue,
+                          onSelected: () {
+                            jobTypeValue = 'ყველა ვაკანსია';
+                            searchForAdsFromMainScreen(queryText);
+                          },
                         ),
+                      const SizedBox(
+                        width: 12,
+                      )
                     ],
                   ),
                 ))
@@ -761,6 +659,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox.shrink(),
               ),
       );
+
   final _scrollController = ScrollController();
   var _tapDownPosition;
 
@@ -775,6 +674,7 @@ class _HomeScreenState extends State<HomeScreen> {
           height: MediaQuery.of(context).size.height,
           width: double.infinity,
         ),
+        newPageProgressIndicatorBuilder: (_) => const LinearProgressIndicator(),
         firstPageErrorIndicatorBuilder: (context) {
           return buildErrorPage(context);
         },
@@ -876,7 +776,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    advertImage(item.imageUrl),
+                    AdvertisementImage(
+                      imageUrl: item.imageUrl,
+                    ),
                   ],
                 ),
               ),
@@ -1000,62 +902,52 @@ class ListTileSecondary extends StatelessWidget {
   }
 }
 
-// List<Widget> buildListTileSecondary(Announcement item, BuildContext context) {
-//   if (item.jobRegion != '' && item.jobProvider != '') {
-//     return [
-//       const SizedBox(
-//         height: 12,
-//       ),
-//       AutoSizeText(
-//         '${item.jobProvider} · ${item.jobRegion}',
-//         maxLines: 2,
-//         style: GoogleFonts.notoSansGeorgian(
-//             color: Color.lerp(Theme.of(context).disabledColor,
-//                 Theme.of(context).colorScheme.primary, 0.7)),
-//       ),
-//     ];
-//   } else if (item.jobRegion == '' && item.jobProvider != '') {
-//     return [
-//       const SizedBox(
-//         height: 12,
-//       ),
-//       AutoSizeText(
-//         item.jobProvider,
-//         maxLines: 2,
-//         style: GoogleFonts.notoSansGeorgian(
-//             color: Color.lerp(Theme.of(context).disabledColor,
-//                 Theme.of(context).colorScheme.primary, 0.7)),
-//       ),
-//     ];
-//   } else if (item.jobRegion != '' && item.jobProvider == '') {
-//     return [
-//       const SizedBox(
-//         height: 12,
-//       ),
-//       AutoSizeText(
-//         item.jobProvider,
-//         maxLines: 2,
-//         style: GoogleFonts.notoSansGeorgian(
-//             color: Color.lerp(Theme.of(context).disabledColor,
-//                 Theme.of(context).colorScheme.primary, 0.7)),
-//       ),
-//     ];
-//   } else {
-//     return [const SizedBox()];
-//   }
-// }
+class QueryFilterChip extends StatelessWidget {
+  final String title;
+  final String filterable;
+  final Function() onSelected;
+  const QueryFilterChip(
+      {super.key,
+      required this.title,
+      required this.filterable,
+      required this.onSelected});
 
-Widget advertImage(String imageUrl) {
-  if (imageUrl != '/i/pix.gif') {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(5)),
-      child: Image.network(
-        'https://jobs.ge$imageUrl',
-        fit: BoxFit.fitWidth,
-        width: 60,
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 12,
+      ),
+      child: FilterChip(
+        label: Row(
+          children: [
+            Icon(
+              Icons.close,
+              size: 17,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(
+              title,
+              style: GoogleFonts.notoSansGeorgian(
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ),
+        selectedColor: Theme.of(context).colorScheme.surface,
+        elevation: 1,
+        surfaceTintColor: Theme.of(context).colorScheme.primary,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+        selected: true,
+        showCheckmark: false,
+        onSelected: (value) {
+          onSelected();
+        },
       ),
     );
-  } else {
-    return const SizedBox.shrink();
   }
 }

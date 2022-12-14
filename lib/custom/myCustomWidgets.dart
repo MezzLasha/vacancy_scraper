@@ -13,6 +13,27 @@ void showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }
 
+class AdvertisementImage extends StatelessWidget {
+  final String imageUrl;
+  const AdvertisementImage({super.key, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl != '/i/pix.gif') {
+      return ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+        child: Image.network(
+          'https://jobs.ge$imageUrl',
+          fit: BoxFit.fitWidth,
+          width: 60,
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+}
+
 class DragHandlePill extends StatelessWidget {
   final Color? color;
   final double? height;

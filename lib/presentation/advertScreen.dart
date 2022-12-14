@@ -202,7 +202,7 @@ class _AdvertScreenState extends State<AdvertScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              advertImage(detailedAd.imageUrl),
+                              AdvertisementImage(imageUrl: detailedAd.imageUrl),
                               if (widget.announcement.jobProvider != '')
                                 Flexible(
                                     child: MyOpenContainer(
