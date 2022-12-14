@@ -939,7 +939,7 @@ class QueryFilterChip extends StatelessWidget {
           ],
         ),
         selectedColor: Theme.of(context).colorScheme.surface,
-        elevation: 1,
+        // elevation: 1,
         surfaceTintColor: Theme.of(context).colorScheme.primary,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
         selected: true,
