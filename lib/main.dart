@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       var lightTheme = ThemeData(
         fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
+        pageTransitionsTheme: getPageTransitionsTheme(),
         useMaterial3: true,
       );
 
@@ -59,6 +61,7 @@ class MyApp extends StatelessWidget {
         lightTheme = ThemeData(
           colorScheme: lightDynamic,
           fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
+          pageTransitionsTheme: getPageTransitionsTheme(),
           useMaterial3: true,
         );
       }
@@ -66,6 +69,7 @@ class MyApp extends StatelessWidget {
       if (darkDynamic != null) {
         darkTheme = ThemeData(
           colorScheme: darkDynamic,
+          pageTransitionsTheme: getPageTransitionsTheme(),
           fontFamily: GoogleFonts.notoSansGeorgian().fontFamily,
           useMaterial3: true,
         );
@@ -81,6 +85,20 @@ class MyApp extends StatelessWidget {
         darkTheme: darkTheme,
         home: const HomeScreen(),
       );
+    });
+  }
+
+  PageTransitionsTheme getPageTransitionsTheme() {
+    return const PageTransitionsTheme(builders: {
+      TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+        transitionType: SharedAxisTransitionType.horizontal,
+      ),
+      TargetPlatform.windows: SharedAxisPageTransitionsBuilder(
+        transitionType: SharedAxisTransitionType.horizontal,
+      ),
+      TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+        transitionType: SharedAxisTransitionType.horizontal,
+      ),
     });
   }
 }

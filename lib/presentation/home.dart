@@ -3,14 +3,21 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:vacancy_scraper/auth/login_screen.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
+import 'package:vacancy_scraper/presentation/savedAdverts.dart';
+import 'package:vacancy_scraper/presentation/settings.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
 
+import '../bloc/user_bloc.dart';
 import '../models/constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -271,20 +278,80 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          buildJumptoTopFab(context),
-          buildSearchFab(context),
-        ],
+    return BlocProvider(
+      create: (context) => UserBloc(),
+      child: Scaffold(
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            buildJumptoTopFab(context),
+            buildSearchFab(context),
+          ],
+        ),
+        drawerEnableOpenDragGesture: true,
+        drawer: NavigationDrawer(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const NavDrawerProfile(),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Divider(),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    NavDrawerListTile(
+                      selected: true,
+                      icon: Icons.newspaper_outlined,
+                      title: 'ვაკანსიები',
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    NavDrawerListTile(
+                        selected: false,
+                        icon: Icons.favorite_outline,
+                        title: 'დამახსოვრებული',
+                        onTap: () {
+                          // Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SavedAdverts(),
+                              ));
+                        }),
+                    NavDrawerListTile(
+                        selected: false,
+                        icon: Icons.translate,
+                        title: 'პარამეტრები',
+                        onTap: () {
+                          // Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SettingsScreen(),
+                              ));
+                        })
+                  ],
+                ),
+              ],
+            ),
+          )
+        ]),
+        appBar: buildAppBar(),
+        body: RefreshIndicator(
+            key: refreshGlobalKey,
+            onRefresh: _refresh,
+            child: buildPagedListView()),
       ),
-      appBar: buildAppBar(),
-      body: RefreshIndicator(
-          key: refreshGlobalKey,
-          onRefresh: _refresh,
-          child: buildPagedListView()),
     );
   }
 
@@ -512,23 +579,12 @@ class _HomeScreenState extends State<HomeScreen> {
   var selectedFilter = ['', '', ''];
 
   AppBar buildAppBar() => AppBar(
-        titleSpacing: 8,
+        titleSpacing: 0,
         elevation: 3,
-        title: Row(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.recent_actors_outlined,
-              ),
-              iconSize: 30,
-              onPressed: () => _refresh(),
-            ),
-            Text(' ვაკანსიები',
-                style: GoogleFonts.notoSansGeorgian(
-                  fontSize: 16,
-                )),
-          ],
-        ),
+        title: Text(' ვაკანსიები',
+            style: GoogleFonts.notoSansGeorgian(
+              fontSize: 16,
+            )),
         actions: [
           PopupMenuButton(itemBuilder: (context) {
             return [
@@ -799,6 +855,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+class NavDrawerListTile extends StatelessWidget {
+  final bool selected;
+  final IconData icon;
+  final String title;
+  final Function() onTap;
+
+  const NavDrawerListTile({
+    super.key,
+    required this.selected,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final thof = Theme.of(context);
+
+    return ListTile(
+      title: Text(title),
+      horizontalTitleGap: 8,
+      onTap: () => onTap(),
+      selected: selected,
+      splashColor: thof.colorScheme.tertiaryContainer,
+      iconColor: thof.colorScheme.onSurfaceVariant,
+      textColor: thof.colorScheme.onSurfaceVariant,
+      selectedTileColor: thof.colorScheme.secondaryContainer,
+      selectedColor: thof.colorScheme.onSecondaryContainer,
+      shape: const StadiumBorder(),
+      leading: Icon(
+        icon,
+      ),
+    );
+  }
+}
+
 class AttributeWidget extends StatelessWidget {
   final Announcement item;
 
@@ -939,7 +1031,6 @@ class QueryFilterChip extends StatelessWidget {
           ],
         ),
         selectedColor: Theme.of(context).colorScheme.surface,
-        // elevation: 1,
         surfaceTintColor: Theme.of(context).colorScheme.primary,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
         selected: true,
@@ -948,6 +1039,70 @@ class QueryFilterChip extends StatelessWidget {
           onSelected();
         },
       ),
+    );
+  }
+}
+
+class NavDrawerProfile extends StatelessWidget {
+  const NavDrawerProfile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state.user == UserInitial().user) {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              height: 40,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ));
+                },
+                label: const Text('შესვლა'),
+                icon: const Icon(
+                  Icons.person,
+                  size: 24,
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                radius: 30,
+                child: const Icon(
+                  Icons.person,
+                  size: 35,
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                'ლაშა მეზვრიშვილი',
+                softWrap: true,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                'IT/პროგრამირება',
+                softWrap: true,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }
