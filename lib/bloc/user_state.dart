@@ -56,6 +56,10 @@ class UserInitial extends UserState {
   UserInitial()
       : super(
             user: User(
-                email: '', jobCategory: '', name: '', savedAnnouncements: []),
+                email: '',
+                jobCategory: '',
+                name: '',
+                password: '',
+                savedAnnouncements: []),
             operationEvent: const InitialEvent());
 }

@@ -2,9 +2,9 @@ import '../models/announcement.dart';
 import '../models/user_model.dart';
 
 abstract class DBInterface {
-  User getUser();
-  bool saveUser(User user);
+  Future<User> loginUser(String email, String password);
+  void registerUser(User user);
 
-  bool saveAnnouncement(Announcement announcement);
+  void saveAnnouncement(Announcement announcement);
   List<Announcement> getAnnouncements();
 }

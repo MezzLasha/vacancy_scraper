@@ -1,14 +1,29 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'user_bloc.dart';
 
 @immutable
 abstract class UserEvent {}
 
-class SaveUser extends UserEvent {
+class RegisterUser extends UserEvent {
   final User user;
 
-  SaveUser(this.user);
+  RegisterUser(this.user);
 }
 
-class DeleteUser extends UserEvent {}
+class LoginUser extends UserEvent {
+  final String email;
+  final String password;
 
-class LoadUser extends UserEvent {}
+  LoginUser(
+    this.email,
+    this.password,
+  );
+}
+
+class LogoutUser extends UserEvent {}
+
+class EmitUserToHome extends UserEvent {
+  final User user;
+
+  EmitUserToHome(this.user);
+}

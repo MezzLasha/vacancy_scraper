@@ -7,9 +7,11 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 
+import 'bloc/user_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -75,15 +77,18 @@ class MyApp extends StatelessWidget {
         );
       }
 
-      return MaterialApp(
-        themeAnimationCurve: Curves.easeInOutCubicEmphasized,
-        themeAnimationDuration: const Duration(milliseconds: 500),
-        debugShowCheckedModeBanner: false,
-        scrollBehavior: MyCustomScrollBehavior(),
-        title: 'ვაკანსიები',
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        home: const HomeScreen(),
+      return BlocProvider(
+        create: (context) => UserBloc(),
+        child: MaterialApp(
+          themeAnimationCurve: Curves.easeInOutCubicEmphasized,
+          themeAnimationDuration: const Duration(milliseconds: 500),
+          debugShowCheckedModeBanner: false,
+          scrollBehavior: MyCustomScrollBehavior(),
+          title: 'ვაკანსიები',
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          home: const HomeScreen(),
+        ),
       );
     });
   }
