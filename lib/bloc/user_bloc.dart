@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
@@ -14,7 +15,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
-      print(event.toString());
+      if (kDebugMode) {
+        print(event.toString());
+      }
+
       if (event is RegisterUser) {
         emit(state.copyWith(user: event.user, operationEvent: LoadingEvent()));
         try {
@@ -30,7 +34,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         try {
           User user = await db.loginUser(event.email, event.password);
 
-          print('logging in \n$user');
+          if (kDebugMode) {
+            print('Logging In $user');
+          }
 
           emit(state.copyWith(user: user, operationEvent: SuccessfulEvent()));
         } catch (e) {
@@ -41,6 +47,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         try {
           emit(state.copyWith(
               user: UserInitial().user, operationEvent: SuccessfulEvent()));
+          if (kDebugMode) {
+            print('logged out');
+          }
         } catch (e) {
           emit(state.copyWith(
               operationEvent: ErrorEvent(exception: Exception(e))));
