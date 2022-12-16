@@ -420,7 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: const Text('უკან')),
                             TextButton(
                                 onPressed: () {
-                                  context.read<UserBloc>().add(LogoutUser());
+                                  userBloc.add(LogoutUser());
                                   Navigator.pop(context);
                                 },
                                 child: const Text('კი')),

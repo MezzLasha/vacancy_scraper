@@ -19,6 +19,9 @@ class FireRepository implements DBInterface {
 
     final doc = await users.doc(email).get();
     final data = doc.data() as Map<String, dynamic>;
+    if (data['password'] != password) {
+      throw Exception('არასწორი პაროლი');
+    }
     final user = User(
         name: data['name'],
         email: email,
