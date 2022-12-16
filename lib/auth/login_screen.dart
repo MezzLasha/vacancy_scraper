@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vacancy_scraper/auth/register_screen.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
+import 'package:validators/validators.dart';
 
 import '../bloc/operation_events.dart';
 import '../bloc/user_bloc.dart';
@@ -22,6 +23,8 @@ TextEditingController passwordController = TextEditingController();
 TextEditingController emailController = TextEditingController();
 
 class _LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,9 +45,15 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            context
-                .read<UserBloc>()
-                .add(LoginUser(emailController.text, passwordController.text));
+            var formState = formKey.currentState;
+            if (formState == null) {
+              return;
+            }
+
+            if (formState.validate()) {
+              context.read<UserBloc>().add(
+                  LoginUser(emailController.text, passwordController.text));
+            } else {}
           },
           icon: const Icon(Icons.navigate_next),
           label: const Text('შესვლა')),
@@ -81,24 +90,34 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 48,
               ),
-              TextField(
-                controller: emailController,
-                
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                    filled: true, label: Text('ელ-ფოსტა')),
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration:
-                    const InputDecoration(filled: true, label: Text('პაროლი')),
-              ),
-              const SizedBox(
-                height: 16,
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: emailController,
+                      validator: (value) =>
+                          !isEmail(value ?? '') ? "შეასწორეთ ელ-ფოსტა" : null,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                          filled: true, label: Text('ელ-ფოსტა')),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      validator: (value) =>
+                          (value ?? '').length <= 3 ? "შეასწორეთ პაროლი" : null,
+                      decoration: const InputDecoration(
+                          filled: true, label: Text('პაროლი')),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                  ],
+                ),
               ),
               Align(
                   alignment: Alignment.centerRight,
