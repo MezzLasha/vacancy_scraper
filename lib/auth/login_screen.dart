@@ -69,17 +69,21 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ListView(
             shrinkWrap: true,
             children: [
-              const AutoSizeText(
+              AutoSizeText(
                 'ვაკანსიები',
                 maxFontSize: 50,
                 minFontSize: 20,
-                style: TextStyle(fontSize: 50, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               const SizedBox(
                 height: 48,
               ),
               TextField(
                 controller: emailController,
+                
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                     filled: true, label: Text('ელ-ფოსტა')),

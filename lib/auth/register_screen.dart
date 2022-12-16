@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,6 +50,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            if (formKey.currentState == null) {
+              return;
+            }
+
+            if (formKey.currentState!.validate()) {
+              context.read<UserBloc>().add(RegisterUser(User(
+                  name: nameController.text,
+                  email: emailController.text,
+                  password: passwordController.text,
+                  jobCategory: categoryValue,
+                  savedAnnouncements: [])));
+            } else {
+              showSnackBar(context, 'ჩაასწორეთ მონაცემები');
+            }
+          },
+          icon: const Icon(Icons.navigate_next),
+          label: const Text('რეგისტრაცია')),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Container(
+          alignment: Alignment.topLeft,
+          padding: const EdgeInsets.only(left: 12),
+          child: SizedBox(
+            height: 40,
+            child: OutlinedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('უკან')),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: BlocListener<UserBloc, UserState>(
         listener: (_, state) {
           final operationEvent = state.operationEvent;
@@ -65,140 +100,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           child: ListView(
             shrinkWrap: true,
             children: [
-              Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: SizedBox(
-                      height: 40,
-                      child: OutlinedButton.icon(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.arrow_back),
-                          label: const Text('უკან')),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const CircleAvatar(
-                    radius: 100,
-                    backgroundImage: NetworkImage(
-                      'https://lh3.googleusercontent.com/gK__LLaM4jqISqweP0_fxKpBhJuJgSJPqb7wuwRyqMwSBRnj1RJtgXrw69gdLsy2lyH33idBUO5whDJl1TYaHT50hMZc-tj1L49Iq0ctbynuU-0FbFk=w1080',
-                    ),
-                    child: Icon(
-                      Icons.upload_file,
-                      color: Color.fromARGB(255, 50, 82, 50),
-                      size: 100,
-                    ),
-                  )
-                ],
+              const SizedBox(
+                height: 16,
               ),
-              Expanded(
-                child: Center(
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 64,
+              AutoSizeText(
+                'რეგისტრაცია',
+                maxFontSize: 50,
+                minFontSize: 20,
+                style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+              const SizedBox(
+                height: 48,
+              ),
+              Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                          filled: true, label: Text('სახელი')),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                          filled: true, label: Text('პაროლი')),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    TextFormField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                          filled: true, label: Text('ელ-ფოსტა')),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    DropdownButtonFormField(
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'კატეგორია',
+                          filled: true,
                         ),
-                        TextField(
-                          controller: nameController,
-                          decoration: const InputDecoration(
-                              filled: true, label: Text('სახელი')),
-                        ),
-                        const SizedBox(
-                          height: 32,
-                        ),
-                        TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                              filled: true, label: Text('პაროლი')),
-                        ),
-                        const SizedBox(
-                          height: 32,
-                        ),
-                        TextField(
-                          controller: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                              filled: true, label: Text('ელ-ფოსტა')),
-                        ),
-                        const SizedBox(
-                          height: 32,
-                        ),
-                        DropdownButtonFormField(
-                            isExpanded: true,
-                            decoration: const InputDecoration(
-                              labelText: 'კატეგორია',
-                              filled: true,
+                        value: 'ყველა კატეგორია',
+                        items: category.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(
+                              items,
                             ),
-                            value: 'ყველა კატეგორია',
-                            items: category.map((String items) {
-                              return DropdownMenuItem(
-                                value: items,
-                                child: Text(
-                                  items,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: ((value) {
-                              setState(() {
-                                categoryValue = value!;
-                              });
-                            })),
-                        const SizedBox(
-                          height: 32,
-                        ),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              height: 40,
-                              child: FilledButton.tonal(
-                                child: const Text(
-                                  'უკვე გაქვს ანგარიში?',
-                                ),
-                                onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginScreen(
-                                            homeBloc: widget.homeBloc))),
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  height: 50,
-                  child: OutlinedButton.icon(
-                      onPressed: () {
-                        if (formKey.currentState == null) {
-                          return;
-                        }
-
-                        if (formKey.currentState!.validate()) {
-                          context.read<UserBloc>().add(RegisterUser(User(
-                              name: nameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              jobCategory: categoryValue,
-                              savedAnnouncements: [])));
-                        } else {
-                          showSnackBar(context, 'ჩაასწორეთ მონაცემები');
-                        }
-                      },
-                      icon: const Icon(Icons.navigate_next),
-                      label: const Text('შემდეგი')),
+                          );
+                        }).toList(),
+                        onChanged: ((value) {
+                          setState(() {
+                            categoryValue = value!;
+                          });
+                        })),
+                  ],
                 ),
               ),
             ],
