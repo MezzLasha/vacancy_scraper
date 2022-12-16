@@ -1,25 +1,33 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
+
 import 'operation_events.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends HydratedBloc<UserEvent, UserState> {
-  FireRepository db = FireRepository();
+  FireRepository db;
 
-  UserBloc() : super(UserInitial()) {
+  UserBloc(
+    this.db,
+  ) : super(UserState(
+            user: User(
+                name: '',
+                email: '',
+                password: '',
+                jobCategory: '',
+                savedAnnouncementIDs: []))) {
     on<UserEvent>((event, emit) async {
-      if (kDebugMode) {
-        print(event.toString());
-      }
-
+      print(event);
       if (event is RegisterUser) {
         emit(state.copyWith(user: event.user, operationEvent: LoadingEvent()));
         try {
@@ -31,13 +39,9 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
               operationEvent: ErrorEvent(exception: Exception(e))));
         }
       } else if (event is LoginUser) {
-        emit(state.copyWith(operationEvent: LoadingEvent()));
+        // emit(state.copyWith(operationEvent: LoadingEvent()));
         try {
           User user = await db.loginUser(event.email, event.password);
-
-          if (kDebugMode) {
-            print('Logging In $user');
-          }
 
           emit(state.copyWith(user: user, operationEvent: SuccessfulEvent()));
         } catch (e) {
@@ -55,9 +59,6 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
           emit(state.copyWith(
               operationEvent: ErrorEvent(exception: Exception(e))));
         }
-      } else if (event is EmitUserToHome) {
-        emit(state.copyWith(
-            user: event.user, operationEvent: SuccessfulEvent()));
       }
     });
   }

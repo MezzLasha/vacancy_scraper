@@ -1,4 +1,4 @@
-abstract class OperationEvent {
+class OperationEvent {
   const OperationEvent();
 }
 

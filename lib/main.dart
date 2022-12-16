@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vacancy_scraper/repositories/fireRepo.dart';
 
 import 'bloc/user_bloc.dart';
 import 'firebase_options.dart';
@@ -19,12 +20,10 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (defaultTargetPlatform != TargetPlatform.windows) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
@@ -85,17 +84,22 @@ class MyApp extends StatelessWidget {
         );
       }
 
-      return BlocProvider(
-        create: (context) => UserBloc(),
-        child: MaterialApp(
-          themeAnimationCurve: Curves.easeInOutCubicEmphasized,
-          themeAnimationDuration: const Duration(milliseconds: 500),
-          debugShowCheckedModeBanner: false,
-          scrollBehavior: MyCustomScrollBehavior(),
-          title: 'ვაკანსიები',
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          home: const HomeScreen(),
+      return RepositoryProvider(
+        create: (context) => FireRepository(),
+        child: BlocProvider(
+          create: (context) => UserBloc(
+            RepositoryProvider.of<FireRepository>(context),
+          ),
+          child: MaterialApp(
+            themeAnimationCurve: Curves.easeInOutCubicEmphasized,
+            themeAnimationDuration: const Duration(milliseconds: 500),
+            debugShowCheckedModeBanner: false,
+            scrollBehavior: MyCustomScrollBehavior(),
+            title: 'ვაკანსიები',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            home: const HomeScreen(),
+          ),
         ),
       );
     });

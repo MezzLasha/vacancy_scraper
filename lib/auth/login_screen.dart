@@ -12,8 +12,7 @@ import '../bloc/operation_events.dart';
 import '../bloc/user_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
-  final UserBloc homeBloc;
-  const LoginScreen({super.key, required this.homeBloc});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -65,13 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
           if (operationEvent is ErrorEvent) {
             showSnackBar(context, operationEvent.exception.toString());
           } else if (operationEvent is LoadingEvent) {
-            if (kDebugMode) {
-              print('Loading');
-            }
           } else if (operationEvent is SuccessfulEvent) {
-            print('success, logging in with ${state.user}');
             Navigator.pop(context);
-            widget.homeBloc.add(EmitUserToHome(state.user));
+            // context.read<UserBloc>().add(EmitUserToHome(state.user));
           }
         },
         child: Padding(
@@ -126,8 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                RegisterScreen(homeBloc: widget.homeBloc))),
+                            builder: (context) => const RegisterScreen())),
                     child: Text(
                       'არ გაქვთ ანგარიში?',
                       style: TextStyle(

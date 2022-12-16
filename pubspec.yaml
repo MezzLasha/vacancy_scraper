@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dynamic_color: ^1.5.4
   email_validator: ^2.1.17
+  equatable: ^2.0.5
   firebase_core: ^2.3.0
   firebase_crashlytics: ^3.0.6
   firebase_performance: ^0.9.0+6

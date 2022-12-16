@@ -11,8 +11,7 @@ import 'package:validators/validators.dart';
 import '../bloc/user_bloc.dart';
 
 class RegisterScreen extends StatefulWidget {
-  final UserBloc homeBloc;
-  const RegisterScreen({super.key, required this.homeBloc});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -64,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   email: emailController.text,
                   password: passwordController.text,
                   jobCategory: categoryValue,
-                  savedAnnouncements: [])));
+                  savedAnnouncementIDs: [])));
             }
           },
           icon: const Icon(Icons.navigate_next),
@@ -96,7 +95,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             }
           } else if (operationEvent is SuccessfulEvent) {
             Navigator.pop(context);
-            widget.homeBloc.add(EmitUserToHome(state.user));
           }
         },
         child: Padding(

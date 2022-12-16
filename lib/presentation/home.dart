@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vacancy_scraper/auth/login_screen.dart';
 import 'package:vacancy_scraper/auth/register_screen.dart';
@@ -275,188 +276,169 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var textFieldKey = GlobalKey<FormFieldState>();
 
-  final userBloc = UserBloc();
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => userBloc,
-      child: Scaffold(
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            buildJumptoTopFab(context),
-            buildSearchFab(context),
-          ],
-        ),
-        drawerEnableOpenDragGesture: true,
-        drawer: NavigationDrawer(children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    BlocBuilder<UserBloc, UserState>(
-                      builder: (context, state) {
-                        var loggedOut = state.user == UserInitial().user;
-
-                        return AnimatedCrossFade(
-                            firstChild: Align(
-                              alignment: Alignment.centerLeft,
-                              child: SizedBox(
-                                height: 40,
-                                child: OutlinedButton.icon(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              LoginScreen(homeBloc: userBloc),
-                                        ));
-                                  },
-                                  label: const Text('შესვლა'),
-                                  icon: const Icon(
-                                    Icons.person,
-                                    size: 24,
-                                  ),
-                                ),
-                              ),
+    return Scaffold(
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          buildJumptoTopFab(context),
+          buildSearchFab(context),
+        ],
+      ),
+      drawerEnableOpenDragGesture: true,
+      drawer: NavigationDrawer(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  AnimatedCrossFade(
+                      firstChild: Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                          height: 40,
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ));
+                            },
+                            label: const Text('შესვლა'),
+                            icon: const Icon(
+                              Icons.person,
+                              size: 24,
                             ),
-                            secondChild: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  radius: 30,
-                                  child: const Icon(
-                                    Icons.person,
-                                    size: 35,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                Text(
-                                  state.user.name,
-                                  softWrap: true,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                Text(
-                                  state.user.jobCategory,
-                                  softWrap: true,
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
-                              ],
+                          ),
+                        ),
+                      ),
+                      secondChild: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
+                            radius: 30,
+                            child: const Icon(
+                              Icons.person,
+                              size: 35,
                             ),
-                            crossFadeState: loggedOut
-                                ? CrossFadeState.showFirst
-                                : CrossFadeState.showSecond,
-                            sizeCurve: Curves.easeInOutCubicEmphasized,
-                            duration: const Duration(milliseconds: 300));
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Divider(),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    NavDrawerListTile(
-                      selected: true,
-                      icon: Icons.newspaper_outlined,
-                      title: 'ვაკანსიები',
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    NavDrawerListTile(
-                        selected: false,
-                        icon: Icons.favorite_outline,
-                        title: 'დამახსოვრებული',
-                        onTap: () {
-                          // Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SavedAdverts(),
-                              ));
-                        }),
-                    NavDrawerListTile(
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text(
+                            context.watch<UserBloc>().state.user.name,
+                            softWrap: true,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text(
+                            context.watch<UserBloc>().state.user.jobCategory,
+                            softWrap: true,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        ],
+                      ),
+                      crossFadeState:
+                          context.watch<UserBloc>().state.user.email == ''
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
+                      sizeCurve: Curves.easeInOutCubicEmphasized,
+                      duration: const Duration(milliseconds: 300)),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const Divider(),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  NavDrawerListTile(
+                    selected: true,
+                    icon: Icons.newspaper_outlined,
+                    title: 'ვაკანსიები',
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  NavDrawerListTile(
                       selected: false,
-                      icon: Icons.translate,
-                      title: 'პარამეტრები',
+                      icon: Icons.favorite_outline,
+                      title: 'დამახსოვრებული',
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SettingsScreen(),
+                              builder: (context) => const SavedAdverts(),
                             ));
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                      }),
+                  NavDrawerListTile(
+                    selected: false,
+                    icon: Icons.translate,
+                    title: 'პარამეტრები',
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SettingsScreen(),
+                          ));
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (context.watch<UserBloc>().state.user.email != '')
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: FilledButton.tonalIcon(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('უკან')),
+                            TextButton(
+                                onPressed: () {
+                                  context.read<UserBloc>().add(LogoutUser());
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('კი')),
+                          ],
+                          title: const Text('ანგარიშიდან გასვლა'),
+                          alignment: Alignment.center,
+                          content: const Text(
+                              'ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.logout_outlined),
+                    label: const Text('გასვლა')),
+              ),
             ),
           ),
-          BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
-              if (state.user == UserInitial().user) {
-                return const SizedBox.shrink();
-              }
-
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: FilledButton.tonalIcon(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              actions: [
-                                TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('უკან')),
-                                TextButton(
-                                    onPressed: () {
-                                      userBloc.add(LogoutUser());
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('კი')),
-                              ],
-                              title: const Text('ანგარიშიდან გასვლა'),
-                              alignment: Alignment.center,
-                              content: const Text(
-                                  'ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.logout_outlined),
-                        label: const Text('გასვლა')),
-                  ),
-                ),
-              );
-            },
-          )
-        ]),
-        appBar: buildAppBar(),
-        body: RefreshIndicator(
-            key: refreshGlobalKey,
-            onRefresh: _refresh,
-            child: buildPagedListView()),
-      ),
+      ]),
+      appBar: buildAppBar(),
+      body: RefreshIndicator(
+          key: refreshGlobalKey,
+          onRefresh: _refresh,
+          child: buildPagedListView()),
     );
   }
 
