@@ -304,60 +304,65 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     BlocBuilder<UserBloc, UserState>(
                       builder: (context, state) {
-                        if (state.user == UserInitial().user) {
-                          return Align(
-                            alignment: Alignment.centerLeft,
-                            child: SizedBox(
-                              height: 40,
-                              child: OutlinedButton.icon(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            LoginScreen(homeBloc: userBloc),
-                                      ));
-                                },
-                                label: const Text('შესვლა'),
-                                icon: const Icon(
-                                  Icons.person,
-                                  size: 24,
+                        var loggedOut = state.user == UserInitial().user;
+
+                        return AnimatedCrossFade(
+                            firstChild: Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                height: 40,
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              LoginScreen(homeBloc: userBloc),
+                                        ));
+                                  },
+                                  label: const Text('შესვლა'),
+                                  icon: const Icon(
+                                    Icons.person,
+                                    size: 24,
+                                  ),
                                 ),
                               ),
                             ),
-                          );
-                        } else {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                radius: 30,
-                                child: const Icon(
-                                  Icons.person,
-                                  size: 35,
+                            secondChild: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  radius: 30,
+                                  child: const Icon(
+                                    Icons.person,
+                                    size: 35,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                state.user.name,
-                                softWrap: true,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                state.user.jobCategory,
-                                softWrap: true,
-                                style: Theme.of(context).textTheme.labelLarge,
-                              ),
-                            ],
-                          );
-                        }
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  state.user.name,
+                                  softWrap: true,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  state.user.jobCategory,
+                                  softWrap: true,
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                              ],
+                            ),
+                            crossFadeState: loggedOut
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            sizeCurve: Curves.easeInOutCubicEmphasized,
+                            duration: const Duration(milliseconds: 400));
                       },
                     ),
                     const SizedBox(
@@ -404,38 +409,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: FilledButton.tonalIcon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          actions: [
-                            TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('უკან')),
-                            TextButton(
-                                onPressed: () {
-                                  userBloc.add(LogoutUser());
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('კი')),
-                          ],
-                          title: const Text('ანგარიშიდან გასვლა'),
-                          alignment: Alignment.center,
-                          content: const Text(
-                              'ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.logout_outlined),
-                    label: const Text('გასვლა')),
-              ),
-            ),
+          BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              if (state.user == UserInitial().user) {
+                return const SizedBox.shrink();
+              }
+
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: FilledButton.tonalIcon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              actions: [
+                                TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('უკან')),
+                                TextButton(
+                                    onPressed: () {
+                                      userBloc.add(LogoutUser());
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('კი')),
+                              ],
+                              title: const Text('ანგარიშიდან გასვლა'),
+                              alignment: Alignment.center,
+                              content: const Text(
+                                  'ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.logout_outlined),
+                        label: const Text('გასვლა')),
+                  ),
+                ),
+              );
+            },
           )
         ]),
         appBar: buildAppBar(),
