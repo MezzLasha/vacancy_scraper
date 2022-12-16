@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
@@ -10,7 +11,7 @@ import 'operation_events.dart';
 part 'user_event.dart';
 part 'user_state.dart';
 
-class UserBloc extends Bloc<UserEvent, UserState> {
+class UserBloc extends HydratedBloc<UserEvent, UserState> {
   FireRepository db = FireRepository();
 
   UserBloc() : super(UserInitial()) {
@@ -59,5 +60,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             user: event.user, operationEvent: SuccessfulEvent()));
       }
     });
+  }
+
+  @override
+  UserState? fromJson(Map<String, dynamic> json) {
+    return UserState.fromMap(json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(UserState state) {
+    return state.toMap();
   }
 }

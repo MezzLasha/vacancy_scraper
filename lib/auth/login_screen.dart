@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         automaticallyImplyLeading: false,
       ),
       floatingActionButton: FloatingActionButton.extended(
+          heroTag: 'AuthPages',
           onPressed: () {
             var formState = formKey.currentState;
             if (formState == null) {

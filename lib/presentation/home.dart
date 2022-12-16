@@ -362,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
                             sizeCurve: Curves.easeInOutCubicEmphasized,
-                            duration: const Duration(milliseconds: 400));
+                            duration: const Duration(milliseconds: 300));
                       },
                     ),
                     const SizedBox(
