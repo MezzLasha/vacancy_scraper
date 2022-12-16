@@ -6,6 +6,7 @@ import 'package:vacancy_scraper/auth/login_screen.dart';
 import 'package:vacancy_scraper/bloc/operation_events.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/models/user_model.dart';
+import 'package:validators/validators.dart';
 
 import '../bloc/user_bloc.dart';
 
@@ -63,8 +64,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   password: passwordController.text,
                   jobCategory: categoryValue,
                   savedAnnouncements: [])));
-            } else {
-              showSnackBar(context, 'ჩაასწორეთ მონაცემები');
             }
           },
           icon: const Icon(Icons.navigate_next),
@@ -125,6 +124,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
+                      validator: (value) =>
+                          (value ?? '').isEmpty ? "შეავსეთ სახელი" : null,
                       controller: nameController,
                       decoration: const InputDecoration(
                           filled: true, label: Text('სახელი')),
@@ -134,6 +135,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     TextFormField(
                       controller: passwordController,
+                      validator: (value) => (value ?? '').length < 4
+                          ? (value ?? '').isEmpty
+                              ? "შეავსეთ პაროლი"
+                              : "პაროლი მოკლეა"
+                          : null,
                       obscureText: true,
                       decoration: const InputDecoration(
                           filled: true, label: Text('პაროლი')),
@@ -143,6 +149,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     TextFormField(
                       controller: emailController,
+                      validator: (value) =>
+                          !isEmail(value ?? '') ? "შეასწორეთ ელ-ფოსტა" : null,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                           filled: true, label: Text('ელ-ფოსტა')),

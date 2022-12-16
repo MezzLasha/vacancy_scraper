@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (formState.validate()) {
               context.read<UserBloc>().add(
                   LoginUser(emailController.text, passwordController.text));
-            } else {}
+            }
           },
           icon: const Icon(Icons.navigate_next),
           label: const Text('შესვლა')),
