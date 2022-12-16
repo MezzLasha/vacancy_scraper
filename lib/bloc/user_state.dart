@@ -23,6 +23,7 @@ class UserState {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'user': user.toMap(),
+      'operationEvent': '',
     };
   }
 
