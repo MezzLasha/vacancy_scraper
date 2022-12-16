@@ -3,9 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vacancy_scraper/auth/register_screen.dart';
@@ -591,6 +589,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Padding(
         padding: const EdgeInsets.only(left: 32.0),
         child: FloatingActionButton(
+          heroTag: 'jumpToTop',
           tooltip: isFabVisible ? 'მაღლა დაბრუნება' : '',
           backgroundColor: Theme.of(context).colorScheme.secondary,
           onPressed: () {
