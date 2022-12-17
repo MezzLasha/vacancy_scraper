@@ -43,10 +43,12 @@ class _SavedAdvertsState extends State<SavedAdverts> {
     return _announcements;
   }
 
+  final scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(
+      controller: scrollController,
       slivers: [
         SliverAppBar.large(
           title: LayoutBuilder(
@@ -101,6 +103,7 @@ class _SavedAdvertsState extends State<SavedAdverts> {
 
                 return ListView.builder(
                     shrinkWrap: true,
+                    controller: scrollController,
                     itemCount: loadedAnnouncements.length,
                     itemBuilder: (context, index) {
                       return SavedAdvertisementListItem(
