@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -85,7 +86,7 @@ class MyApp extends StatelessWidget {
       }
 
       return RepositoryProvider(
-        create: (context) => FireRepository(),
+        create: (context) => FireRepository(FirebaseFirestore.instance),
         child: BlocProvider(
           create: (context) => UserBloc(
             RepositoryProvider.of<FireRepository>(context),

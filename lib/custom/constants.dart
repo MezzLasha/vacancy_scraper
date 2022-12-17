@@ -1,5 +1,4 @@
 // List of items in our dropdown menu
-import 'dart:ffi';
 
 const List<String> category = [
   'ყველა კატეგორია',
@@ -48,6 +47,7 @@ const List<String> jobType = [
   'ტრენინგები',
 ];
 
+//spacing margins
 const double margin1 = 12;
 const double margin2 = 24;
 const double margin3 = 36;
