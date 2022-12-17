@@ -6,11 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'package:vacancy_scraper/auth/login_screen.dart';
-import 'package:vacancy_scraper/auth/register_screen.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
@@ -33,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const _pageSize = 300;
 
   final PagingController<int, Announcement> _pagingController =
-      PagingController(firstPageKey: 1);
+      PagingController(firstPageKey: 0);
 
   var isFabVisible = false;
 
@@ -91,13 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refresh() async {
-    refreshGlobalKey.currentState!.show();
     _pagingController.itemList = [];
     try {
       _scrollController.animateTo(0,
           duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+      // refreshGlobalKey.currentState!.show();
+      _pagingController.refresh();
     } catch (_) {}
-    await _fetchPage(0);
   }
 
   void setFilter(
@@ -263,6 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
     updateFilterValues();
     setFilter(
         filterString, selectedFilter[0], selectedFilter[1], selectedFilter[2]);
+
     Navigator.pop(context);
     _pagingController.itemList = [];
     await _refresh();
