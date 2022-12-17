@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
 import 'package:vacancy_scraper/auth/login_screen.dart';
 import 'package:vacancy_scraper/auth/register_screen.dart';
+import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
-import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/savedAdverts.dart';
 import 'package:vacancy_scraper/presentation/settings.dart';
@@ -389,7 +391,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const SavedAdverts(),
+                                builder: (context) => SavedAdverts(
+                                  announcementIDs: context
+                                      .read<UserBloc>()
+                                      .state
+                                      .user
+                                      .savedAnnouncementIDs,
+                                ),
                               ));
                         }),
                     NavDrawerListTile(
@@ -622,7 +630,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  AnimatedOpacity buildJumptoTopFab(BuildContext context) {
+  Widget buildJumptoTopFab(BuildContext context) {
     return AnimatedOpacity(
       opacity: isFabVisible ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 200),
@@ -849,7 +857,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   final _scrollController = ScrollController();
-  var _tapDownPosition;
 
   Widget buildPagedListView() {
     return PagedListView<int, Announcement>(
@@ -882,99 +889,8 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
           );
         },
-        itemBuilder: (context, item, index) => MyOpenContainer(
-          closedColor: Theme.of(context).colorScheme.background,
-          closedElevation: 0,
-          middleColor: Theme.of(context).colorScheme.background,
-          transitionType: MyOpenContainerTransitionType.fadeThrough,
-          openColor: Theme.of(context).colorScheme.background,
-          closedShape: const Border(),
-          closedBuilder: (context, tap) {
-            return InkWell(
-              onTapDown: (TapDownDetails details) {
-                _tapDownPosition = details.globalPosition;
-              },
-              onTap: () => tap(),
-              onLongPress: () async {
-                final RenderBox overlay =
-                    Overlay.of(context).context.findRenderObject() as RenderBox;
-
-                showMenu(
-                  context: context,
-                  items: [
-                    PopupMenuItem<int>(
-                      value: 1,
-                      onTap: () async {
-                        await Clipboard.setData(
-                            ClipboardData(text: item.jobLink));
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("ბმული"),
-                          Icon(
-                            Icons.link,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  position: RelativeRect.fromLTRB(
-                    _tapDownPosition.dx,
-                    _tapDownPosition.dy,
-                    overlay.size.width - _tapDownPosition.dx,
-                    overlay.size.height - _tapDownPosition.dy,
-                  ),
-                );
-              },
-              splashFactory: InkSparkle.splashFactory,
-              child: Ink(
-                padding: const EdgeInsets.only(
-                    left: 16, right: 16, top: 12, bottom: 12),
-                decoration: BoxDecoration(
-                    border: Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).dividerColor.withOpacity(0.2),
-                    width: 1.0,
-                  ),
-                )),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      fit: FlexFit.tight,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AutoSizeText(
-                            item.jobName,
-                            maxLines: 2,
-                            style: GoogleFonts.notoSansGeorgian(),
-                          ),
-                          ListTileSecondary(
-                            item: item,
-                          ),
-
-                          // buildAttributeWidgets(item, context)
-                          AttributeWidget(
-                            item: item,
-                          )
-                        ],
-                      ),
-                    ),
-                    AdvertisementImage(
-                      imageUrl: item.imageUrl,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-          openBuilder: (context, action) {
-            return AdvertScreen(announcement: item);
-          },
+        itemBuilder: (context, item, index) => AdvertisementListWidget(
+          item: item,
         ),
       ),
     );
@@ -984,6 +900,147 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _pagingController.dispose();
     super.dispose();
+  }
+}
+
+class AdvertisementListWidget extends StatelessWidget {
+  final Announcement item;
+
+  const AdvertisementListWidget({
+    Key? key,
+    required this.item,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MyOpenContainer(
+      closedColor: Theme.of(context).colorScheme.background,
+      closedElevation: 0,
+      middleColor: Theme.of(context).colorScheme.background,
+      transitionType: MyOpenContainerTransitionType.fadeThrough,
+      openColor: Theme.of(context).colorScheme.background,
+      closedShape: const Border(),
+      closedBuilder: (context, tap) {
+        var _tapDownPosition;
+        return InkWell(
+          onTapDown: (TapDownDetails details) {
+            _tapDownPosition = details.globalPosition;
+          },
+          onTap: () => tap(),
+          onLongPress: () async {
+            final RenderBox overlay =
+                Overlay.of(context).context.findRenderObject() as RenderBox;
+
+            showMenu(
+              context: context,
+              items: [
+                PopupMenuItem<int>(
+                  value: 1,
+                  onTap: () async {
+                    await Clipboard.setData(ClipboardData(text: item.jobLink));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("ბმული"),
+                      Icon(
+                        Icons.link,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<int>(
+                  value: 1,
+                  onTap: () {
+                    context
+                        .read<UserBloc>()
+                        .add(SaveAnnouncement(announcementID: item.jobId));
+                  },
+                  child: (context
+                          .read<UserBloc>()
+                          .state
+                          .user
+                          .savedAnnouncementIDs
+                          .contains(item.jobId))
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("წაშლა"),
+                            Icon(
+                              Icons.clear,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("შენახვა"),
+                            Icon(
+                              Icons.favorite_border,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ],
+                        ),
+                ),
+              ],
+              position: RelativeRect.fromLTRB(
+                _tapDownPosition.dx,
+                _tapDownPosition.dy,
+                overlay.size.width - _tapDownPosition.dx,
+                overlay.size.height - _tapDownPosition.dy,
+              ),
+            );
+          },
+          splashFactory: InkSparkle.splashFactory,
+          child: Ink(
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
+            decoration: BoxDecoration(
+                border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).dividerColor.withOpacity(0.2),
+                width: 1.0,
+              ),
+            )),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        item.jobName,
+                        maxLines: 2,
+                        style: GoogleFonts.notoSansGeorgian(),
+                      ),
+                      ListTileSecondary(
+                        item: item,
+                      ),
+
+                      // buildAttributeWidgets(item, context)
+                      AttributeWidget(
+                        item: item,
+                      )
+                    ],
+                  ),
+                ),
+                AdvertisementImage(
+                  imageUrl: item.imageUrl,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      openBuilder: (context, action) {
+        return AdvertScreen(announcement: item);
+      },
+    );
   }
 }
 

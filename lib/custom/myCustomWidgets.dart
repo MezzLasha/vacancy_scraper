@@ -19,6 +19,9 @@ class AdvertisementImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl.isEmpty) {
+      return const SizedBox.shrink();
+    }
     if (imageUrl != '/i/pix.gif') {
       return ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(5)),

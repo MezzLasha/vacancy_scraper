@@ -21,6 +21,13 @@ class LoginUser extends UserEvent {
 
 class LogoutUser extends UserEvent {}
 
+class SaveAnnouncement extends UserEvent {
+  String announcementID;
+  SaveAnnouncement({
+    required this.announcementID,
+  });
+}
+
 class ResetPassword extends UserEvent {
   final String email;
 

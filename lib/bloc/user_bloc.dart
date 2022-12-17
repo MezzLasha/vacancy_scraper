@@ -72,6 +72,31 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
           emit(state.copyWith(
               operationEvent: ErrorEvent(exception: Exception(e))));
         }
+      } else if (event is SaveAnnouncement) {
+        if (state.user.savedAnnouncementIDs.contains(event.announcementID)) {
+          //already added, remove from list
+          try {
+            var list = state.user.savedAnnouncementIDs;
+            list.remove(event.announcementID);
+            emit(state.copyWith(
+                user: state.user.copyWith(savedAnnouncementIDs: list),
+                operationEvent: SuccessfulEvent()));
+          } catch (e) {
+            emit(state.copyWith(
+                operationEvent: ErrorEvent(exception: Exception(e))));
+          }
+        } else {
+          try {
+            emit(state.copyWith(
+                user: state.user.copyWith(savedAnnouncementIDs: [
+              ...state.user.savedAnnouncementIDs,
+              event.announcementID
+            ])));
+          } catch (e) {
+            emit(state.copyWith(
+                operationEvent: ErrorEvent(exception: Exception(e))));
+          }
+        }
       }
     });
   }

@@ -16,7 +16,6 @@ class DatabaseRepository {
     // List<Element> jobNames = document.getElementsByClassName('vip');
     Element tbody = document.getElementsByTagName('tbody').first;
     List<Element> rows = tbody.getElementsByTagName('tr');
-    // print(tbody.text);
 
     List<Announcement> announcements =
         await compute(_computeGetAnnouncements, rows);
@@ -186,6 +185,59 @@ class DatabaseRepository {
         description: descriptionTr.outerHtml,
         attachmentUrl: attachedFileUrl,
         jobId: oldAnnouncement.jobLink.split('id=')[1]);
+  }
+
+  Future<Announcement> getDetailedAdFromID(String announcementID) async {
+    final response = await http
+        .get(Uri.parse('https://jobs.ge/ge/?view=jobs&id=$announcementID'));
+
+    var document = parse(response.body);
+
+    Element dtable = document.getElementsByClassName('dtable').first;
+    Element tbody = dtable.getElementsByTagName('tbody').first;
+
+    Element title =
+        document.getElementById('job')!.getElementsByTagName('span').first;
+
+    Element descriptionTr = tbody.getElementsByTagName('tr').last;
+    String attachedFileUrl = '';
+    if (tbody.text.contains('Attached File:')) {
+      Element attachedTr = tbody.getElementsByTagName('tr')[3];
+      Element attachedA = attachedTr.getElementsByTagName('a').first;
+      attachedFileUrl =
+          'https://jobs.ge${attachedA.attributes.entries.firstWhere((element) => element.key == 'href').value}';
+    }
+
+    Element providerTr = tbody.getElementsByTagName('tr')[1];
+
+    Element providerB = providerTr.getElementsByTagName('b').first;
+
+    Element dateElement = tbody.getElementsByTagName('td')[2];
+    Element startDate = dateElement.getElementsByTagName('b')[0];
+    Element endDate = dateElement.getElementsByTagName('b')[1];
+
+    String jobProv = providerB.text.replaceAll('\n', '');
+    while (jobProv.startsWith('\t')) {
+      jobProv = jobProv.substring(1);
+    }
+
+    return Announcement(
+        jobProvider: jobProv.replaceAll('\t', ''),
+        description: descriptionTr.outerHtml,
+        attachmentUrl: attachedFileUrl,
+        jobId: announcementID,
+        aboutToExpire: false,
+        endDate: '${endDate.text}        ',
+        imageUrl: '',
+        jobLink: 'https://jobs.ge/ge/?view=jobs&id=${announcementID}',
+        jobName: title.text.replaceAll('\t', '').replaceAll('\n', ''),
+        jobRegion: '',
+        jobProviderLink:
+            'https://jobs.ge/ge/${providerTr.getElementsByTagName('a').first.attributes.entries.first.value}',
+        newAdvert: false,
+        salary: false,
+        startDate: startDate.text,
+        website: '');
   }
 
   Future<JobProvider> getProviderDetails(String providerLink) async {
