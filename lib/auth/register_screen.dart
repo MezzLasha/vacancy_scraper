@@ -51,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-          heroTag: 'AuthPages',
+          heroTag: 'registerFab',
           onPressed: () {
             if (formKey.currentState == null) {
               return;

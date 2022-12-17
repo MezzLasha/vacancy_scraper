@@ -20,3 +20,9 @@ class LoginUser extends UserEvent {
 }
 
 class LogoutUser extends UserEvent {}
+
+class ResetPassword extends UserEvent {
+  final String email;
+
+  ResetPassword(this.email);
+}

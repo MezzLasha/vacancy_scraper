@@ -59,6 +59,19 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
           emit(state.copyWith(
               operationEvent: ErrorEvent(exception: Exception(e))));
         }
+      } else if (event is ResetPassword) {
+        try {
+          await db.resetPassword(event.email);
+
+          emit(state.copyWith(
+              user: UserInitial().user, operationEvent: SuccessfulEvent()));
+          if (kDebugMode) {
+            print('logged out');
+          }
+        } catch (e) {
+          emit(state.copyWith(
+              operationEvent: ErrorEvent(exception: Exception(e))));
+        }
       }
     });
   }

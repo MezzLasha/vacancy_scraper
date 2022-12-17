@@ -7,4 +7,6 @@ abstract class DBInterface {
 
   void saveAnnouncement(Announcement announcement);
   List<Announcement> getAnnouncements();
+
+  void resetPassword(String email);
 }

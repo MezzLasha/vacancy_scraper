@@ -18,7 +18,7 @@ import 'package:vacancy_scraper/presentation/settings.dart';
 import 'package:vacancy_scraper/repositories/databaseRepo.dart';
 
 import '../bloc/user_bloc.dart';
-import '../models/constants.dart';
+import '../custom/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -289,150 +289,194 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawerEnableOpenDragGesture: true,
       drawer: NavigationDrawer(children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  AnimatedCrossFade(
-                      firstChild: Align(
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: margin1, right: margin1),
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).viewInsets.top + margin1,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: margin1),
+                      child: Align(
                         alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          height: 40,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ));
-                            },
-                            label: const Text('შესვლა'),
-                            icon: const Icon(
-                              Icons.person,
-                              size: 24,
+                        child: AnimatedCrossFade(
+                            firstChild: SizedBox(
+                              height: 40,
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen(),
+                                      ));
+                                },
+                                label: const Text('შესვლა'),
+                                icon: const Icon(
+                                  Icons.person,
+                                  size: 24,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      secondChild: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            radius: 30,
-                            child: const Icon(
-                              Icons.person,
-                              size: 35,
+                            secondChild: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  radius: 30,
+                                  child: const Icon(
+                                    Icons.person,
+                                    size: 35,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  context.watch<UserBloc>().state.user.name,
+                                  softWrap: true,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  context
+                                      .watch<UserBloc>()
+                                      .state
+                                      .user
+                                      .jobCategory,
+                                  softWrap: true,
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Text(
-                            context.watch<UserBloc>().state.user.name,
-                            softWrap: true,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Text(
-                            context.watch<UserBloc>().state.user.jobCategory,
-                            softWrap: true,
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ],
+                            crossFadeState:
+                                context.watch<UserBloc>().state.user.email == ''
+                                    ? CrossFadeState.showFirst
+                                    : CrossFadeState.showSecond,
+                            sizeCurve: Curves.easeInOutCubicEmphasized,
+                            duration: const Duration(milliseconds: 300)),
                       ),
-                      crossFadeState:
-                          context.watch<UserBloc>().state.user.email == ''
-                              ? CrossFadeState.showFirst
-                              : CrossFadeState.showSecond,
-                      sizeCurve: Curves.easeInOutCubicEmphasized,
-                      duration: const Duration(milliseconds: 300)),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  NavDrawerListTile(
-                    selected: true,
-                    icon: Icons.newspaper_outlined,
-                    title: 'ვაკანსიები',
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  NavDrawerListTile(
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Divider(),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    NavDrawerListTile(
+                      selected: true,
+                      icon: Icons.newspaper_outlined,
+                      title: 'ვაკანსიები',
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    NavDrawerListTile(
+                        selected: false,
+                        icon: Icons.favorite_outline,
+                        title: 'დამახსოვრებული',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SavedAdverts(),
+                              ));
+                        }),
+                    NavDrawerListTile(
                       selected: false,
-                      icon: Icons.favorite_outline,
-                      title: 'დამახსოვრებული',
+                      icon: Icons.translate,
+                      title: 'პარამეტრები',
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SavedAdverts(),
+                              builder: (context) => const SettingsScreen(),
                             ));
-                      }),
-                  NavDrawerListTile(
-                    selected: false,
-                    icon: Icons.translate,
-                    title: 'პარამეტრები',
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SettingsScreen(),
-                          ));
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        if (context.watch<UserBloc>().state.user.email != '')
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: FilledButton.tonalIcon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          actions: [
-                            TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('უკან')),
-                            TextButton(
-                                onPressed: () {
-                                  context.read<UserBloc>().add(LogoutUser());
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('კი')),
-                          ],
-                          title: const Text('ანგარიშიდან გასვლა'),
-                          alignment: Alignment.center,
-                          content: const Text(
-                              'ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.logout_outlined),
-                    label: const Text('გასვლა')),
-              ),
+                      },
+                    ),
+                    if (context.watch<UserBloc>().state.user.email != '' &&
+                        MediaQuery.of(context).orientation ==
+                            Orientation.landscape)
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        padding: const EdgeInsets.only(top: margin2),
+                        child: FilledButton.tonalIcon(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('უკან')),
+                                    TextButton(
+                                        onPressed: () {
+                                          context
+                                              .read<UserBloc>()
+                                              .add(LogoutUser());
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('კი')),
+                                  ],
+                                  title: const Text('ანგარიშიდან გასვლა'),
+                                  alignment: Alignment.center,
+                                  content: const Text(
+                                      'ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.logout_outlined),
+                            label: const Text('გასვლა')),
+                      )
+                  ],
+                )
+              ],
             ),
           ),
+        ),
+        if (context.watch<UserBloc>().state.user.email != '' &&
+            MediaQuery.of(context).orientation == Orientation.portrait)
+          Container(
+            alignment: Alignment.bottomLeft,
+            padding: EdgeInsets.only(
+                left: margin1,
+                bottom: MediaQuery.of(context).systemGestureInsets.bottom),
+            child: FilledButton.tonalIcon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('უკან')),
+                        TextButton(
+                            onPressed: () {
+                              context.read<UserBloc>().add(LogoutUser());
+                              Navigator.pop(context);
+                            },
+                            child: const Text('კი')),
+                      ],
+                      title: const Text('ანგარიშიდან გასვლა'),
+                      alignment: Alignment.center,
+                      content:
+                          const Text('ნამდვილად გსურთ ანგარიშიდან გამოსვლა?'),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.logout_outlined),
+                label: const Text('გასვლა')),
+          )
       ]),
       appBar: buildAppBar(),
       body: RefreshIndicator(
@@ -962,7 +1006,9 @@ class NavDrawerListTile extends StatelessWidget {
     final thof = Theme.of(context);
 
     return ListTile(
-      title: Text(title),
+      title: Text(
+        title,
+      ),
       horizontalTitleGap: 8,
       onTap: () => onTap(),
       selected: selected,

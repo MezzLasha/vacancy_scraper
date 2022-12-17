@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
+import 'package:mailjet/mailjet.dart';
+import 'package:vacancy_scraper/custom/apiKey.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/repositories/dbProvider.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/user_model.dart';
 
@@ -59,5 +63,41 @@ class FireRepository implements DBInterface {
     }
 
     throw Exception('ეს ელ-ფოსტა უკვე რეგისტრირებულია');
+  }
+
+  @override
+  Future<void> resetPassword(String email) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    Map<String, dynamic> data;
+    try {
+      final doc = await users.doc(email).get();
+      data = doc.data() as Map<String, dynamic>;
+    } catch (e) {
+      //არ არსებობს
+      throw Exception('ელ-ფოსტა ვერ მოიძებნა');
+    }
+
+    MailJet mailJet = MailJet(
+      apiKey: mailJetApiKey,
+      secretKey: mailJetSecretKey,
+    );
+
+    await mailJet.sendEmail(
+      subject: "ვაკანსიები - პაროლის აღდგენა",
+      sender: Sender(
+        email: senderEmail, //in apiKey.dart
+        name: "ვაკანსიები",
+      ),
+      reciepients: [
+        Recipient(
+          email: email,
+          name: data['name'],
+        ),
+      ],
+      htmlEmail: """
+<h3>პაროლი:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ${data['password']}</h3>
+""",
+    );
   }
 }

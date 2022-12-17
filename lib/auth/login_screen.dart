@@ -10,6 +10,7 @@ import 'package:validators/validators.dart';
 
 import '../bloc/operation_events.dart';
 import '../bloc/user_bloc.dart';
+import '../custom/constants.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,21 +43,47 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         automaticallyImplyLeading: false,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          heroTag: 'AuthPages',
-          onPressed: () {
-            var formState = formKey.currentState;
-            if (formState == null) {
-              return;
-            }
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 32),
+            child: FloatingActionButton.extended(
+                icon: Icon(
+                  Icons.add,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+                heroTag: 'registerFab',
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterScreen())),
+                label: Text(
+                  'რეგისტრაცია',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                )),
+          ),
+          FloatingActionButton.extended(
+              heroTag: 'AuthPages',
+              onPressed: () {
+                var formState = formKey.currentState;
+                if (formState == null) {
+                  return;
+                }
 
-            if (formState.validate()) {
-              context.read<UserBloc>().add(
-                  LoginUser(emailController.text, passwordController.text));
-            }
-          },
-          icon: const Icon(Icons.navigate_next),
-          label: const Text('შესვლა')),
+                if (formState.validate()) {
+                  context.read<UserBloc>().add(
+                      LoginUser(emailController.text, passwordController.text));
+                }
+              },
+              icon: const Icon(Icons.navigate_next),
+              label: const Text('შესვლა')),
+        ],
+      ),
       body: BlocListener<UserBloc, UserState>(
         listener: (_, state) {
           final operationEvent = state.operationEvent;
@@ -118,12 +145,48 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterScreen())),
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  context
+                                      .read<UserBloc>()
+                                      .add(ResetPassword(emailController.text));
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('გაგზავნა'))
+                          ],
+                          title: const Text('პაროლის აღდგენა'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                controller: emailController,
+                                validator: (value) => !isEmail(value ?? '')
+                                    ? "შეასწორეთ ელ-ფოსტა"
+                                    : null,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: const InputDecoration(
+                                    labelText: 'ელ. ფოსტა',
+                                    border: OutlineInputBorder()),
+                              ),
+                              const SizedBox(
+                                height: margin1,
+                              ),
+                              Text(
+                                'პაროლი გაიგზავნება ელ-ფოსტაზე',
+                                style: Theme.of(context).textTheme.labelLarge,
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                     child: Text(
-                      'არ გაქვთ ანგარიში?',
+                      'პაროლი დაგავიწყდა?',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
