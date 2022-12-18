@@ -1,7 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 
 import 'package:vacancy_scraper/models/announcement.dart';
 
@@ -24,14 +25,14 @@ class User {
     String? email,
     String? password,
     String? jobCategory,
-    List<Announcement>? savedAnnouncementIDs,
+    List<Announcement>? savedAnnouncements,
   }) {
     return User(
       name: name ?? this.name,
       email: email ?? this.email,
       password: password ?? this.password,
       jobCategory: jobCategory ?? this.jobCategory,
-      savedAnnouncements: savedAnnouncementIDs ?? savedAnnouncements,
+      savedAnnouncements: savedAnnouncements ?? this.savedAnnouncements,
     );
   }
 
@@ -41,7 +42,7 @@ class User {
       'email': email,
       'password': password,
       'jobCategory': jobCategory,
-      'savedAnnouncementIDs': savedAnnouncements.map((x) => x.toMap()).toList(),
+      'savedAnnouncements': savedAnnouncements.map((x) => x.toJson()).toList(),
     };
   }
 
@@ -52,8 +53,8 @@ class User {
       password: map['password'] as String,
       jobCategory: map['jobCategory'] as String,
       savedAnnouncements: List<Announcement>.from(
-        (map['savedAnnouncementIDs'] as List<int>).map<Announcement>(
-          (x) => Announcement.fromMap(x as Map<String, dynamic>),
+        (map['savedAnnouncements'] as List<String>).map<Announcement>(
+          (x) => Announcement.fromJson(x),
         ),
       ),
     );
@@ -66,12 +67,13 @@ class User {
 
   @override
   String toString() {
-    return 'User(name: $name, email: $email, password: $password, jobCategory: $jobCategory, savedAnnouncementIDs: $savedAnnouncements)';
+    return 'User(name: $name, email: $email, password: $password, jobCategory: $jobCategory, savedAnnouncements: $savedAnnouncements)';
   }
 
   @override
   bool operator ==(covariant User other) {
     if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
 
     return other.name == name &&
         other.email == email &&

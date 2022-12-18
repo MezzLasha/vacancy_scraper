@@ -79,7 +79,7 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
             var list = state.user.savedAnnouncements;
             list.remove(event.announcement);
             emit(state.copyWith(
-                user: state.user.copyWith(savedAnnouncementIDs: list),
+                user: state.user.copyWith(savedAnnouncements: list),
                 operationEvent: SuccessfulEvent()));
           } catch (e) {
             emit(state.copyWith(
@@ -89,7 +89,7 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
           try {
             //not in list, add to saved
             emit(state.copyWith(
-                user: state.user.copyWith(savedAnnouncementIDs: [
+                user: state.user.copyWith(savedAnnouncements: [
               ...state.user.savedAnnouncements,
               event.announcement
             ])));
