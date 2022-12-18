@@ -15,8 +15,7 @@ import '../custom/myOpenContainer.dart';
 import 'advertScreen.dart';
 
 class SavedAdverts extends StatefulWidget {
-  final List<String> announcementIDs;
-  const SavedAdverts({super.key, required this.announcementIDs});
+  const SavedAdverts({super.key});
 
   @override
   State<SavedAdverts> createState() => _SavedAdvertsState();
@@ -25,22 +24,7 @@ class SavedAdverts extends StatefulWidget {
 class _SavedAdvertsState extends State<SavedAdverts> {
   @override
   void initState() {
-    loadAnnouncements =
-        _getSavedAnnouncements().then((value) => loadedAnnouncements = value);
     super.initState();
-  }
-
-  var loadAnnouncements;
-
-  List<Announcement> loadedAnnouncements = [];
-
-  Future<List<Announcement>> _getSavedAnnouncements() async {
-    List<Announcement> _announcements = [];
-    for (var announcement in widget.announcementIDs) {
-      _announcements
-          .add(await DatabaseRepository().getDetailedAdFromID(announcement));
-    }
-    return _announcements;
   }
 
   final scrollController = ScrollController();
@@ -76,42 +60,22 @@ class _SavedAdvertsState extends State<SavedAdverts> {
           ),
         ),
         SliverToBoxAdapter(
-            child: BlocListener<UserBloc, UserState>(
-          listener: (context, state) {
-            if (state.operationEvent is SuccessfulEvent) {
-              for (var announcement in loadedAnnouncements) {
-                if (!state.user.savedAnnouncementIDs
-                    .contains(announcement.jobId)) {
-                  setState(() {
-                    loadedAnnouncements.remove(announcement);
-                  });
-                  break;
-                }
-              }
-            }
-          },
-          child: FutureBuilder(
-              future: loadAnnouncements,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const LinearProgressIndicator();
-                }
-
-                if (loadedAnnouncements.isEmpty) {
-                  return const NoSavedAnnouncementWidget();
-                }
-
-                return ListView.builder(
-                    shrinkWrap: true,
-                    controller: scrollController,
-                    itemCount: loadedAnnouncements.length,
-                    itemBuilder: (context, index) {
-                      return SavedAdvertisementListItem(
-                        item: loadedAnnouncements[index],
-                      );
-                    });
-              }),
-        )),
+            child:
+                (context.read<UserBloc>().state.user.savedAnnouncements.isEmpty)
+                    ? const NoSavedAnnouncementWidget()
+                    : BlocBuilder<UserBloc, UserState>(
+                        builder: (context, state) {
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              controller: scrollController,
+                              itemCount: state.user.savedAnnouncements.length,
+                              itemBuilder: (context, index) {
+                                return SavedAdvertisementListItem(
+                                  item: state.user.savedAnnouncements[index],
+                                );
+                              });
+                        },
+                      )),
       ],
     ));
   }
@@ -152,10 +116,10 @@ class SavedAdvertisementListItem extends StatelessWidget {
       openColor: Theme.of(context).colorScheme.background,
       closedShape: const Border(),
       closedBuilder: (context, tap) {
-        var _tapDownPosition;
+        var tapDownPosition;
         return InkWell(
           onTapDown: (TapDownDetails details) {
-            _tapDownPosition = details.globalPosition;
+            tapDownPosition = details.globalPosition;
           },
           onTap: () => tap(),
           onLongPress: () async {
@@ -186,7 +150,7 @@ class SavedAdvertisementListItem extends StatelessWidget {
                   onTap: () {
                     context
                         .read<UserBloc>()
-                        .add(SaveAnnouncement(announcementID: item.jobId));
+                        .add(SaveAnnouncement(announcement: item));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,10 +165,10 @@ class SavedAdvertisementListItem extends StatelessWidget {
                 ),
               ],
               position: RelativeRect.fromLTRB(
-                _tapDownPosition.dx,
-                _tapDownPosition.dy,
-                overlay.size.width - _tapDownPosition.dx,
-                overlay.size.height - _tapDownPosition.dy,
+                tapDownPosition.dx,
+                tapDownPosition.dy,
+                overlay.size.width - tapDownPosition.dx,
+                overlay.size.height - tapDownPosition.dy,
               ),
             );
           },
@@ -240,6 +204,7 @@ class SavedAdvertisementListItem extends StatelessWidget {
                       // buildAttributeWidgets(item, context)
                       AttributeWidget(
                         item: item,
+                        disableNewAttr: true,
                       )
                     ],
                   ),
@@ -248,7 +213,7 @@ class SavedAdvertisementListItem extends StatelessWidget {
                     onPressed: () {
                       context
                           .read<UserBloc>()
-                          .add(SaveAnnouncement(announcementID: item.jobId));
+                          .add(SaveAnnouncement(announcement: item));
                     },
                     icon: Icon(
                       Icons.favorite,

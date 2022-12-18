@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:vacancy_scraper/models/announcement.dart';
 
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
@@ -25,9 +26,8 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
                 email: '',
                 password: '',
                 jobCategory: '',
-                savedAnnouncementIDs: []))) {
+                savedAnnouncements: []))) {
     on<UserEvent>((event, emit) async {
-      print(event);
       if (event is RegisterUser) {
         emit(state.copyWith(user: event.user, operationEvent: LoadingEvent()));
         try {
@@ -73,11 +73,11 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
               operationEvent: ErrorEvent(exception: Exception(e))));
         }
       } else if (event is SaveAnnouncement) {
-        if (state.user.savedAnnouncementIDs.contains(event.announcementID)) {
+        if (state.user.savedAnnouncements.contains(event.announcement)) {
           //already added, remove from list
           try {
-            var list = state.user.savedAnnouncementIDs;
-            list.remove(event.announcementID);
+            var list = state.user.savedAnnouncements;
+            list.remove(event.announcement);
             emit(state.copyWith(
                 user: state.user.copyWith(savedAnnouncementIDs: list),
                 operationEvent: SuccessfulEvent()));
@@ -87,10 +87,11 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
           }
         } else {
           try {
+            //not in list, add to saved
             emit(state.copyWith(
                 user: state.user.copyWith(savedAnnouncementIDs: [
-              ...state.user.savedAnnouncementIDs,
-              event.announcementID
+              ...state.user.savedAnnouncements,
+              event.announcement
             ])));
           } catch (e) {
             emit(state.copyWith(

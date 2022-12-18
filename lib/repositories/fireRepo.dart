@@ -41,7 +41,7 @@ class FireRepository implements DBInterface {
         email: email,
         password: password,
         jobCategory: data['category'],
-        savedAnnouncementIDs: []);
+        savedAnnouncements: []);
     return user;
   }
 
@@ -64,7 +64,7 @@ class FireRepository implements DBInterface {
         'name': user.name,
         'category': user.jobCategory,
         'password': user.password,
-        'savedAnnouncements': user.savedAnnouncementIDs
+        'savedAnnouncements': user.savedAnnouncements
       });
       return;
     }

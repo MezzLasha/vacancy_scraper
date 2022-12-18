@@ -22,9 +22,9 @@ class LoginUser extends UserEvent {
 class LogoutUser extends UserEvent {}
 
 class SaveAnnouncement extends UserEvent {
-  String announcementID;
+  Announcement announcement;
   SaveAnnouncement({
-    required this.announcementID,
+    required this.announcement,
   });
 }
 

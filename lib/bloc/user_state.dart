@@ -58,6 +58,6 @@ class UserInitial extends UserState {
                 jobCategory: '',
                 name: '',
                 password: '',
-                savedAnnouncementIDs: []),
+                savedAnnouncements: []),
             operationEvent: const InitialEvent());
 }

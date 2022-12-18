@@ -390,13 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SavedAdverts(
-                                  announcementIDs: context
-                                      .read<UserBloc>()
-                                      .state
-                                      .user
-                                      .savedAnnouncementIDs,
-                                ),
+                                builder: (context) => const SavedAdverts(),
                               ));
                         }),
                     NavDrawerListTile(
@@ -954,14 +948,14 @@ class AdvertisementListWidget extends StatelessWidget {
                   onTap: () {
                     context
                         .read<UserBloc>()
-                        .add(SaveAnnouncement(announcementID: item.jobId));
+                        .add(SaveAnnouncement(announcement: item));
                   },
                   child: (context
                           .read<UserBloc>()
                           .state
                           .user
-                          .savedAnnouncementIDs
-                          .contains(item.jobId))
+                          .savedAnnouncements
+                          .contains(item))
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -1083,24 +1077,27 @@ class NavDrawerListTile extends StatelessWidget {
 
 class AttributeWidget extends StatelessWidget {
   final Announcement item;
+  final bool? disableNewAttr;
 
-  const AttributeWidget({Key? key, required this.item}) : super(key: key);
+  const AttributeWidget({Key? key, required this.item, this.disableNewAttr})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (item.newAdvert)
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, top: 8),
-            child: Tooltip(
-              message: 'ახალი დადებული',
-              child: Icon(
-                Icons.fiber_new_outlined,
-                color: Theme.of(context).colorScheme.error,
+        if (disableNewAttr == null || disableNewAttr == false)
+          if (item.newAdvert)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0, top: 8),
+              child: Tooltip(
+                message: 'ახალი დადებული',
+                child: Icon(
+                  Icons.fiber_new_outlined,
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
-          ),
         if (item.aboutToExpire)
           Padding(
             padding: const EdgeInsets.only(right: 8.0, top: 8),

@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   email: emailController.text,
                   password: passwordController.text,
                   jobCategory: categoryValue,
-                  savedAnnouncementIDs: [])));
+                  savedAnnouncements: [])));
             }
           },
           icon: const Icon(Icons.navigate_next),

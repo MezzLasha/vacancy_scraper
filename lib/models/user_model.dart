@@ -10,13 +10,13 @@ class User {
   final String email;
   final String password;
   final String jobCategory;
-  final List<String> savedAnnouncementIDs;
+  final List<Announcement> savedAnnouncements;
   User({
     required this.name,
     required this.email,
     required this.password,
     required this.jobCategory,
-    required this.savedAnnouncementIDs,
+    required this.savedAnnouncements,
   });
 
   User copyWith({
@@ -24,14 +24,14 @@ class User {
     String? email,
     String? password,
     String? jobCategory,
-    List<String>? savedAnnouncementIDs,
+    List<Announcement>? savedAnnouncementIDs,
   }) {
     return User(
       name: name ?? this.name,
       email: email ?? this.email,
       password: password ?? this.password,
       jobCategory: jobCategory ?? this.jobCategory,
-      savedAnnouncementIDs: savedAnnouncementIDs ?? this.savedAnnouncementIDs,
+      savedAnnouncements: savedAnnouncementIDs ?? savedAnnouncements,
     );
   }
 
@@ -41,19 +41,22 @@ class User {
       'email': email,
       'password': password,
       'jobCategory': jobCategory,
-      'savedAnnouncementIDs': savedAnnouncementIDs,
+      'savedAnnouncementIDs': savedAnnouncements.map((x) => x.toMap()).toList(),
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-        name: map['name'] as String,
-        email: map['email'] as String,
-        password: map['password'] as String,
-        jobCategory: map['jobCategory'] as String,
-        savedAnnouncementIDs: List<String>.from(
-          (map['savedAnnouncementIDs'] as List<String>),
-        ));
+      name: map['name'] as String,
+      email: map['email'] as String,
+      password: map['password'] as String,
+      jobCategory: map['jobCategory'] as String,
+      savedAnnouncements: List<Announcement>.from(
+        (map['savedAnnouncementIDs'] as List<int>).map<Announcement>(
+          (x) => Announcement.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+    );
   }
 
   String toJson() => json.encode(toMap());
@@ -63,7 +66,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(name: $name, email: $email, password: $password, jobCategory: $jobCategory, savedAnnouncementIDs: $savedAnnouncementIDs)';
+    return 'User(name: $name, email: $email, password: $password, jobCategory: $jobCategory, savedAnnouncementIDs: $savedAnnouncements)';
   }
 
   @override
@@ -74,7 +77,7 @@ class User {
         other.email == email &&
         other.password == password &&
         other.jobCategory == jobCategory &&
-        listEquals(other.savedAnnouncementIDs, savedAnnouncementIDs);
+        listEquals(other.savedAnnouncements, savedAnnouncements);
   }
 
   @override
@@ -83,6 +86,6 @@ class User {
         email.hashCode ^
         password.hashCode ^
         jobCategory.hashCode ^
-        savedAnnouncementIDs.hashCode;
+        savedAnnouncements.hashCode;
   }
 }
