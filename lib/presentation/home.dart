@@ -15,7 +15,7 @@ import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/savedAdverts.dart';
 import 'package:vacancy_scraper/presentation/settings.dart';
-import 'package:vacancy_scraper/repositories/databaseRepo.dart';
+import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
 import '../bloc/user_bloc.dart';
 import '../custom/constants.dart';

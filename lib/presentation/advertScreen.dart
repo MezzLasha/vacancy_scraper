@@ -9,7 +9,7 @@ import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:vacancy_scraper/presentation/provider_screen.dart';
-import 'package:vacancy_scraper/repositories/databaseRepo.dart';
+import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
 import '../custom/customTextSelection.dart';
 

@@ -9,7 +9,7 @@ import 'package:vacancy_scraper/bloc/operation_events.dart';
 import 'package:vacancy_scraper/bloc/user_bloc.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
-import 'package:vacancy_scraper/repositories/databaseRepo.dart';
+import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
 import '../custom/myOpenContainer.dart';
 import 'advertScreen.dart';

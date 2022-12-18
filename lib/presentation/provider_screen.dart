@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +9,7 @@ import 'package:vacancy_scraper/models/provider_model.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 
-import '../repositories/databaseRepo.dart';
+import '../repositories/scraperRepo.dart';
 
 class ProviderScreen extends StatefulWidget {
   final String providerName;
@@ -70,7 +69,6 @@ class _ProviderScreenState extends State<ProviderScreen> {
                 )
               ],
             );
-
           }
         },
       ),
@@ -158,8 +156,12 @@ class _ProviderScreenState extends State<ProviderScreen> {
                               maxLines: 2,
                               style: GoogleFonts.notoSansGeorgian(),
                             ),
-                            ListTileSecondary(item: item,),
-                            AttributeWidget(item: item,)
+                            ListTileSecondary(
+                              item: item,
+                            ),
+                            AttributeWidget(
+                              item: item,
+                            )
                           ],
                         ),
                       ),
