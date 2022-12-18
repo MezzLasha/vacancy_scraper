@@ -392,7 +392,10 @@ class _AdvertScreenState extends State<AdvertScreen> {
                           ],
                         ),
                       ),
-                    )
+                    ),
+                  SizedBox(
+                    height: MediaQuery.of(context).systemGestureInsets.bottom,
+                  ),
                 ],
               );
             } else {

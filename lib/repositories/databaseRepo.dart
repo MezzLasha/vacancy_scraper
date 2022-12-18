@@ -164,7 +164,8 @@ class DatabaseRepository {
 
     Element descriptionTr = tbody.getElementsByTagName('tr').last;
     String attachedFileUrl = '';
-    if (tbody.text.contains('Attached File:')) {
+    if (tbody.text.contains('Attached File:') ||
+        tbody.text.contains('თანდართული ფაილი:')) {
       Element attachedTr = tbody.getElementsByTagName('tr')[3];
       Element attachedA = attachedTr.getElementsByTagName('a').first;
       attachedFileUrl =
