@@ -73,30 +73,16 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
               operationEvent: ErrorEvent(exception: Exception(e))));
         }
       } else if (event is SaveAnnouncement) {
-        if (state.user.savedAnnouncements.contains(event.announcement)) {
-          //already added, remove from list
-          try {
-            var list = state.user.savedAnnouncements;
-            list.remove(event.announcement);
-            emit(state.copyWith(
-                user: state.user.copyWith(savedAnnouncements: list),
-                operationEvent: SuccessfulEvent()));
-          } catch (e) {
-            emit(state.copyWith(
-                operationEvent: ErrorEvent(exception: Exception(e))));
-          }
-        } else {
-          try {
-            //not in list, add to saved
-            emit(state.copyWith(
-                user: state.user.copyWith(savedAnnouncements: [
-              ...state.user.savedAnnouncements,
-              event.announcement
-            ])));
-          } catch (e) {
-            emit(state.copyWith(
-                operationEvent: ErrorEvent(exception: Exception(e))));
-          }
+        try {
+          List<Announcement> newAnnouncements =
+              await db.saveAnnouncement(event.announcement, state.user);
+
+          emit(state.copyWith(
+              user: state.user.copyWith(savedAnnouncements: newAnnouncements),
+              operationEvent: SuccessfulEvent()));
+        } catch (e) {
+          emit(state.copyWith(
+              operationEvent: ErrorEvent(exception: e as Exception)));
         }
       }
     });
