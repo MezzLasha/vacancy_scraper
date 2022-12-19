@@ -111,6 +111,26 @@ class Announcement {
     );
   }
 
+  factory Announcement.fromFireStore(Map<String, dynamic> map, String jobId) {
+    return Announcement(
+      jobProvider: map['jobProvider'] as String,
+      jobProviderLink: map['jobProviderLink'] as String,
+      jobId: jobId,
+      website: '',
+      jobName: map['jobName'] as String,
+      jobRegion: '',
+      description: '',
+      salary: map['salary'] as bool,
+      newAdvert: map['newAdvert'] as bool,
+      aboutToExpire: map['aboutToExpire'] as bool,
+      startDate: map['startDate'] as String,
+      endDate: map['endDate'] as String,
+      imageUrl: map['imageUrl'] as String,
+      attachmentUrl: '',
+      jobLink: map['jobLink'] as String,
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
   factory Announcement.fromJson(String source) =>
