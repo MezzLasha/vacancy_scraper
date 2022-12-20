@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:vacancy_scraper/bloc/operation_events.dart';
 
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
@@ -480,10 +481,18 @@ class _HomeScreenState extends State<HomeScreen> {
           )
       ]),
       appBar: buildAppBar(),
-      body: RefreshIndicator(
-          key: refreshGlobalKey,
-          onRefresh: _refresh,
-          child: buildPagedListView()),
+      body: BlocListener<UserBloc, UserState>(
+        listener: (context, state) {
+          final opertaionEvent = state.operationEvent;
+          if (opertaionEvent is ErrorEvent) {
+            showSnackBar(context, opertaionEvent.exception.toString());
+          }
+        },
+        child: RefreshIndicator(
+            key: refreshGlobalKey,
+            onRefresh: _refresh,
+            child: buildPagedListView()),
+      ),
     );
   }
 
@@ -946,7 +955,6 @@ class AdvertisementListWidget extends StatelessWidget {
                 PopupMenuItem<int>(
                   value: 1,
                   onTap: () {
-                    //TODO show alert if not logged in. cant save without account
                     context
                         .read<UserBloc>()
                         .add(SaveAnnouncement(announcement: item));

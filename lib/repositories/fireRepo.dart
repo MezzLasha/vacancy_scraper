@@ -68,7 +68,11 @@ class FireRepository implements DBInterface {
 
     var userDoc;
 
-    await usersRef.doc(user.email).get().then((value) => userDoc = value);
+    try {
+      await usersRef.doc(user.email).get().then((value) => userDoc = value);
+    } catch (e) {
+      throw (Exception('განცხადების შესანახად შედით ანგარიშზე'));
+    }
 
     final oldListOfIds = userDoc['savedAnnouncements'] as List<dynamic>;
 

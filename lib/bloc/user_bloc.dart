@@ -82,7 +82,7 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
               operationEvent: SuccessfulEvent()));
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(exception: e as Exception)));
+              operationEvent: ErrorEvent(exception: Exception(e.toString()))));
         }
       }
     });

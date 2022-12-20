@@ -9,6 +9,7 @@ void showSnackBar(BuildContext context, String message) {
   final snackbar = SnackBar(
     content: Text(message),
     behavior: SnackBarBehavior.fixed,
+    duration: const Duration(seconds: 4),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }
