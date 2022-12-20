@@ -8,11 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import 'package:vacancy_scraper/auth/login_screen.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
+import 'package:vacancy_scraper/presentation/auth/login_screen.dart';
 import 'package:vacancy_scraper/presentation/savedAdverts.dart';
 import 'package:vacancy_scraper/presentation/settings.dart';
 import 'package:vacancy_scraper/repositories/scraperRepo.dart';
