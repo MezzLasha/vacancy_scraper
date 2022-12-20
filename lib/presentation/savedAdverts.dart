@@ -7,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/bloc/operation_events.dart';
 import 'package:vacancy_scraper/bloc/user_bloc.dart';
+import 'package:vacancy_scraper/custom/constants.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
+import 'package:vacancy_scraper/presentation/auth/login_screen.dart';
+import 'package:vacancy_scraper/presentation/auth/register_screen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
@@ -59,25 +62,87 @@ class _SavedAdvertsState extends State<SavedAdverts> {
             },
           ),
         ),
-        SliverToBoxAdapter(
-            child:
-                (context.read<UserBloc>().state.user.savedAnnouncements.isEmpty)
-                    ? const NoSavedAnnouncementWidget()
-                    : BlocBuilder<UserBloc, UserState>(
-                        builder: (context, state) {
-                          return ListView.builder(
-                              shrinkWrap: true,
-                              controller: scrollController,
-                              itemCount: state.user.savedAnnouncements.length,
-                              itemBuilder: (context, index) {
-                                return SavedAdvertisementListItem(
-                                  item: state.user.savedAnnouncements[index],
-                                );
-                              });
-                        },
-                      )),
+        SliverToBoxAdapter(child: BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            if (state.user.email.isEmpty) {
+              //not logged in
+              return const NotLoggedIn();
+            }
+            if (state.user.savedAnnouncements.isEmpty) {
+              return const NoSavedAnnouncementWidget();
+            }
+
+            return ListView.builder(
+                shrinkWrap: true,
+                controller: scrollController,
+                itemCount: state.user.savedAnnouncements.length,
+                itemBuilder: (context, index) {
+                  return SavedAdvertisementListItem(
+                    item: state.user.savedAnnouncements[index],
+                  );
+                });
+          },
+        )),
       ],
     ));
+  }
+}
+
+class NotLoggedIn extends StatelessWidget {
+  const NotLoggedIn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: (MediaQuery.of(context).size.height - 40) / 4,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: margin3),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: margin2,
+              ),
+              Text(
+                'განცხადებების შესანახად ანგარიშია საჭირო',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: Theme.of(context).colorScheme.tertiary),
+              ),
+              const SizedBox(
+                height: margin2,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen())),
+                      child: const Text('შესვლა')),
+                  const SizedBox(
+                    width: margin1,
+                  ),
+                  FilledButton.tonal(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterScreen())),
+                      child: const Text('შექმნა')),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -86,15 +151,20 @@ class NoSavedAnnouncementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
           'დამახსოვრებული განცხადებები გამოჩნდება აქ',
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
               .copyWith(color: Theme.of(context).colorScheme.tertiary),
-        ));
+        ),
+      ],
+    );
   }
 }
 
@@ -200,8 +270,6 @@ class SavedAdvertisementListItem extends StatelessWidget {
                       ListTileSecondary(
                         item: item,
                       ),
-
-                      // buildAttributeWidgets(item, context)
                       AttributeWidget(
                         item: item,
                         disableNewAttr: true,

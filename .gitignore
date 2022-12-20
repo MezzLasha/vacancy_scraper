@@ -50,3 +50,4 @@ lib/firebase_options.dart
 ios/Runner/GoogleService-Info.plist
 macos/Runner/GoogleService-Info.plist
 lib/custom/apiKey.dart
+.vscode/launch.json

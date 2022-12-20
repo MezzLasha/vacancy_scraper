@@ -946,6 +946,7 @@ class AdvertisementListWidget extends StatelessWidget {
                 PopupMenuItem<int>(
                   value: 1,
                   onTap: () {
+                    //TODO show alert if not logged in. cant save without account
                     context
                         .read<UserBloc>()
                         .add(SaveAnnouncement(announcement: item));
