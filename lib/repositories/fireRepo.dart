@@ -1,9 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:mailjet/mailjet.dart';
 
 import 'package:vacancy_scraper/custom/apiKey.dart';
@@ -36,19 +32,83 @@ class FireRepository implements DBInterface {
       throw Exception('არასწორი პაროლი');
     }
 
+    List<Announcement> savedAnnouncements = [];
+    List<dynamic> savedAnnouncementIDs = data['savedAnnouncements'];
+    if (savedAnnouncementIDs.isNotEmpty) {
+      CollectionReference announcementsRef =
+          FirebaseFirestore.instance.collection('announcements');
+
+      for (String fsJobId in savedAnnouncementIDs) {
+        try {
+          final el = await announcementsRef.doc(fsJobId).get();
+          savedAnnouncements.add(Announcement.fromFireStore(
+              el.data() as Map<String, dynamic>, fsJobId));
+        } catch (e) {}
+      }
+    }
+
     final user = User(
         name: data['name'],
         email: email,
         password: password,
         jobCategory: data['category'],
-        savedAnnouncements: []);
+        savedAnnouncements: savedAnnouncements);
     return user;
   }
 
   @override
-  void saveAnnouncement(Announcement announcement) {
-    // TODO: implement saveAnnouncement
-    throw UnimplementedError();
+  Future<List<Announcement>> saveAnnouncement(
+      Announcement announcement, User user) async {
+    CollectionReference usersRef =
+        FirebaseFirestore.instance.collection('users');
+    CollectionReference announcementsRef =
+        FirebaseFirestore.instance.collection('announcements');
+    Map<String, dynamic> userData;
+    Map<String, dynamic> announcementData;
+
+    var userDoc;
+
+    await usersRef.doc(user.email).get().then((value) => userDoc = value);
+
+    final oldListOfIds = userDoc['savedAnnouncements'] as List<dynamic>;
+
+    if (oldListOfIds.contains(announcement.jobId)) {
+      //REMOVE
+      user.savedAnnouncements.remove(announcement);
+
+      await usersRef.doc(user.email).set({
+        'name': user.name,
+        'category': user.jobCategory,
+        'password': user.password,
+        'savedAnnouncements':
+            user.savedAnnouncements.map((e) => e.jobId).toList()
+      });
+    } else {
+      //ADD / OVERWRITE IF EXSITS
+      await announcementsRef.doc(announcement.jobId).set({
+        'imageUrl': announcement.imageUrl,
+        'jobLink': announcement.jobLink,
+        'jobName': announcement.jobName,
+        'jobProvider': announcement.jobProvider,
+        'jobProviderLink': announcement.jobProviderLink,
+        'salary': announcement.salary,
+        'startDate': announcement.startDate,
+        'endDate': announcement.endDate,
+        'newAdvert': announcement.newAdvert,
+        'aboutToExpire': announcement.aboutToExpire,
+      });
+
+      user.savedAnnouncements.add(announcement);
+
+      await usersRef.doc(user.email).set({
+        'name': user.name,
+        'category': user.jobCategory,
+        'password': user.password,
+        'savedAnnouncements':
+            user.savedAnnouncements.map((e) => e.jobId).toList()
+      });
+    }
+    return user.savedAnnouncements;
   }
 
   @override
