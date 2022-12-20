@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: const CustomColors(danger: Colors.greenAccent)
                     .harmonized(Theme.of(context).colorScheme)
                     .danger),
-            onTap: () => LaunchReview(),
+            onTap: () => LaunchReview.launch(),
           ),
         ]))
       ],
