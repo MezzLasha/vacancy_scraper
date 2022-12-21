@@ -20,7 +20,7 @@ import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
 import '../bloc/user_bloc.dart';
 import '../custom/constants.dart';
-import 'resume_screen.dart';
+import 'resume/resume_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
 
 import 'bloc/user_bloc.dart';
@@ -87,10 +88,17 @@ class MyApp extends StatelessWidget {
 
       return RepositoryProvider(
         create: (context) => FireRepository(FirebaseFirestore.instance),
-        child: BlocProvider(
-          create: (context) => UserBloc(
-            RepositoryProvider.of<FireRepository>(context),
-          ),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => UserBloc(
+                RepositoryProvider.of<FireRepository>(context),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => ResumeBloc(),
+            ),
+          ],
           child: MaterialApp(
             themeAnimationCurve: Curves.easeInOutCubicEmphasized,
             themeAnimationDuration: const Duration(milliseconds: 500),

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +12,10 @@ import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/auth/login_screen.dart';
 import 'package:vacancy_scraper/presentation/auth/register_screen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
+import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 
-import '../custom/myOpenContainer.dart';
-import 'advertScreen.dart';
+import '../../custom/myOpenContainer.dart';
+import '../advertScreen.dart';
 
 class ResumeScreen extends StatefulWidget {
   const ResumeScreen({super.key});
@@ -21,16 +25,12 @@ class ResumeScreen extends StatefulWidget {
 }
 
 class _ResumeScreenState extends State<ResumeScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  final scrollController = ScrollController(initialScrollOffset: 140);
+  final scrollController = ScrollController(initialScrollOffset: 200);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(
+      physics: const NeverScrollableScrollPhysics(),
       controller: scrollController,
       slivers: [
         SliverAppBar.large(
@@ -58,33 +58,132 @@ class _ResumeScreenState extends State<ResumeScreen> {
             },
           ),
         ),
-        SliverFillRemaining(
-            child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(margin2),
-              child: Text(
-                'მარტივად მიაბი შენი სივი აპლიკაციიდან შედგენილი ელფოსტებზე.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: Theme.of(context).colorScheme.tertiary),
-              ),
-            ),
-            const SizedBox(height: margin2),
-            FilledButton.tonalIcon(
-              label: const Text('დამატება'),
-              icon: const Icon(Icons.add),
-              onPressed: () {},
-            )
-          ],
+        SliverFillRemaining(child: BlocBuilder<ResumeBloc, ResumeState>(
+          builder: (context, state) {
+            var hasFile = state.filePath != '';
+            var fileName = '';
+            if (hasFile) {
+              fileName = File(state.filePath).uri.pathSegments.last;
+            }
+            return Align(
+              alignment: Alignment.center,
+              child: AnimatedCrossFade(
+                  firstChild: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(margin1),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.contact_page_outlined,
+                                  size: 75,
+                                ),
+                                Text(
+                                  fileName,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: margin2,
+                      ),
+                      SizedBox(
+                        width: 190,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            OutlinedButton(
+                                onPressed: () {
+                                  context
+                                      .read<ResumeBloc>()
+                                      .add(DeleteResumeEvent());
+                                },
+                                child: const Text('წაშლა')),
+                            FilledButton.tonal(
+                                onPressed: () async {
+                                  await _pickFile(context);
+                                },
+                                child: const Text('შეცვლა')),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  secondChild: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(margin2),
+                        child: Text(
+                          'მარტივად მიაბი შენი სივი აპლიკაციიდან შედგენილი ელფოსტებზე.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.tertiary),
+                        ),
+                      ),
+                      const SizedBox(height: margin2),
+                      FilledButton.tonalIcon(
+                        label: const Text('დამატება'),
+                        icon: const Icon(Icons.add),
+                        onPressed: () async {
+                          await _pickFile(context);
+                        },
+                      )
+                    ],
+                  ),
+                  crossFadeState: hasFile
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  sizeCurve: Curves.easeInOutCubicEmphasized,
+                  firstCurve: Curves.easeInOutCubicEmphasized,
+                  secondCurve: Curves.easeInOutCubicEmphasized.flipped,
+                  duration: const Duration(milliseconds: 200)),
+            );
+          },
         )),
       ],
     ));
+  }
+
+  Future<void> _pickFile(BuildContext context) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['doc', 'pdf', 'docx', 'rtf', 'txt'],
+        allowMultiple: false);
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      context.read<ResumeBloc>().add(UploadResumeEvent(file.path));
+    } else {
+      // User canceled the picker
+    }
   }
 }
 
