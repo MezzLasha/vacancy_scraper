@@ -14,12 +14,13 @@ import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/auth/login_screen.dart';
-import 'package:vacancy_scraper/presentation/savedAdverts.dart';
-import 'package:vacancy_scraper/presentation/settings.dart';
+import 'package:vacancy_scraper/presentation/saved_adverts_screen.dart';
+import 'package:vacancy_scraper/presentation/settings_screen.dart';
 import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
 import '../bloc/user_bloc.dart';
 import '../custom/constants.dart';
+import 'resume_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -392,6 +393,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const SavedAdverts(),
+                              ));
+                        }),
+                    NavDrawerListTile(
+                        selected: false,
+                        icon: Icons.post_add,
+                        title: 'სივის მარტივი გაგზავნა',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ResumeScreen(),
                               ));
                         }),
                     NavDrawerListTile(
