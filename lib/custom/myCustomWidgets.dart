@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -140,6 +141,17 @@ Future<dynamic> showMyBottomDialog(
           ),
         ));
       });
+}
+
+Future<void> sendEmail(
+    String subject, String recipient, String attachment) async {
+  final Email email = Email(
+    subject: subject,
+    recipients: [recipient],
+    attachmentPaths: attachment != '' ? [attachment] : [],
+  );
+
+  await FlutterEmailSender.send(email);
 }
 
 Future<void> openIntent(BuildContext context, String _url) async {

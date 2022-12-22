@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
@@ -8,6 +9,7 @@ import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/provider_model.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
+import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 
 import '../repositories/scraperRepo.dart';
 
@@ -200,12 +202,18 @@ class _ProviderScreenState extends State<ProviderScreen> {
               if (url == null) {
                 showSnackBar(context, 'მოხდა შეცდომა! ');
                 return;
-              }
-
-              if (url.startsWith('http')) {
+              } else if (url.startsWith('/en/ads/')) {
+              } else if (url.startsWith('http')) {
                 launchWebUrl(context, url);
+              } else if (url.startsWith('mailto')) {
+                sendEmail('', url.split('mailto:')[1].split('?subject=')[0],
+                    context.read<ResumeBloc>().state.filePath);
               } else {
-                openIntent(context, url);
+                try {
+                  openIntent(context, url);
+                } catch (e) {
+                  showSnackBar(context, e.toString());
+                }
               }
             },
           ),
