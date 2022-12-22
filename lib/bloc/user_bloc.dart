@@ -1,12 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
-
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
 

@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vacancy_scraper/bloc/operation_events.dart';
-
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';

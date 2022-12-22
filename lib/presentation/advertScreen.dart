@@ -4,11 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vacancy_scraper/custom/myOpenContainer.dart';
-
-import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
-import 'package:vacancy_scraper/presentation/home.dart';
+import 'package:vacancy_scraper/custom/myOpenContainer.dart';
+import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/provider_screen.dart';
 import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 import 'package:vacancy_scraper/repositories/scraperRepo.dart';

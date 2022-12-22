@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-
 import 'package:vacancy_scraper/models/announcement.dart';
 
 class User {

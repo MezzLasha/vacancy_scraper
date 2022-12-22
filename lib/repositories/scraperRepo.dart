@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/models/provider_model.dart';
 

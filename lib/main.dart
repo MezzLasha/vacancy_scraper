@@ -11,8 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vacancy_scraper/presentation/home.dart';
 import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
 

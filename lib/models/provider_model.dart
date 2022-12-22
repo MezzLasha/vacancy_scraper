@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:vacancy_scraper/models/announcement.dart';
 
 class JobProvider {
