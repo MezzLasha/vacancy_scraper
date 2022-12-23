@@ -54,9 +54,10 @@ class DragHandlePill extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height ?? 4,
-      width: width ?? 30,
+      width: width ?? 32,
       decoration: BoxDecoration(
-          color: color ?? Colors.grey[400],
+          color: color ??
+              Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4),
           borderRadius: BorderRadius.circular(2.5)),
     );
   }
@@ -118,7 +119,7 @@ Future<dynamic> showMyBottomDialog(
       useRootNavigator: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+          top: Radius.circular(28),
         ),
       ),
       context: context,
