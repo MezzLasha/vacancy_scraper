@@ -152,12 +152,15 @@ class NoSavedAnnouncementWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          'დამახსოვრებული განცხადებები გამოჩნდება აქ',
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(color: Theme.of(context).colorScheme.tertiary),
+        Padding(
+          padding: const EdgeInsets.all(margin2),
+          child: Text(
+            'დამახსოვრებული განცხადებები გამოჩნდება აქ',
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(color: Theme.of(context).colorScheme.tertiary),
+          ),
         ),
       ],
     );
