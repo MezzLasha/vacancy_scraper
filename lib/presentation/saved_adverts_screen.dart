@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vacancy_scraper/bloc/user_bloc.dart';
 import 'package:vacancy_scraper/custom/constants.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
-import 'package:vacancy_scraper/presentation/auth/login_screen.dart';
-import 'package:vacancy_scraper/presentation/auth/register_screen.dart';
+import 'package:vacancy_scraper/auth/login_screen.dart';
+import 'package:vacancy_scraper/auth/register_screen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
 
+import '../auth/bloc/user_bloc.dart';
 import '../custom/myOpenContainer.dart';
 import 'advertScreen.dart';
 

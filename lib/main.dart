@@ -13,10 +13,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
-import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
+import 'package:vacancy_scraper/resume/bloc/resume_bloc.dart';
 
-import 'bloc/user_bloc.dart';
+import 'auth/bloc/user_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {

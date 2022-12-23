@@ -2,12 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vacancy_scraper/bloc/operation_events.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:validators/validators.dart';
 
-import '../../bloc/user_bloc.dart';
+import 'bloc/operation_events.dart';
+import 'bloc/user_bloc.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -85,7 +85,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocListener<UserBloc, UserState>(
         listener: (_, state) {
           final operationEvent = state.operationEvent;
-          //TODO
           if (operationEvent is ErrorEvent) {
             showSnackBar(context, operationEvent.exception.toString());
           } else if (operationEvent is LoadingEvent) {

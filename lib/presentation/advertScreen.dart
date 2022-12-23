@@ -8,10 +8,10 @@ import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/provider_screen.dart';
-import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
 import '../custom/customTextSelection.dart';
+import '../resume/bloc/resume_bloc.dart';
 
 class AdvertScreen extends StatefulWidget {
   final Announcement announcement;

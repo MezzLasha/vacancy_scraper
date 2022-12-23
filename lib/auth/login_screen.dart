@@ -2,12 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
-import 'package:vacancy_scraper/presentation/auth/register_screen.dart';
+import 'package:vacancy_scraper/auth/register_screen.dart';
 import 'package:validators/validators.dart';
 
-import '../../bloc/operation_events.dart';
-import '../../bloc/user_bloc.dart';
-import '../../custom/constants.dart';
+import '../custom/constants.dart';
+import 'bloc/operation_events.dart';
+import 'bloc/user_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

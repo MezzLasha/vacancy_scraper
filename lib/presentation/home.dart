@@ -7,19 +7,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:vacancy_scraper/bloc/operation_events.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
-import 'package:vacancy_scraper/presentation/auth/login_screen.dart';
+import 'package:vacancy_scraper/auth/login_screen.dart';
 import 'package:vacancy_scraper/presentation/saved_adverts_screen.dart';
 import 'package:vacancy_scraper/presentation/settings_screen.dart';
 import 'package:vacancy_scraper/repositories/scraperRepo.dart';
 
-import '../bloc/user_bloc.dart';
+import '../auth/bloc/operation_events.dart';
+import '../auth/bloc/user_bloc.dart';
 import '../custom/constants.dart';
-import 'resume/resume_screen.dart';
+import '../resume/resume_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

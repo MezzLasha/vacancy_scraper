@@ -9,9 +9,9 @@ import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/provider_model.dart';
 import 'package:vacancy_scraper/presentation/advertScreen.dart';
 import 'package:vacancy_scraper/presentation/home.dart';
-import 'package:vacancy_scraper/presentation/resume/resume_bloc.dart';
 
 import '../repositories/scraperRepo.dart';
+import '../resume/bloc/resume_bloc.dart';
 
 class ProviderScreen extends StatefulWidget {
   final String providerName;
