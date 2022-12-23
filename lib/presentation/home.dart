@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:vacancy_scraper/custom/custom_exceptions.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/custom/myOpenContainer.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
@@ -494,9 +495,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: buildAppBar(),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
-          final opertaionEvent = state.operationEvent;
-          if (opertaionEvent is ErrorEvent) {
-            showSnackBar(context, opertaionEvent.exception.toString());
+          final operationEvent = state.operationEvent;
+          if (operationEvent is ErrorEvent) {
+            final error = operationEvent.error;
+            if (error is SaveAnnouncementError) {
+              showSnackBar(context, error.message);
+            }
           }
         },
         child: RefreshIndicator(

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vacancy_scraper/custom/custom_exceptions.dart';
 import 'package:vacancy_scraper/custom/myCustomWidgets.dart';
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:validators/validators.dart';
@@ -86,8 +87,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (_, state) {
           final operationEvent = state.operationEvent;
           if (operationEvent is ErrorEvent) {
-            showSnackBar(context,
-                operationEvent.exception.toString().split('Exception:')[1]);
+            final error = operationEvent.error;
+            if (error is RegisterError) {
+              showSnackBar(context, error.message);
+            }
           } else if (operationEvent is LoadingEvent) {
             if (kDebugMode) {
               print('Loading');

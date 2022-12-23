@@ -29,11 +29,11 @@ class FireRepository implements DBInterface {
     try {
       data = doc.data() as Map<String, dynamic>;
     } catch (e) {
-      throw (Exception('მომხმარებელი ვერ მოიძებნა'));
+      throw (('მომხმარებელი ვერ მოიძებნა'));
     }
 
     if (data['password'] != password) {
-      throw Exception('არასწორი პაროლი');
+      throw ('არასწორი პაროლი');
     }
 
     List<Announcement> savedAnnouncements = [];
@@ -75,7 +75,7 @@ class FireRepository implements DBInterface {
     try {
       await usersRef.doc(user.email).get().then((value) => userDoc = value);
     } catch (e) {
-      throw (Exception('განცხადების შესანახად შედით ანგარიშზე'));
+      throw ('განცხადების შესანახად შედით ანგარიშზე');
     }
 
     final oldListOfIds = userDoc['savedAnnouncements'] as List<dynamic>;
@@ -137,7 +137,7 @@ class FireRepository implements DBInterface {
       return;
     }
 
-    throw Exception('ეს ელ-ფოსტა უკვე რეგისტრირებულია');
+    throw ('ეს ელ-ფოსტა უკვე რეგისტრირებულია');
   }
 
   @override
@@ -150,7 +150,7 @@ class FireRepository implements DBInterface {
       data = doc.data() as Map<String, dynamic>;
     } catch (e) {
       //არ არსებობს
-      throw Exception('ელ-ფოსტა ვერ მოიძებნა');
+      throw ('ელ-ფოსტა ვერ მოიძებნა');
     }
 
     MailJet mailJet = MailJet(

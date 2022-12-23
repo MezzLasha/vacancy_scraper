@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:vacancy_scraper/custom/custom_exceptions.dart';
 import 'package:vacancy_scraper/models/announcement.dart';
 import 'package:vacancy_scraper/models/user_model.dart';
 import 'package:vacancy_scraper/repositories/fireRepo.dart';
@@ -33,29 +34,25 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
               user: event.user, operationEvent: SuccessfulEvent()));
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(exception: Exception(e))));
+              operationEvent: ErrorEvent(error: RegisterError(e.toString()))));
         }
       } else if (event is LoginUser) {
-        // emit(state.copyWith(operationEvent: LoadingEvent()));
+        emit(state.copyWith(operationEvent: LoadingEvent()));
         try {
           User user = await db.loginUser(event.email, event.password);
 
           emit(state.copyWith(user: user, operationEvent: SuccessfulEvent()));
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(
-                  exception: Exception(e.toString().substring(11)))));
+              operationEvent: ErrorEvent(error: LoginError(e.toString()))));
         }
       } else if (event is LogoutUser) {
         try {
           emit(state.copyWith(
               user: UserInitial().user, operationEvent: SuccessfulEvent()));
-          if (kDebugMode) {
-            print('logged out');
-          }
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(exception: Exception(e))));
+              operationEvent: ErrorEvent(error: LogoutError(e.toString()))));
         }
       } else if (event is ResetPassword) {
         try {
@@ -63,12 +60,10 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
 
           emit(state.copyWith(
               user: UserInitial().user, operationEvent: SuccessfulEvent()));
-          if (kDebugMode) {
-            print('logged out');
-          }
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(exception: Exception(e))));
+              operationEvent:
+                  ErrorEvent(error: ResetPasswordError(e.toString()))));
         }
       } else if (event is SaveAnnouncement) {
         try {
@@ -80,7 +75,8 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
               operationEvent: SuccessfulEvent()));
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(exception: Exception(e.toString()))));
+              operationEvent:
+                  ErrorEvent(error: SaveAnnouncementError(e.toString()))));
         }
       }
     });

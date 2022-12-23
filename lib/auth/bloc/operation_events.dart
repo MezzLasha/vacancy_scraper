@@ -1,3 +1,5 @@
+import '../../custom/custom_exceptions.dart';
+
 class OperationEvent {
   const OperationEvent();
 }
@@ -5,9 +7,9 @@ class OperationEvent {
 class LoadingEvent extends OperationEvent {}
 
 class ErrorEvent extends OperationEvent {
-  Exception exception;
+  GenericError error;
   ErrorEvent({
-    required this.exception,
+    required this.error,
   });
 }
 
@@ -16,3 +18,7 @@ class InitialEvent extends OperationEvent {
 }
 
 class SuccessfulEvent extends OperationEvent {}
+
+class LoginSuccess extends OperationEvent {}
+
+class RegisterSuccess extends OperationEvent {}
