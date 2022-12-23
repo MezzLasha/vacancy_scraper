@@ -86,7 +86,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (_, state) {
           final operationEvent = state.operationEvent;
           if (operationEvent is ErrorEvent) {
-            showSnackBar(context, operationEvent.exception.toString());
+            showSnackBar(context,
+                operationEvent.exception.toString().split('Exception:')[1]);
           } else if (operationEvent is LoadingEvent) {
             if (kDebugMode) {
               print('Loading');

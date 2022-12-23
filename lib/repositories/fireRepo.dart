@@ -25,7 +25,12 @@ class FireRepository implements DBInterface {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     final doc = await users.doc(email).get();
-    final data = doc.data() as Map<String, dynamic>;
+    final data;
+    try {
+      data = doc.data() as Map<String, dynamic>;
+    } catch (e) {
+      throw (Exception('მომხმარებელი ვერ მოიძებნა'));
+    }
 
     if (data['password'] != password) {
       throw Exception('არასწორი პაროლი');

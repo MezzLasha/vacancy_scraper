@@ -43,7 +43,8 @@ class UserBloc extends HydratedBloc<UserEvent, UserState> {
           emit(state.copyWith(user: user, operationEvent: SuccessfulEvent()));
         } catch (e) {
           emit(state.copyWith(
-              operationEvent: ErrorEvent(exception: Exception(e))));
+              operationEvent: ErrorEvent(
+                  exception: Exception(e.toString().substring(11)))));
         }
       } else if (event is LogoutUser) {
         try {

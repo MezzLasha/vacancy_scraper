@@ -84,13 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<UserBloc, UserState>(
         listener: (_, state) {
           final operationEvent = state.operationEvent;
-          //TODO
-          if (operationEvent is ErrorEvent) {
-            showSnackBar(context, operationEvent.exception.toString());
-          } else if (operationEvent is LoadingEvent) {
-          } else if (operationEvent is SuccessfulEvent) {
+          if (operationEvent is SuccessfulEvent) {
             Navigator.pop(context);
-            // context.read<UserBloc>().add(EmitUserToHome(state.user));
           }
         },
         child: Padding(
@@ -115,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     TextFormField(
+                      autofillHints: const [AutofillHints.email],
                       controller: emailController,
                       validator: (value) =>
                           !isEmail(value ?? '') ? "შეასწორეთ ელ-ფოსტა" : null,
@@ -126,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 32,
                     ),
                     TextFormField(
+                      autofillHints: const [AutofillHints.password],
                       controller: passwordController,
                       obscureText: true,
                       validator: (value) =>
