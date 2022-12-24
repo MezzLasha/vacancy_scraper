@@ -94,9 +94,6 @@ class NotLoggedIn extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          height: (MediaQuery.of(context).size.height - 40) / 4,
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: margin3),
           child: Column(

@@ -17,13 +17,15 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-TextEditingController passwordController = TextEditingController();
-TextEditingController emailController = TextEditingController();
-
 class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
 
   final scrollController = ScrollController(initialScrollOffset: 0);
+
+  bool isLoadingVisible = false;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,18 +107,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
               ),
+              bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(0),
+                  child: Visibility(
+                    visible: isLoadingVisible,
+                    child: const LinearProgressIndicator(),
+                  )),
             ),
             SliverToBoxAdapter(
               child: BlocListener<UserBloc, UserState>(
                 listener: (_, state) {
                   final operationEvent = state.operationEvent;
                   if (operationEvent is SuccessfulEvent) {
+                    setProgressBarVisibility(false);
                     Navigator.pop(context);
                   } else if (operationEvent is ErrorEvent) {
                     final error = operationEvent.error;
                     if (error is LoginError) {
                       showSnackBar(context, error.message);
+                      setProgressBarVisibility(false);
                     }
+                  } else if (operationEvent is LoadingEvent) {
+                    setProgressBarVisibility(true);
                   }
                 },
                 child: Padding(
@@ -219,5 +231,11 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ));
+  }
+
+  void setProgressBarVisibility(bool visibility) {
+    setState(() {
+      isLoadingVisible = visibility;
+    });
   }
 }

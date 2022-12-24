@@ -25,7 +25,7 @@ class ResumeScreen extends StatefulWidget {
 }
 
 class _ResumeScreenState extends State<ResumeScreen> {
-  final scrollController = ScrollController(initialScrollOffset: 200);
+  final scrollController = ScrollController(initialScrollOffset: 160);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,7 +138,7 @@ class _ResumeScreenState extends State<ResumeScreen> {
                       Padding(
                         padding: const EdgeInsets.all(margin2),
                         child: Text(
-                          'მარტივად მიაბი შენი სივი აპლიკაციიდან შედგენილი ელფოსტებზე.',
+                          'მარტივად მიაბი შენი სივი აპლიკაციიდან შედგენილ ელფოსტებზე.',
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
