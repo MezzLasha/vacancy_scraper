@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +54,17 @@ class _AdvertScreenState extends State<AdvertScreen> {
             actions: [
               TextButton(
                   onPressed: () {
+                    var jobLink = '';
+                    try {
+                      jobLink =
+                          ('https://jobs.ge${value.description.split('">ინგლისურ ენაზე')[0].split('href="')[1]}')
+                              .replaceAll('&amp;', '&');
+                    } catch (e) {
+                      showSnackBar(context,
+                          'განცხადება ვერ მოიძებნა, სცადეთ მოგვიანებით');
+                      FirebaseCrashlytics.instance.log(e.toString());
+                      return;
+                    }
                     hideBanner();
                     Navigator.push(
                         context,
